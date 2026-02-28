@@ -1,0 +1,7 @@
+PATCH http://localhost:3001/projects
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2OGNjYmFhOTg1NDU3NTI0YTgwOTI4NDgiLCJlbWFpbCI6ImNsb3VkaWFAZXhhbXBsZS5jb20iLCJpYXQiOjE3NjA3NTc3NzIsImV4cCI6MTc2MDg0NDE3Mn0.6YC5psNijVHtCFs2jO6oBMSyYOz3Nsv2tDE4WPB8fv8
+{
+    "_id": "68f2f91b3be0146bb7ab94fb",
+    "name": "Update TTest Project"
+}

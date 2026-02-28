@@ -1,0 +1,7 @@
+POST http://localhost:3001/projects/68f2f91b3be0146bb7ab94fb/members/email
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2OGQ3ZDMzZGMwYTQ3NWEzYzIxODBmNmIiLCJlbWFpbCI6InRlc3R0QGV4YW1wbGUuY29tIiwiaWF0IjoxNzYyODU0Mjc0LCJleHAiOjE3NjI5NDA2NzR9.JBBjVO4i6uhin6FBI6Oq0v4hqy0BsOK6bGZGQzY1ubc
+{
+    "email": "jiaxili0624@gmail.com",
+    "role": "viewer"
+}

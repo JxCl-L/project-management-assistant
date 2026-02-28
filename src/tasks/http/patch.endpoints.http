@@ -1,0 +1,7 @@
+PATCH http://localhost:3001/projects/68e8cbaa4d99c5f34c200f48/tasks
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2OGQ3ZDMzZGMwYTQ3NWEzYzIxODBmNmIiLCJlbWFpbCI6InRlc3R0QGV4YW1wbGUuY29tIiwiaWF0IjoxNzYwNzY5Mzg1LCJleHAiOjE3NjA4NTU3ODV9.koyWIRGT_WEOAgVg0oI8scrVm8S-s2yI_J9PNyp4_nA
+{
+    "_id": "68e8db3ce210e109b59b89c6",
+    "status": "todo"
+}

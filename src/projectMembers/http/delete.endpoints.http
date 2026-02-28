@@ -1,0 +1,7 @@
+DELETE http://localhost:3001/projects/68e8cbaa4d99c5f34c200f48/members
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2OGQ3ZDMzZGMwYTQ3NWEzYzIxODBmNmIiLCJlbWFpbCI6InRlc3R0QGV4YW1wbGUuY29tIiwiaWF0IjoxNzYwNzgxODIyLCJleHAiOjE3NjA4NjgyMjJ9.VlVRQgQxgUg0_BNMYhWBN9JEVtZWRgjflPpYh1F-PWY
+
+{
+    "_id": "68f368a3624236405019dfaf"
+}
