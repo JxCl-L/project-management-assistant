@@ -1,8 +1,10 @@
 const Task = require("../task.schema.js");
 const Member = require("../../projectMembers/member.schema.js");
+const User = require("../../users/user.schema.js");
 const { matchedData } = require("express-validator");
 const { StatusCodes } = require("http-status-codes");
 const errorLogger = require("../../helpers/errorLogger.helper.js");
+const { getIO } = require("../../socket/io.js");
 
 async function updateTaskProvider(req, res) {
   const validatedData = matchedData(req);
@@ -33,7 +35,29 @@ async function updateTaskProvider(req, res) {
     task.status = validatedData.status || task.status;
     // 3. save the updated task back to database
     await task.save();
-    // 4. return the updated task
+
+    // 4. broadcast task:updated to all clients in the task room
+    const changes = {};
+    if (validatedData.title !== undefined) changes.title = task.title;
+    if (validatedData.description !== undefined) changes.description = task.description;
+    if (validatedData.dueDate !== undefined) changes.dueDate = task.dueDate;
+    if (validatedData.priority !== undefined) changes.priority = task.priority;
+    if (validatedData.status !== undefined) changes.status = task.status;
+
+    if (Object.keys(changes).length > 0) {
+      const user = await User.findById(req.user.sub).select("firstName lastName");
+      getIO().to(`task:${task._id}`).emit("task:updated", {
+        taskId: task._id,
+        changes,
+        updatedBy: {
+          userId: req.user.sub,
+          firstName: user?.firstName || "",
+          lastName: user?.lastName || "",
+        },
+      });
+    }
+
+    // 5. return the updated task
     return res.status(StatusCodes.OK).json(task);
   } catch (error) {
     errorLogger("Error while updating task", req, error);
