@@ -12,6 +12,8 @@ import { ProjectSidebar } from "@/components/projectSidebar/projectSidebar.jsx";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { CreateTaskDialog } from "@/components/createTaskDialog/createTaskDialog.jsx";
 import { TaskPagination } from "@/components/taskPagination/taskPagination.jsx";
+import { AiPanel } from "@/components/aiPanel/aiPanel.jsx";
+import { Sparkles } from "lucide-react";
 
 function DisplaySkeleton() {
   return (
@@ -40,6 +42,8 @@ export default function Tasks() {
   const { projectId } = useParams();
   const [searchParams, setSearchParams] = useSearchParams(); // searchParams object: represents the query parameters in the URL
   const [isCreateTaskDialogOpen, setIsCreateTaskDialogOpen] = useState(false);
+  const [isAiPanelOpen, setIsAiPanelOpen] = useState(false);
+  const [aiPanelEverOpened, setAiPanelEverOpened] = useState(false);
 
   let queryLimit = searchParams.get("limit") ?? 5;
   let queryPage = searchParams.get("page") ?? 1;
@@ -123,13 +127,29 @@ export default function Tasks() {
                 {currentProject?.description || "No description available"}
               </p>
             </div>
-            {currentProject?.permissions?.canCreateTask && (
-              <CreateTaskDialog
-                onClick={() => setIsCreateTaskDialogOpen(true)}
-                open={isCreateTaskDialogOpen}
-                onOpenChange={setIsCreateTaskDialogOpen}
-              />
-            )}
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => {
+                  setIsAiPanelOpen((v) => !v);
+                  setAiPanelEverOpened(true);
+                }}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-sm transition-all duration-150 ${
+                  isAiPanelOpen
+                    ? "bg-violet-600/20 border-violet-500/40 text-violet-300"
+                    : "border-border text-foreground hover:bg-muted"
+                }`}
+              >
+                <Sparkles className="h-3.5 w-3.5" />
+                AI
+              </button>
+              {currentProject?.permissions?.canCreateTask && (
+                <CreateTaskDialog
+                  onClick={() => setIsCreateTaskDialogOpen(true)}
+                  open={isCreateTaskDialogOpen}
+                  onOpenChange={setIsCreateTaskDialogOpen}
+                />
+              )}
+            </div>
           </header>
 
           {/* Tasks Section */}
@@ -214,6 +234,15 @@ export default function Tasks() {
           <TaskSidebar />
         </section> */}
       </div>
+
+      {aiPanelEverOpened && (
+        <AiPanel
+          isOpen={isAiPanelOpen}
+          onClose={() => setIsAiPanelOpen(false)}
+          projectId={projectId}
+          projectName={currentProject?.name}
+        />
+      )}
     </SidebarProvider>
   );
 }

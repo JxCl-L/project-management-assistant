@@ -15,8 +15,22 @@ import TaskPrioritySelection from "@/components/taskPrioritySelection/taskPriori
 import TaskStatusSelection from "@/components/taskStatusSelection/taskStatusSelection.jsx";
 import TaskDescriptionEdit from "@/components/taskDescriptionEdit/taskDescriptionEdit.jsx";
 import TaskContentEdit from "@/components/taskContentEdit/taskContentEdit.jsx";
+import TaskTitleEdit from "@/components/taskTitleEdit/taskTitleEdit.jsx";
 import { useTaskPresence } from "@/hooks/useTaskPresence.js";
 import { PresenceAvatarStack } from "@/components/task/PresenceAvatarStack.jsx";
+import { useDeleteTask } from "@/hooks/useDeleteTask.hook.js";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import { Trash2 } from "lucide-react";
 
 export default function Task() {
   const { projectId, taskId } = useParams();
@@ -59,8 +73,17 @@ export default function Task() {
 
   const currentTask = taskData?.data[0];
 
+  const { mutate: deleteTask, isPending: isDeleting } = useDeleteTask();
+
+  function handleDelete() {
+    deleteTask({ projectId, taskId }, {
+      onSuccess: () => navigate(-1),
+    });
+  }
+
   const { roomUsers, fieldEditors, emitFieldFocus, emitFieldBlur } =
-    useTaskPresence(currentTask?._id);
+  // useTaskPresence(currentTask?._id);
+  useTaskPresence(taskId, projectId);
   console.log(
     "projectId:",
     projectId,
@@ -130,45 +153,59 @@ export default function Task() {
       {/* task info */}
 
       <section className="w-full mb-8 min-w-96">
-        {/* task header: read only */}
+        {/* task header */}
 
         <header className="p-8">
           <div className="flex flex-row justify-between items-center gap-4">
-            <h1 className="text-2xl font-semibold leading-none tracking-tight">
-              {title}
-            </h1>
+            <TaskTitleEdit
+              projectId={projectId}
+              taskId={_id}
+              initialTitle={title}
+              role={projectData?.data?.currentUserRole}
+            />
             <div className="flex items-center gap-3">
               <PresenceAvatarStack roomUsers={roomUsers} />
               <div className="flex items-center gap-1 text-sm text-center text-gray-400">
                 <span>
-                  Created by <span className="text-gray-100">{creatorName}</span>
+                  Created by{" "}
+                  <span className="text-gray-100">{creatorName}</span>
                 </span>
                 <span>•</span>
                 <span>{formatDate(createdAt)}</span>
               </div>
+              {projectData?.data?.currentUserRole === "manager" && (
+                <AlertDialog>
+                  <AlertDialogTrigger asChild>
+                    <button
+                      className="p-1.5 rounded-md text-muted-foreground hover:text-red-400 hover:bg-red-500/10 transition-colors"
+                      aria-label="Delete task"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </button>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>Delete this task?</AlertDialogTitle>
+                      <AlertDialogDescription>
+                        This action cannot be undone. The task and all its content will be permanently deleted.
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>Cancel</AlertDialogCancel>
+                      <AlertDialogAction
+                        onClick={handleDelete}
+                        disabled={isDeleting}
+                        className="bg-red-600 hover:bg-red-700 focus:ring-red-600"
+                      >
+                        {isDeleting ? "Deleting…" : "Delete"}
+                      </AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
+              )}
             </div>
           </div>
         </header>
-
-        {/* editable fields */}
-
-        {/* {projectData?.data?.currentUserRole === "viewer" ? 
-        <div className="flex flex-row gap-4 px-8">
-          <div>
-            {description ? description : "No description provided"}
-          </div>
-          <Badge className="bg-sky-800" variant="outline" >
-            Due Date: {dueDate ? formatDate(dueDate) : "No due date"}
-          </Badge>
-          <Badge>
-            Priority: {priority.charAt(0).toUpperCase() + priority.slice(1)}
-          </Badge>
-          <Badge>
-            Status: {status.charAt(0).toUpperCase() + status.slice(1)}
-          </Badge>
-          
-        </div>
-        : */}
 
         <div className="flex flex-col gap-4 px-8">
           <div className="flex flex-row gap-4 h-20">

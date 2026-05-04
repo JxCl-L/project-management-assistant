@@ -93,13 +93,13 @@ export function ManageMembersDialog({
   return (
     <TooltipProvider>
       <Dialog open={open} onOpenChange={onOpenChange}>
-        <DialogContent className="sm:max-w-[700px]">
+        <DialogContent className="sm:max-w-[700px] max-w-[calc(100vw-2rem)] overflow-hidden">
           <DialogHeader className="text-left">
             <DialogTitle>Manage Members</DialogTitle>
           </DialogHeader>
 
           <div className="space-y-4">
-            <div className="flex justify-between items-center">
+            <div className="flex flex-wrap justify-between items-center gap-2">
               <p className="text-sm text-muted-foreground">
                 {project?.name}: {memberCount} member(s)
               </p>
@@ -137,12 +137,12 @@ export function ManageMembersDialog({
               )}
 
             {hasMembersData && (
-              <div className="border rounded-lg p-4">
+              <div className="border rounded-lg p-4 overflow-x-auto">
                 <Table>
                   <TableHeader>
                     <TableRow>
                       <TableHead>Member</TableHead>
-                      <TableHead>Email</TableHead>
+                      <TableHead className="hidden sm:table-cell">Email</TableHead>
                       <TableHead>Role</TableHead>
                       {!readOnly && <TableHead></TableHead>}
                     </TableRow>
@@ -151,9 +151,12 @@ export function ManageMembersDialog({
                     {members.data.map((member) => (
                       <TableRow key={member._id}>
                         <TableCell>
-                          {member.user?.firstName} {member.user?.lastName}
+                          <div>{member.user?.firstName} {member.user?.lastName}</div>
+                          <div className="text-xs text-muted-foreground sm:hidden truncate max-w-[120px]">
+                            {member.user?.email}
+                          </div>
                         </TableCell>
-                        <TableCell>{member.user?.email}</TableCell>
+                        <TableCell className="hidden sm:table-cell">{member.user?.email}</TableCell>
                         <TableCell className="capitalize">
                           {readOnly ? (
                             <Tooltip>
@@ -174,7 +177,7 @@ export function ManageMembersDialog({
                               }
                               disabled={isUpdatePending}
                             >
-                              <SelectTrigger className="w-[180px]">
+                              <SelectTrigger className="w-[100px] sm:w-[140px]">
                                 <SelectValue />
                               </SelectTrigger>
                               <SelectContent>
