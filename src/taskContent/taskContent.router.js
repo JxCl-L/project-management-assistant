@@ -5,6 +5,7 @@ const { StatusCodes } = require("http-status-codes");
 const createTaskContentValidator = require("./validators/createTaskContent.validator.js");
 const getTaskContentValidator = require("./validators/getTaskContent.validator.js");
 const updateTaskContentValidator = require("./validators/updateTaskContent.validator.js");
+const rewriteTaskContentValidator = require("./validators/rewriteTaskContent.validator.js");
 // const deleteTaskContentValidator = require("./validators/deleteTaskContent.validator.js");
 const authenticateToken = require("../middleware/authenticateToken.middleware.js");
 const checkPermission = require("../middleware/checkPermission.middleware.js");
@@ -332,5 +333,21 @@ taskContentRouter.patch(
 //     }
 //   }
 // );
+
+taskContentRouter.post(
+  "/rewrite",
+  authenticateToken,
+  checkPermission("taskContent", "GET"),
+  rewriteTaskContentValidator,
+  (req, res) => {
+    const result = validationResult(req);
+
+    if (result.isEmpty()) {
+      return taskContentController.handleRewriteTaskContent(req, res);
+    } else {
+      res.status(StatusCodes.BAD_REQUEST).json(result.array());
+    }
+  }
+);
 
 module.exports = taskContentRouter;

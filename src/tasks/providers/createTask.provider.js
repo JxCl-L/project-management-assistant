@@ -1,4 +1,5 @@
 const Task = require("../task.schema.js");
+const TaskContent = require("../../taskContent/taskContent.schema.js");
 const Member = require("../../projectMembers/member.schema.js");
 const { matchedData } = require("express-validator");
 const { StatusCodes } = require("http-status-codes");
@@ -35,6 +36,13 @@ async function createTaskProvider(req, res) {
 
   try {
     await task.save();
+
+    await new TaskContent({
+      task: task._id,
+      lastEditedBy: req.user.sub,
+      lastEditedAt: new Date(),
+    }).save();
+
     return res.status(StatusCodes.CREATED).json(task);
   } catch (error) {
     // console.error("Error creating task:", error); // this error usually from database or db connection

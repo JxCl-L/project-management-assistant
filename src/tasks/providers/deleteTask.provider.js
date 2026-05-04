@@ -1,5 +1,5 @@
 const Task = require("../task.schema.js");
-const Member = require("../../projectMembers/member.schema.js");
+const TaskContent = require("../../taskContent/taskContent.schema.js");
 const { matchedData } = require("express-validator");
 const { StatusCodes } = require("http-status-codes");
 const errorLogger = require("../../helpers/errorLogger.helper.js");
@@ -8,26 +8,13 @@ async function deleteTaskProvider(req, res) {
   const validatedData = matchedData(req);
 
   try {
-    // authorization check, replace with middldeware
-    // const isManager = await Member.findOne({
-    //   user: req.user?.sub,
-    //   role: "manager",
-    //   project: req.body["_id"],
-    // });
-
-    // if (!isManager) {
-    //   return res.status(StatusCodes.FORBIDDEN).json({
-    //     message: "You do not have permission to delete task in this project.",
-    //   });
-    // }
-
     const deletedTask = await Task.deleteOne({ _id: validatedData["_id"] });
 
     if (deletedTask.deletedCount === 0) {
-      return res.status(404).json({
-        message: "Task not found",
-      });
+      return res.status(404).json({ message: "Task not found" });
     }
+
+    await TaskContent.deleteOne({ task: validatedData["_id"] });
 
     res.status(StatusCodes.OK).json(deletedTask);
   } catch (error) {

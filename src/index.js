@@ -1,15 +1,14 @@
+const dotenv = require("dotenv");
+
+process.env.NODE_ENV = process.env.NODE_ENV || "development";
+dotenv.config({ path: `.env.${process.env.NODE_ENV}` }); // must run before any other imports read process.env
+
 const express = require("express");
 const http = require("http");
 const mongoose = require("mongoose");
-const dotenv = require("dotenv");
 const configuraApp = require("./settings/config.js");
 const { createIO } = require("./socket/io.js");
 const initSocket = require("./socket/socket.js");
-
-process.env.NODE_ENV = process.env.NODE_ENV || "development"; // default to development if not set
-const envFile = `.env.${process.env.NODE_ENV}`;
-
-dotenv.config({ path: envFile }); // load environment variables from envFile not just default .env
 
 // console.log("Test env variable:", process.env.TEST_VARIABLE); // verify env variable is loaded
 

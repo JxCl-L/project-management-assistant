@@ -5,6 +5,8 @@ const getTasksProvider = require("./providers/getTasks.provider.js");
 const getTaskProvider = require("./providers/getTask.provider.js");
 const updateTaskProvider = require("./providers/updateTask.provider.js");
 const deleteTaskProvider = require("./providers/deleteTask.provider.js");
+const rewriteTaskProvider = require("./providers/rewriteTask.provider.js");
+const generateTaskProvider = require("./providers/generateTask.provider.js");
 
 async function handleGetTasks(req, res) {
     return await getTasksProvider(req, res);
@@ -57,4 +59,12 @@ async function handleDeleteTasks(req, res) {
     return await deleteTaskProvider(req, res);
 }
 
-module.exports = { handleGetTasks, handleGetTask, handlePostTasks, handlePatchTasks, handleDeleteTasks };
+async function handleRewriteTask(req, res) {
+    return await rewriteTaskProvider(req, res);
+}
+
+async function handleGenerateTask(req, res) {
+    return await generateTaskProvider(req, res);
+}
+
+module.exports = { handleGetTasks, handleGetTask, handlePostTasks, handlePatchTasks, handleDeleteTasks, handleRewriteTask, handleGenerateTask };
