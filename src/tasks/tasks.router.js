@@ -7,6 +7,8 @@ const getTasksValidator = require("./validators/getTasks.validator.js");
 const getTaskValidator = require("./validators/getTask.validator.js");
 const updateTaskValidator = require("./validators/updateTask.validator.js");
 const deleteTaskValidator = require("./validators/deleteTask.validator.js");
+const rewriteTaskValidator = require("./validators/rewriteTask.validator.js");
+const generateTaskValidator = require("./validators/generateTask.validator.js");
 const authenticateToken = require("../middleware/authenticateToken.middleware.js");
 const checkPermission = require("../middleware/checkPermission.middleware.js");
 
@@ -345,6 +347,37 @@ tasksRouter.delete(
 
     if (result.isEmpty()) {
       return tasksController.handleDeleteTasks(req, res);
+    } else {
+      res.status(StatusCodes.BAD_REQUEST).json(result.array());
+    }
+  }
+);
+
+tasksRouter.post(
+  "/generate",
+  authenticateToken,
+  checkPermission("tasks", "POST"),
+  generateTaskValidator,
+  (req, res) => {
+    const result = validationResult(req);
+    if (result.isEmpty()) {
+      return tasksController.handleGenerateTask(req, res);
+    } else {
+      res.status(StatusCodes.BAD_REQUEST).json(result.array());
+    }
+  }
+);
+
+tasksRouter.post(
+  "/:taskId/rewrite",
+  authenticateToken,
+  checkPermission("task", "GET"),
+  rewriteTaskValidator,
+  (req, res) => {
+    const result = validationResult(req);
+
+    if (result.isEmpty()) {
+      return tasksController.handleRewriteTask(req, res);
     } else {
       res.status(StatusCodes.BAD_REQUEST).json(result.array());
     }

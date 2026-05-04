@@ -5,7 +5,7 @@ const authenticateToken = (req, res, next) => {
 
     const authHeader = req.headers['authorization'];
     const token = authHeader && authHeader.split(' ')[1]; // Bearer TOKEN
-    console.log("Authenticating token:", token);
+    // console.log("Authenticating token:", token);
 
     if (!token) {
         console.error("No token found");
@@ -22,7 +22,7 @@ const authenticateToken = (req, res, next) => {
                 .status(StatusCodes.UNAUTHORIZED)
                 .json({message: "Invalid Authentication token. Please login again"}); // Forbidden
         }
-        console.log("Token verified, user:", decoded);
+        // console.log("Token verified, user:", decoded);
         req.user = decoded; // contains id as sub, email, iat, exp
         next();
     });

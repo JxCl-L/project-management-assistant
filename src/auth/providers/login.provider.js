@@ -49,6 +49,7 @@ async function loginProvider(req, res) {
     // Authentication step 4: Send the token to the client
     res.status(StatusCodes.OK).json({
       accessToken: token,
+      _id: user._id,
       firstName: user.firstName,
       lastName: user.lastName,
       email: user.email,

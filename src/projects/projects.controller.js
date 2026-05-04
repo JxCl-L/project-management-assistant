@@ -3,6 +3,7 @@ const getProjectsProvider = require("./providers/getProjects.provider.js");
 const getProjectProvider = require("./providers/getProject.provider.js");
 const updateProjectProvider = require("./providers/updateProject.provider.js");
 const deleteProjectProvider = require("./providers/deleteProject.provider.js");
+const generateProjectSummaryProvider = require("./providers/generateProjectSummary.provider.js");
 
 async function handleGetProjects(req, res) {
     return await getProjectsProvider(req, res);
@@ -24,4 +25,8 @@ async function handleDeleteProjects(req, res) {
     return await deleteProjectProvider(req, res);
 }
 
-module.exports = { handleGetProjects, handleGetProject, handlePostProjects, handlePatchProjects, handleDeleteProjects };
+async function handleGetProjectSummary(req, res) {
+    return await generateProjectSummaryProvider(req, res);
+}
+
+module.exports = { handleGetProjects, handleGetProject, handlePostProjects, handlePatchProjects, handleDeleteProjects, handleGetProjectSummary };

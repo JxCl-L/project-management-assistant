@@ -7,6 +7,7 @@ const getProjectsValidator = require("./validators/getProjects.validator.js");
 const getProjectValidator = require("./validators/getProject.validator.js");
 const updateProjectValidator = require("./validators/updateProject.validator.js");
 const deleteProjectValidator = require("./validators/deleteProject.validator.js");
+const generateProjectSummaryValidator = require("./validators/generateProjectSummary.validator.js");
 const authenticateToken = require("../middleware/authenticateToken.middleware.js");
 const checkPermission = require("../middleware/checkPermission.middleware.js");
 
@@ -76,6 +77,22 @@ projectsRouter.get(
   }
 );
 
+
+projectsRouter.get(
+  "/:projectId/summary",
+  authenticateToken,
+  checkPermission("project", "GET"),
+  generateProjectSummaryValidator,
+  (req, res) => {
+    const result = validationResult(req);
+
+    if (result.isEmpty()) {
+      return projectsController.handleGetProjectSummary(req, res);
+    } else {
+      res.status(StatusCodes.BAD_REQUEST).json(result.array());
+    }
+  }
+);
 
 projectsRouter.delete(
   "/",
