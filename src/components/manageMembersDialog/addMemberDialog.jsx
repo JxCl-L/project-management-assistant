@@ -25,45 +25,34 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 import { CreateMemberByEmailSchema } from "@/schema/createMemberByEmail.schema.js";
 import { useForm } from "react-hook-form";
-import { useEffect } from "react";
 import { useToast } from "@/hooks/use-toast.js";
 import { useCreateMemberByEmail } from "@/hooks/useCreateMemberByEmail.hook.js";
 
 export const AddMemberDialog = ({ showAddMember, setShowAddMember, project }) => {
   const { toast } = useToast();
 
-  const {
-    mutate: createMemberByEmail,
-    isError: isCreateError,
-    isSuccess: isCreateSuccess,
-    isPending: isCreatePending,
-    error: createError,
-  } = useCreateMemberByEmail();
+  const { mutate: createMemberByEmail, isPending: isCreatePending } = useCreateMemberByEmail();
 
   const createMemberForm = useForm({
     resolver: zodResolver(CreateMemberByEmailSchema),
-    defaultValues: {
-      email: "",
-      role: "",
-    },
+    defaultValues: { email: "", role: "" },
   });
 
-  useEffect(() => {
-    if (isCreateSuccess) {
-      toast({ title: "Member added successfully" });
-      createMemberForm.reset();
-      setShowAddMember(false);
-    } else if (isCreateError) {
-      toast({
-        title: "Failed to add member",
-        description: createError?.message || "Please try again",
-        variant: "destructive",
-      });
-    }
-  }, [isCreateSuccess, isCreateError, toast, createMemberForm, setShowAddMember, createError]);
-
   const handleCreateMember = (values) => {
-    createMemberByEmail({ projectId: project._id, memberData: values });
+    createMemberByEmail({ projectId: project._id, memberData: values }, {
+      onSuccess: () => {
+        toast({ title: "Member added successfully" });
+        createMemberForm.reset();
+        setShowAddMember(false);
+      },
+      onError: (err) => {
+        toast({
+          title: "Failed to add member",
+          description: err?.response?.data?.message || err?.message || "Please try again",
+          variant: "destructive",
+        });
+      },
+    });
   };
 
   const handleCancel = () => {

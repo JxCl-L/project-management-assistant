@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/select";
 import { useState, useEffect } from "react";
 import { format } from "date-fns";
-import { Calendar as CalendarIcon } from "lucide-react";
+import { Calendar as CalendarIcon, Sparkles, AlertTriangle } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
@@ -24,71 +24,94 @@ import { useForm } from "react-hook-form";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
-  FormLabel,
   FormMessage,
 } from "@/components/ui/form";
 import { CreateTaskSchema } from "@/schema/createTask.schema.js";
 import { useCreateTask } from "@/hooks/useCreateTask.hook.js";
+import { useGenerateTask } from "@/hooks/useGenerateTask.hook.js";
 import { useToast } from "@/hooks/use-toast.js";
 import { Toaster } from "@/components/ui/toaster";
-import { useQueryClient } from "@tanstack/react-query";
+import { useParams } from "react-router";
 
-
-export function CreateTaskForm({onSuccess}) {
-  const [date, setDate] = useState();
+export function CreateTaskForm({ onSuccess }) {
+  const { projectId } = useParams();
   const { mutate, isError, isSuccess, isPending } = useCreateTask();
+  const { mutate: generate, isPending: isGenerating } = useGenerateTask();
   const { toast } = useToast();
-  const queryClient = useQueryClient();
+
+  const [prompt, setPrompt] = useState("");
+  const [pendingGenerate, setPendingGenerate] = useState(false);
+  const [generateError, setGenerateError] = useState(null);
 
   const form = useForm({
     resolver: zodResolver(CreateTaskSchema),
   });
 
   function onSubmit(values) {
-    console.log(values);
-
-    let dueDate = values.dueDate.toISOString();
-    mutate({ ...values, dueDate }); //override the dueDate property with the formatted ISO string
+    const dueDate = values.dueDate.toISOString();
+    mutate({ ...values, dueDate });
     form.reset();
-    // queryClient.invalidateQueries({ 
-    //   queryKey: ["fetchTasks"],
-    //   refetchType: "all",
-    //   exact: false
-    // }); // invalidate queries in hook
-    if(onSuccess){
-      onSuccess();
-    }
+    if (onSuccess) onSuccess();
   }
 
   useEffect(() => {
-    if(isSuccess){
-      toast({
-        title: "New task created successfully",
-      })
-    }
-  }, [isSuccess])
+    if (isSuccess) toast({ title: "New task created successfully" });
+  }, [isSuccess]);
 
   useEffect(() => {
-    if(isError){
-      toast({
-        title: "Uh no! Your task creation request failed",
-        description: "Please try again",
-        variant: "destructive"
-      })
+    if (isError) toast({ title: "Task creation failed", description: "Please try again", variant: "destructive" });
+  }, [isError]);
+
+  const hasFilledFields = () => {
+    const v = form.getValues();
+    return !!(v.title || v.description || v.priority || v.status || v.dueDate);
+  };
+
+  const runGenerate = () => {
+    if (!prompt.trim()) return;
+    setGenerateError(null);
+    setPendingGenerate(false);
+
+    generate({ projectId, prompt }, {
+      onSuccess: (data) => {
+        const d = data.data;
+        if (d.title)       form.setValue("title", d.title,             { shouldValidate: true });
+        if (d.description) form.setValue("description", d.description, { shouldValidate: true });
+        if (d.priority)    form.setValue("priority", d.priority,       { shouldValidate: true });
+        if (d.status)      form.setValue("status", d.status,           { shouldValidate: true });
+        if (d.dueDate) {
+          const parsed = new Date(d.dueDate);
+          if (!isNaN(parsed)) form.setValue("dueDate", parsed, { shouldValidate: true });
+        }
+      },
+      onError: (err) => {
+        setGenerateError(
+          err?.response?.data?.message || "Failed to generate task. Please try again."
+        );
+      },
+    });
+  };
+
+  const handleGenerateClick = () => {
+    if (!prompt.trim()) return;
+    if (hasFilledFields()) {
+      setPendingGenerate(true);
+    } else {
+      runGenerate();
     }
-  }, [isError])
-
-
+  };
 
   return (
     <div>
       <h2 className="text-lg font-semibold tracking-tight">Create Task</h2>
-      <p className="text-sm text-muted-foreground mb-4">Fill in the details to create a new task</p>
+      <p className="text-sm text-muted-foreground mb-4">Fill in the details below, or describe the task to generate.</p>
+
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)}>
+
+          {/* Title */}
           <div className="py-2">
             <FormField
               control={form.control}
@@ -96,30 +119,23 @@ export function CreateTaskForm({onSuccess}) {
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
-                    <Input
-                      {...field}
-                      placeholder="Title"
-                      value={field.value ?? ""}
-                    />
+                    <Input {...field} placeholder="Title" value={field.value ?? ""} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
-            {/* <Input type="text" placeholder="Task Title" /> */}
           </div>
+
+          {/* Status + Priority */}
           <div className="flex flex-row justify-between py-2">
             <div className="mr-2 w-full">
-              {/* <Input {...field} placeholder="Status" value={field.value ?? "" } /> */}
               <FormField
                 control={form.control}
                 name="status"
                 render={({ field }) => (
                   <FormItem>
-                    <Select
-                      onValueChange={field.onChange}
-                      defaultValue={field.value}
-                    >
+                    <Select onValueChange={field.onChange} value={field.value ?? ""}>
                       <FormControl>
                         <SelectTrigger>
                           <SelectValue placeholder="Status" />
@@ -143,10 +159,7 @@ export function CreateTaskForm({onSuccess}) {
                 name="priority"
                 render={({ field }) => (
                   <FormItem>
-                    <Select
-                      onValueChange={field.onChange}
-                      defaultValue={field.value}
-                    >
+                    <Select onValueChange={field.onChange} value={field.value ?? ""}>
                       <FormControl>
                         <SelectTrigger>
                           <SelectValue placeholder="Priority" />
@@ -166,6 +179,8 @@ export function CreateTaskForm({onSuccess}) {
               />
             </div>
           </div>
+
+          {/* Due date */}
           <div className="py-2">
             <FormField
               control={form.control}
@@ -177,12 +192,7 @@ export function CreateTaskForm({onSuccess}) {
                       <FormControl>
                         <Button
                           variant="outline"
-                        //   data-empty={!date}
-                          className={cn(
-                            "w-full justify-start text-left font-normal",
-                            !field.value && "text-muted-foreground"
-                            // !date && "text-muted-foreground"
-                          )}
+                          className={cn("w-full justify-start text-left font-normal", !field.value && "text-muted-foreground")}
                         >
                           <CalendarIcon />
                           {field.value ? format(field.value, "PPP") : <span>Due date</span>}
@@ -194,36 +204,102 @@ export function CreateTaskForm({onSuccess}) {
                         mode="single"
                         selected={field.value}
                         onSelect={field.onChange}
-                        disabled = {(date) => date < new Date()}
+                        disabled={(date) => date < new Date()}
                         initialFocus
                       />
                     </PopoverContent>
                   </Popover>
-
                   <FormMessage />
                 </FormItem>
               )}
             />
           </div>
+
+          {/* Description */}
           <div className="py-2">
-            {/* <Textarea placeholder="Task description" /> */}
             <FormField
               control={form.control}
               name="description"
               render={({ field }) => (
                 <FormItem>
-                    <FormControl>
-                      <Textarea placeholder="Task description" 
-                        {...field} />
-                    </FormControl>
+                  <FormControl>
+                    <Textarea placeholder="Task description" {...field} />
+                  </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
           </div>
-          <div className="py-2 flex justify-end">
-            <Button type="submit">Create Task</Button>
+
+          {/* Divider */}
+          <div className="flex items-center gap-3 my-3">
+            <div className="flex-1 h-px bg-border" />
+            <span className="text-xs text-muted-foreground">or describe to generate</span>
+            <div className="flex-1 h-px bg-border" />
           </div>
+
+          {/* AI prompt */}
+          <div className="flex flex-col gap-2">
+            <Textarea
+              placeholder="e.g. Set up CI/CD pipeline for the staging environment…"
+              value={prompt}
+              onChange={(e) => { setPrompt(e.target.value); setPendingGenerate(false); setGenerateError(null); }}
+              rows={2}
+              className="resize-none text-sm"
+            />
+
+            {/* Overwrite warning */}
+            {pendingGenerate && (
+              <div className="flex items-start gap-2 px-3 py-2 rounded-md bg-amber-500/10 border border-amber-500/30 text-amber-300 text-xs">
+                <AlertTriangle className="h-3.5 w-3.5 shrink-0 mt-0.5" />
+                <div className="flex-1">
+                  <p className="mb-1.5">This will overwrite your filled fields.</p>
+                  <div className="flex gap-2">
+                    <button
+                      type="button"
+                      onClick={runGenerate}
+                      className="px-2.5 py-1 rounded border border-amber-500/40 hover:bg-amber-500/20 transition-colors"
+                    >
+                      Continue anyway
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setPendingGenerate(false)}
+                      className="px-2.5 py-1 rounded hover:bg-muted transition-colors text-muted-foreground"
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Generate error */}
+            {generateError && (
+              <p className="text-xs text-red-400">{generateError}</p>
+            )}
+
+            {/* Generate button */}
+            {!pendingGenerate && (
+              <button
+                type="button"
+                onClick={handleGenerateClick}
+                disabled={isGenerating || !prompt.trim()}
+                className="self-end flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-violet-500/30 bg-violet-600/10 text-violet-300 text-sm hover:bg-violet-600/20 hover:border-violet-500/50 disabled:opacity-40 disabled:cursor-not-allowed transition-all duration-150"
+              >
+                <Sparkles className={cn("h-3.5 w-3.5", isGenerating && "animate-pulse")} />
+                {isGenerating ? "Generating…" : "✨ Generate"}
+              </button>
+            )}
+          </div>
+
+          {/* Submit */}
+          <div className="py-2 mt-2 flex justify-end">
+            <Button type="submit" disabled={isPending}>
+              {isPending ? "Creating…" : "Create Task"}
+            </Button>
+          </div>
+
         </form>
       </Form>
       <Toaster />

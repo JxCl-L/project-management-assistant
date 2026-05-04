@@ -26,9 +26,10 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import { Toaster } from "@/components/ui/toaster";
 import { useToast } from "@/hooks/use-toast.js";
+import { Loader2 } from "lucide-react";
 
 export default function Login() {
-  const { mutate, isError, isSuccess } = useLogin();
+  const { mutate, isError, isSuccess, isPending } = useLogin();
   const [login, setLogin] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -93,6 +94,7 @@ export default function Login() {
                           {...field}
                           placeholder="Email"
                           value={field.value ?? ""}
+                          disabled={isPending}
                         />
                       </FormControl>
                       <FormMessage />
@@ -110,6 +112,7 @@ export default function Login() {
                           placeholder="Password"
                           {...field}
                           value={field.value ?? ""}
+                          disabled={isPending}
                         />
                       </FormControl>
                       <FormMessage />
@@ -124,7 +127,10 @@ export default function Login() {
                     Signup Here
                   </Link>
                 </p>
-                <Button type="submit">Login</Button>
+                <Button type="submit" disabled={isPending}>
+                  {isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                  {isPending ? "Logging in…" : "Login"}
+                </Button>
               </CardFooter>
             </form>
           </Form>

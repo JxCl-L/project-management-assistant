@@ -20,13 +20,7 @@ export function CreateTaskDialog({open, onOpenChange}) {
       </DialogTrigger>
 
       <DialogContent className="sm:max-w-[425px]">
-          {/* <DialogHeader className="text-left">
-            <DialogTitle>Create New Task</DialogTitle>
-            <DialogDescription>
-              Fill in the details to create a new task
-            </DialogDescription>
-          </DialogHeader> */}
-
+          <DialogTitle className="sr-only">Create Task</DialogTitle>
           <CreateTaskForm onSuccess={() => onOpenChange(false)}/>
       </DialogContent>
     </Dialog>
