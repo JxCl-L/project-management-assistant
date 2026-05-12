@@ -1,27 +1,50 @@
 # Fullstack Node — Backend
 
-A RESTful Express.js backend for a collaborative project & task management system. Users can create projects, manage team members with role-based access control, and create/track tasks with priority, status, and due dates.
+A RESTful Express.js backend for a collaborative project & task management system with real-time collaboration and an AI assistant powered by RAG (Retrieval-Augmented Generation). Users can create projects, manage team members with role-based access control, create and track tasks, write rich task content, and chat with an AI assistant that answers questions grounded in actual task data.
 
 ## Tech Stack
 
-| Layer      | Technology                              |
-|------------|-----------------------------------------|
-| Runtime    | Node.js                                 |
-| Framework  | Express.js v4.21                        |
-| Database   | MongoDB + Mongoose v8.8                 |
-| Auth       | JWT (Bearer token)                      |
-| Validation | express-validator                       |
-| Password   | bcrypt                                  |
-| Logging    | Winston + Morgan + express-winston      |
-| API Docs   | Swagger (swagger-jsdoc + swagger-ui-express) |
-| Config     | dotenv (per-environment files)          |
+| Layer         | Technology                                          |
+|---------------|-----------------------------------------------------|
+| Runtime       | Node.js                                             |
+| Framework     | Express.js v4.21                                    |
+| Database      | MongoDB + Mongoose v8.8                             |
+| Vector Search | MongoDB Atlas Vector Search                         |
+| Auth          | JWT (Bearer token)                                  |
+| Validation    | express-validator                                   |
+| Password      | bcrypt                                              |
+| Real-time     | Socket.IO                                           |
+| AI Chat       | DeepSeek (primary) → GPT-4o-mini (fallback)         |
+| Embeddings    | OpenAI `text-embedding-3-small` (1536 dims)         |
+| Logging       | Winston + Morgan + express-winston                  |
+| API Docs      | Swagger (swagger-jsdoc + swagger-ui-express)        |
+| Config        | dotenv (per-environment files)                      |
+
+## Features
+
+### Core
+- Project and task management with status, priority, and due dates
+- Role-based access control (manager / editor / viewer)
+- Rich task content editing (TipTap JSON format)
+- Real-time collaborative editing via Socket.IO
+
+### AI & RAG
+- **Project AI chat** — conversational assistant scoped to a single project
+- **Two retrieval strategies:**
+  - `chunked` (default) — content split into 150-word overlapping chunks, each embedded independently; best for pinpointing specific facts
+  - `single` — one embedding per task (full title + description + content); best for whole-task relevance
+- **Automatic embedding pipeline** — content is embedded after each save (debounced 15s); `embeddingStale` flag triggers re-embed on next page visit after a server restart
+- **Project summary** — dedicated endpoint generating structured summaries with pre-computed stats (completion %, overdue count, high-priority pending)
+- **Debug mode** — `?debug=true` on the chat endpoint returns retrieved chunks and similarity scores (for development/testing)
 
 ## Getting Started
 
 ### Prerequisites
 
 - Node.js
-- A MongoDB Atlas account (free tier is enough) — [Sign up here](https://www.mongodb.com/atlas)
+- MongoDB Atlas account (free M0 tier works, but note: M0 supports max 3 Atlas Search indexes across the cluster)
+- OpenAI API key (for embeddings and GPT-4o-mini fallback)
+- DeepSeek API key (primary chat model)
 
 ### Installation
 
@@ -40,32 +63,91 @@ A RESTful Express.js backend for a collaborative project & task management syste
    ```bash
    cp .env.development.example .env.development
    ```
-   Then open `.env.development` and fill in your own values:
-   - `DATABASE_URL` — your MongoDB Atlas connection string
-   - `DATABASE_NAME` — name for your database (e.g. `fullstackTasks`)
-   - `JWT_SECRET` — any long random string
+   Open `.env.development` and fill in your values:
+
+   | Variable | Description |
+   |---|---|
+   | `DATABASE_URL` | MongoDB Atlas connection string |
+   | `DATABASE_NAME` | Database name (e.g. `fullstackTasks`) |
+   | `JWT_SECRET` | Any long random string |
+   | `OPENAI_API_KEY` | OpenAI API key — used for embeddings and GPT-4o-mini fallback |
+   | `DEEPSEEK_API_KEY` | DeepSeek API key — primary chat model |
+   | `CHUNK_SIZE` | Words per chunk for RAG (default: `150`) |
+   | `CHUNK_OVERLAP` | Overlap words between chunks (default: `25`) |
+   | `EMBEDDING_DEBOUNCE_MS` | Delay before re-embedding after a content save (default: `15000`) |
 
 4. Seed the database with demo data
    ```bash
    npm run seed
    ```
 
-5. Start the development server
+5. Create the Atlas Vector Search indexes on your cluster in the Atlas UI (Atlas Search tab):
+
+   **Index name:** `taskChunkEmbedding_vector_index` — collection: `taskchunkembeddings`
+
+   **Index name:** `taskContent_vector_index` — collection: `taskcontents`
+
+   Use this definition for both:
+   ```json
+   {
+     "fields": [
+       { "type": "vector", "path": "embedding", "numDimensions": 1536, "similarity": "cosine" },
+       { "type": "filter", "path": "project" }
+     ]
+   }
+   ```
+   > **M0 free tier limit:** max 3 search indexes per cluster. If you hit the limit, prioritise `taskChunkEmbedding_vector_index` — it powers the default `chunked` strategy.
+
+6. Start the development server
    ```bash
    npm run dev
    ```
 
 The server will run on `http://localhost:3001`
 
+## NPM Scripts
+
+| Script | Description |
+|---|---|
+| `npm run dev` | Start dev server using `fullstackTasks` database |
+| `npm run dev:rag-test` | Start dev server using `fullstackTasks_rag_test` database (isolated RAG testing) |
+| `npm run seed` | Seed `fullstackTasks` with demo users, projects, and tasks |
+| `npm run start` | Start production server |
+
+## RAG Test Dataset
+
+A dedicated seed and backfill script are provided for testing the AI/RAG feature in isolation. They target a separate database (`fullstackTasks_rag_test`) so dev data is never affected.
+
+```bash
+# 1. Seed the RAG test database
+#    Creates 1 project ("Project Atlas") with 20 tasks,
+#    each containing ~500 words of realistic engineering content
+#    with embedded facts (dates, names, metrics) for retrieval testing.
+node scripts/seed-rag-test.js
+
+# 2. Generate embeddings for all seeded tasks
+#    Processes all TaskContent docs with embeddingStale: true,
+#    generates both chunked (150w/25 overlap) and single embeddings.
+node scripts/backfill-embeddings-rag-test.js
+
+# 3. Create the Atlas Vector Search index for fullstackTasks_rag_test
+#    (same definition as above, applied to the rag_test database)
+
+# 4. Run the server against the RAG test database
+npm run dev:rag-test
+```
+
+Test queries covering date facts, numbers, attribution, multi-chunk retrieval, strategy comparison, and edge cases are in `src/ai/chat/chat-rag-test.http`. Append `?debug=true` to any chat request to see retrieved chunks and similarity scores in the response.
+
 ## Demo Accounts
 
 After seeding, you can log in with any of these accounts (all use password `Password123#`):
 
-| Name    | Email                 | Role in Project A |
-|---------|-----------------------|-------------------|
-| Alice   | alice@example.com     | Manager           |
-| Bob     | bob@example.com       | Editor            |
-| Charlie | charlie@example.com   | Viewer            |
+| Name    | Email               | Role in Project A |
+|---------|---------------------|-------------------|
+| Alice   | alice@example.com   | Manager           |
+| Bob     | bob@example.com     | Editor            |
+| Charlie | charlie@example.com | Viewer            |
 
 ## API Documentation
 
@@ -78,20 +160,34 @@ http://localhost:3001/api-docs
 
 ```
 src/
+├── ai/
+│   ├── chat/                         # AI chat endpoint
+│   │   ├── chat.provider.js          # RAG retrieval + LLM call
+│   │   ├── chat.router.js
+│   │   ├── chat.validator.js
+│   │   └── chat-rag-test.http        # Test queries with debug mode
+│   ├── aiClient.js                   # DeepSeek + OpenAI clients
+│   ├── chunker.js                    # Word-based sliding window chunker
+│   ├── embeddingDebouncer.js         # Debounces re-embedding on content saves
+│   └── generateTaskEmbeddings.js    # Generates chunked + single embeddings
 ├── users/
 ├── projects/
 ├── projectMembers/
 ├── tasks/
-├── taskContents/
+├── taskContent/
+│   ├── taskContent.schema.js         # Stores TipTap content + single embedding
+│   └── taskChunkEmbedding.schema.js  # Stores per-chunk embeddings for vector search
 └── settings/
 scripts/
-└── seed.js
+├── seed.js                           # Seeds fullstackTasks (dev)
+├── seed-rag-test.js                  # Seeds fullstackTasks_rag_test (RAG testing)
+└── backfill-embeddings-rag-test.js   # Generates embeddings for RAG test dataset
 ```
 
 ## Role-Based Access
 
-| Role    | View | Edit | Manage Members |
-|---------|------|------|----------------|
-| Manager | ✅   | ✅   | ✅             |
-| Editor  | ✅   | ✅   | ❌             |
-| Viewer  | ✅   | ❌   | ❌             |
+| Role    | View | Edit | Manage Members | AI Chat |
+|---------|------|------|----------------|---------|
+| Manager | ✅   | ✅   | ✅             | ✅      |
+| Editor  | ✅   | ✅   | ❌             | ✅      |
+| Viewer  | ✅   | ❌   | ❌             | ✅      |

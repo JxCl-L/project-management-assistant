@@ -220,7 +220,5 @@ $RECYCLE.BIN/
 
 # End of https://www.toptal.com/developers/gitignore/api/node,linux,windows,macos
 
-# Local seed scripts (contain test data / not for production)
-scripts/seed-rag-test.js
-scripts/backfill-embeddings-rag-test.js
+# End of custom rules
 src/ai/chat/http-client.private.env.json
