@@ -5,6 +5,8 @@ const { matchedData } = require("express-validator");
 const { StatusCodes } = require("http-status-codes");
 const errorLogger = require("../../helpers/errorLogger.helper.js");
 const { getIO } = require("../../socket/io.js");
+const { scheduleEmbedding } = require("../../ai/embeddingDebouncer.js");
+const { generateTaskEmbeddings } = require("../../ai/generateTaskEmbeddings.js");
 
 async function updateTaskContentProvider(req, res) {
   const validatedData = matchedData(req);
@@ -28,13 +30,26 @@ async function updateTaskContentProvider(req, res) {
       });
     }
 
-    // update content fields
+    // update content fields — mark embedding as stale immediately
     taskContent.content = content;
     taskContent.plainText = plainText;
     taskContent.lastEditedBy = req.user.sub;
     taskContent.lastEditedAt = new Date();
-    
+    taskContent.embeddingStale = true;
+
     await taskContent.save();
+
+    // defer embedding until content stops changing — cancels and resets on each new save
+    if (plainText && plainText.trim().length > 0) {
+      const params = {
+        taskContentId: taskContent._id,
+        taskId,
+        projectId,
+        taskTitle: task.title,
+        taskDescription: task.description,
+      };
+      scheduleEmbedding(taskId, () => generateTaskEmbeddings(params));
+    }
 
     // broadcast task:content-updated to all clients in the task room
     const user = await User.findById(req.user.sub).select("firstName lastName");
@@ -49,7 +64,8 @@ async function updateTaskContentProvider(req, res) {
       },
     });
 
-    return res.status(StatusCodes.OK).json(taskContent);
+    const { embedding: _omit, ...taskContentResponse } = taskContent.toObject();
+    return res.status(StatusCodes.OK).json(taskContentResponse);
   } catch (error) {
     errorLogger("Error while updating task content", req, error);
     return res

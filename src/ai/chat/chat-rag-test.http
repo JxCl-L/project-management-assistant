@@ -1,0 +1,1212 @@
+@baseUrl = http://localhost:3001
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2YTAxYWZkNTY3MmU2MTVhNjgxMjc5NzMiLCJlbWFpbCI6ImFsaWNlQGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTAwMjYyLCJleHAiOjE3Nzg1ODY2NjJ9.rqeUXB5Gjv_IJHy9xJI5fWFrOmN2Q9EzDiVtjQKh2_Q
+@projectId = 6a01afd6672e615a68127977
+
+# ============================================================
+# RAG Test — Project Atlas (fullstackTasks_rag_test)
+# ============================================================
+# Setup:
+#   1. npm run dev:rag-test
+#   2. Login below → copy token into @token above
+#   3. GET /projects → copy Project Atlas _id into @projectId above
+#   4. Run queries — ?debug=true shows retrieved chunks + scores
+# ============================================================
+
+# ── 1. Login ─────────────────────────────────────────────────
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "alice@example.com",
+  "password": "Password123#"
+}
+
+###
+
+# ── 2. Get projects (find Project Atlas _id) ─────────────────
+GET {{baseUrl}}/projects
+Authorization: Bearer {{token}}
+
+###
+
+# ============================================================
+# CATEGORY G — Gap coverage (added after gap analysis)
+# ============================================================
+
+# G1. AMBIGUOUS QUERY — semantically matches multiple tasks
+# (search latency, CI/CD pipeline, load testing all have "performance" content)
+# Watch: which task wins? Is score gap meaningful (>0.10) or are top 3 scores clustered?
+POST {{baseUrl}}/projects/{{projectId}}/chat?debug=true
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "messages": [{ "role": "user", "content": "What performance improvements were made this quarter?" }]
+}
+[RAG] {
+  "query": "What performance improvements were made this quarter?",
+  "reply": "Based on the context, the key performance improvement this quarter was the **Search Index Performance Optimization**:\n\n- **Search latency (P95) was reduced from 850ms to 115ms**, down from a regression of 850ms after the January deploy. (This is a reduction to nearly the original 120ms baseline.)\n- **Average database load dropped by 31%** after implementing index fixes.\n- Cached queries were improved to **12ms**.",
+  "debug": {
+    "strategy": "chunked",
+    "retrieved": [
+      {
+        "task": "Search Index Performance Optimization",
+        "chunkIndex": 2,
+        "score": 0.7286679744720459,
+        "preview": "to 12ms for cached queries and brought average database load down by 31%. Action items from the fix: (1) add..."
+      },
+      {
+        "task": "Q2 Stakeholder Demo Preparation",
+        "chunkIndex": 2,
+        "score": 0.7238911390304565,
+        "preview": "— 4 minutes; (6) Q2 roadmap — 8 minutes; (7) Questions — 20 minutes. Key metrics to highlight in the..."
+      },
+      {
+        "task": "Q1 Sprint Planning & Roadmap Review",
+        "chunkIndex": 2,
+        "score": 0.7180660963058472,
+        "preview": "new tooling is in place. Three high-priority carryovers from Q4 2025 were reviewed: the auth token expiry bug (critical, assigned..."
+      },
+      {
+        "task": "Q1 Sprint Planning & Roadmap Review",
+        "chunkIndex": 1,
+        "score": 0.7125279903411865,
+        "preview": "Thursday at 2:00 PM PST. Key risks identified: the service registry depends on the PostgreSQL schema migration being completed first,..."
+      },
+      {
+        "task": "Q2 Stakeholder Demo Preparation",
+        "chunkIndex": 1,
+        "score": 0.7101762890815735,
+        "preview": "deck (Alice); March 28 — first internal rehearsal with Bob and Charlie (1 hour); April 1 — incorporate feedback and..."
+      }
+    ]
+  }
+}
+
+###
+
+# G2. CROSS-TASK SYNTHESIS — answer requires facts from 2 different tasks
+# (rate limiting task + load testing task both have Bob + February)
+# Watch: are chunks from BOTH tasks retrieved? Does AI combine them correctly?
+POST {{baseUrl}}/projects/{{projectId}}/chat?debug=true
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "messages": [{ "role": "user", "content": "What did Bob Chen work on in February?" }]
+}
+[RAG] {
+  "query": "What did Bob Chen work on in February?",
+  "reply": "Based on the context, Bob Chen worked on the following in February:\n\n1. **Auth Token Expiry Bug — Investigation & Fix** (completed, due: Feb 5, 2026) — High priority task listed among completed tasks.\n2. **New Engineer Onboarding — Marcus Chen** — Bob updated the `CONTRIBUTING.md` to add the minimum Docker Desktop version requirement after Marcus's laptop setup issue on February 1. Bob also gave feedback on Marcus's first code review (PR #210).\n3. **Code Review Standards & Team Guidelines** (completed, due: Feb 1, 2026) — A normal priority, team-wide policy task.\n4. **GitHub Actions CI/CD Pipeline Upgrade** (completed, due: Feb 28, 2026) — High priority task, migrating from Jenkins to GitHub Actions.\n5. **Load Testing Report — February 2026** (completed, due: Feb 20, 2026) — Normal priority task.",
+  "debug": {
+    "strategy": "chunked",
+    "retrieved": [
+      {
+        "task": "New Engineer Onboarding — Marcus Chen",
+        "chunkIndex": 2,
+        "score": 0.7478952407836914,
+        "preview": "bug fixes; weeks 3–4, take ownership of the design system checkbox and modal components (target completion February 28); by March..."
+      },
+      {
+        "task": "New Engineer Onboarding — Marcus Chen",
+        "chunkIndex": 1,
+        "score": 0.7401235103607178,
+        "preview": "Alice. Dev environment setup was completed by 1:15 PM on February 1. Marcus ran into one issue: the local Docker..."
+      },
+      {
+        "task": "Bug Triage Session — March 3, 2026",
+        "chunkIndex": 0,
+        "score": 0.7176864743232727,
+        "preview": "The weekly bug triage session was held on March 3, 2026 at 10:00 AM PST. Attendees: Charlie Li (facilitator), Alice..."
+      },
+      {
+        "task": "New Engineer Onboarding — Marcus Chen",
+        "chunkIndex": 0,
+        "score": 0.7167626619338989,
+        "preview": "Marcus Chen joined the Atlas team as a full-stack engineer on February 1, 2026, reporting to Alice Wang. Marcus was..."
+      },
+      {
+        "task": "Bug Triage Session — March 3, 2026",
+        "chunkIndex": 1,
+        "score": 0.7122477293014526,
+        "preview": "type instead of returning 200 (reported March 2). Assigned to Bob Chen, target fix March 5. Normal priority issues: 11..."
+      }
+    ]
+  }
+}
+
+
+
+###
+
+# G3. CHUNK BOUNDARY — answer straddles the split between chunk 1 and chunk 2
+# The onboarding task's day-1 schedule is near the end of chunk 1 / start of chunk 2
+# Watch: does overlap rescue the answer, or is it split across chunks with neither complete?
+POST {{baseUrl}}/projects/{{projectId}}/chat?debug=true
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "messages": [{ "role": "user", "content": "What was Marcus Chen's schedule on his first day and what issue did he run into with Docker?" }]
+}
+[RAG] {
+  "query": "What was Marcus Chen's schedule on his first day and what issue did he run into with Docker?",
+  "reply": "Based on the context, Marcus Chen's Day 1 schedule (February 1, 2026) was:\n\n- **9:00 AM** — Welcome call with Alice and Bob\n- **10:00 AM** — HR orientation (30 min)\n- **11:00 AM** — Dev environment setup session with Bob (estimated 2 hours)\n- **2:00 PM** — Codebase walkthrough with Charlie\n- **4:00 PM** — End-of-day check-in with Alice\n\n**Docker issue:** The local Docker Compose setup for the test database required **Docker Desktop 4.28+**, but Marcus's laptop shipped with **4.26**. Bob updated the `CONTRIBUTING.md` to add the minimum Docker Desktop version requirement.",
+  "debug": {
+    "strategy": "chunked",
+    "retrieved": [
+      {
+        "task": "New Engineer Onboarding — Marcus Chen",
+        "chunkIndex": 1,
+        "score": 0.8096644878387451,
+        "preview": "Alice. Dev environment setup was completed by 1:15 PM on February 1. Marcus ran into one issue: the local Docker..."
+      },
+      {
+        "task": "New Engineer Onboarding — Marcus Chen",
+        "chunkIndex": 0,
+        "score": 0.797687828540802,
+        "preview": "Marcus Chen joined the Atlas team as a full-stack engineer on February 1, 2026, reporting to Alice Wang. Marcus was..."
+      },
+      {
+        "task": "New Engineer Onboarding — Marcus Chen",
+        "chunkIndex": 2,
+        "score": 0.7900371551513672,
+        "preview": "bug fixes; weeks 3–4, take ownership of the design system checkbox and modal components (target completion February 28); by March..."
+      },
+      {
+        "task": "Bug Triage Session — March 3, 2026",
+        "chunkIndex": 0,
+        "score": 0.6897559762001038,
+        "preview": "The weekly bug triage session was held on March 3, 2026 at 10:00 AM PST. Attendees: Charlie Li (facilitator), Alice..."
+      },
+      {
+        "task": "Bug Triage Session — March 3, 2026",
+        "chunkIndex": 1,
+        "score": 0.6706446409225464,
+        "preview": "type instead of returning 200 (reported March 2). Assigned to Bob Chen, target fix March 5. Normal priority issues: 11..."
+      }
+    ]
+  }
+}
+###
+
+# G4. FALSE POSITIVE DETECTION — answer exists in task description (always in overview)
+# Task description says "2 hours 40 minutes" — AI can answer from overview WITHOUT RAG
+# Watch: if wrong chunk is retrieved but AI answers correctly, that's a false positive
+# Compare _debug chunks — are they actually relevant, or did AI answer from overview?
+POST {{baseUrl}}/projects/{{projectId}}/chat?debug=true
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "messages": [{ "role": "user", "content": "How long was the January 15 outage?" }]
+}
+
+[RAG] {
+  "query": "How long was the January 15 outage?",
+  "reply": "The total user-visible downtime was **2 hours and 40 minutes** (10:12 AM – 12:52 PM PST), with an additional 90 minutes of degraded performance due to cache warming.",
+  "debug": {
+    "strategy": "chunked",
+    "retrieved": [
+      {
+        "task": "Post-mortem: January 15, 2026 Production Outage",
+        "chunkIndex": 0,
+        "score": 0.7803045511245728,
+        "preview": "On January 15, 2026, the Atlas API was unavailable for 2 hours and 40 minutes (10:12 AM – 12:52 PM..."
+      },
+      {
+        "task": "Post-mortem: January 15, 2026 Production Outage",
+        "chunkIndex": 2,
+        "score": 0.7764731645584106,
+        "preview": "12:52 PM PST, P95 latency returned to baseline (< 200ms) as caches warmed. The metrics collector fix (PR #181) was..."
+      },
+      {
+        "task": "Post-mortem: January 15, 2026 Production Outage",
+        "chunkIndex": 1,
+        "score": 0.7720688581466675,
+        "preview": "refactor in PR #178, the file `src/config/database.js` was renamed to `src/config/db.js`. The import in `src/app.js` was updated, but the import..."
+      },
+      {
+        "task": "Post-mortem: January 15, 2026 Production Outage",
+        "chunkIndex": 3,
+        "score": 0.7635073065757751,
+        "preview": "pipeline for all entry point files (done January 16, PR #182); (2) Bob — add the metrics collector to the..."
+      },
+      {
+        "task": "Auth Token Expiry Bug — Investigation & Fix",
+        "chunkIndex": 0,
+        "score": 0.6886340975761414,
+        "preview": "The auth token expiry bug was first reported on January 15, 2026 at 3:22 PM PST by a user on..."
+      }
+    ]
+  }
+}
+
+###
+
+# G5. STRATEGY COMPARISON 2 — multi-fact question (chunked vs single)
+# chunked
+POST {{baseUrl}}/projects/{{projectId}}/chat?strategy=chunked&debug=true
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "messages": [{ "role": "user", "content": "What were the load test results and what bottlenecks were found?" }]
+}
+
+[RAG] {
+  "query": "What were the load test results and what bottlenecks were found?",
+  "reply": "Based on the **Load Testing Report — February 2026**, here are the results and bottlenecks:\n\n**Test Results:**\n- **Steady load (200 users):** P50 = 45ms, P95 = 180ms, P99 = 320ms. Throughput: 1,240 req/s. Error rate: 0.02%. CPU within acceptable range.\n- **Ramp-up (500 users):** P50 = 88ms, P95 = 410ms, P99 = 780ms. Throughput: 2,890 req/s. Error rate: 0.08%. App server CPU peaked at 78%.\n- **Spike (800 users):** P99 reached 4,200ms and error rate spiked to 2.3% (HTTP 503). After auto-scaling launched a third server, P99 stabilized at 820ms.\n\n**Bottlenecks Identified:**\n1. **Search endpoint degradation**: `/api/search` degraded fastest—P95 reached 1,100ms at peak load.\n2. **Slow auto-scaling**: The auto-scaling group took 45 seconds to respond to the spike.\n3. **RDS connection pool exhaustion**: Max connections (100) were nearly fully utilized (97) during the spike.\n\n**Recommendations Implemented:**\n- Minimum app server count raised from 2 to 3 (done Feb 25).\n- RDS connection pool increased to 150 (done Feb 22).\n- ElastiCache for session storage scheduled for March 5.",
+  "debug": {
+    "strategy": "chunked",
+    "retrieved": [
+      {
+        "task": "Load Testing Report — February 2026",
+        "chunkIndex": 0,
+        "score": 0.7979376912117004,
+        "preview": "Load testing was conducted on February 12, 2026 against the staging environment (`staging.atlas.internal`), which mirrors production infrastructure (2x t3.large app..."
+      },
+      {
+        "task": "Load Testing Report — February 2026",
+        "chunkIndex": 1,
+        "score": 0.7965206503868103,
+        "preview": "P50 = 88ms, P95 = 410ms, P99 = 780ms. Throughput: 2,890 requests/second. Error rate: 0.08%. App server CPU peaked at..."
+      },
+      {
+        "task": "Load Testing Report — February 2026",
+        "chunkIndex": 2,
+        "score": 0.7814784646034241,
+        "preview": "to the spike — minimum instance count will be raised from 2 to 3 effective March 1; (3) RDS connection..."
+      },
+      {
+        "task": "Search Index Performance Optimization",
+        "chunkIndex": 2,
+        "score": 0.7121243476867676,
+        "preview": "to 12ms for cached queries and brought average database load down by 31%. Action items from the fix: (1) add..."
+      },
+      {
+        "task": "Search Index Performance Optimization",
+        "chunkIndex": 0,
+        "score": 0.7020645141601562,
+        "preview": "A search latency regression was detected on January 17, 2026 via the Grafana dashboard. The P95 response time for the..."
+      }
+    ]
+  }
+}
+
+###
+
+# G5. STRATEGY COMPARISON 2 — same query, single
+POST {{baseUrl}}/projects/{{projectId}}/chat?strategy=single&debug=true
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "messages": [{ "role": "user", "content": "What were the load test results and what bottlenecks were found?" }]
+}
+
+[RAG] {
+  "query": "What were the load test results and what bottlenecks were found?",
+  "reply": "Based on the load test report, here are the results and bottlenecks:\n\n**Test Results:**\n- **Steady load (200 users):** P50 = 45ms, P95 = 180ms, P99 = 320ms | Error rate: 0.02% | All metrics within acceptable range.\n- **Ramp-up (500 users):** P50 = 88ms, P95 = 410ms, P99 = 780ms | Error rate: 0.08% | App server CPU peaked at 78%, RDS CPU at 52%.\n- **Spike (800 users):** P99 spiked to 4,200ms and error rate hit 2.3% (HTTP 503s) in the first 30 seconds. Metrics stabilized after auto-scaling launched a third server, with P99 returning to 820ms.\n\n**Bottlenecks Identified:**\n1. **Search endpoint** — degraded first under load (P95 reached 1,100ms at peak). The Redis query cache (added February 3) partially addresses this.\n2. **Auto-scaling group** — took 45 seconds to respond to the spike. Minimum instance count raised from 2 to 3 (effective March 1).\n3. **RDS connection pool exhaustion** — max_connections (100) peaked at 97 during the spike. Pool size increased to 150 (done February 22).\n\n**Implemented fixes:** raised minimum app servers to 3, increased connection pool to 150, and ElastiCache session storage is scheduled for March 5. Next load test is planned for April 15, 2026.",
+  "debug": {
+    "strategy": "single",
+    "retrieved": [
+      {
+        "task": "Load Testing Report — February 2026",
+        "score": 0.7920607328414917,
+        "preview": "Load testing was conducted on February 12, 2026 against the staging environment (`staging.atlas.internal`), which mirrors production infrastructure (2x t3.large app..."
+      },
+      {
+        "task": "Search Index Performance Optimization",
+        "score": 0.7091730833053589,
+        "preview": "A search latency regression was detected on January 17, 2026 via the Grafana dashboard. The P95 response time for the..."
+      },
+      {
+        "task": "Post-mortem: January 15, 2026 Production Outage",
+        "score": 0.6844577193260193,
+        "preview": "On January 15, 2026, the Atlas API was unavailable for 2 hours and 40 minutes (10:12 AM – 12:52 PM..."
+      }
+    ]
+  }
+}
+
+###
+
+# ============================================================
+# CATEGORY A — Specific date facts
+# These facts only exist in task content, NOT in title/description.
+# Good answer = correct date + correct task retrieved in _debug.
+# ============================================================
+
+# A1. Single specific date — outage start time
+POST {{baseUrl}}/projects/{{projectId}}/chat?debug=true
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "messages": [{ "role": "user", "content": "What time did the January 15 outage start and how long did it last?" }]
+}
+[RAG] {
+  "query": "What time did the January 15 outage start and how long did it last?",
+  "reply": "The January 15, 2026 outage started at **10:12 AM PST** and lasted **2 hours and 40 minutes** (API unavailable from 10:12 AM to 12:52 PM PST). Cache degradation extended the full recovery by an additional 90 minutes, with P95 latency returning to baseline at 12:52 PM.",
+  "debug": {
+    "strategy": "chunked",
+    "retrieved": [
+      {
+        "task": "Post-mortem: January 15, 2026 Production Outage",
+        "chunkIndex": 0,
+        "score": 0.7688411474227905,
+        "preview": "On January 15, 2026, the Atlas API was unavailable for 2 hours and 40 minutes (10:12 AM – 12:52 PM..."
+      },
+      {
+        "task": "Post-mortem: January 15, 2026 Production Outage",
+        "chunkIndex": 2,
+        "score": 0.7617915272712708,
+        "preview": "12:52 PM PST, P95 latency returned to baseline (< 200ms) as caches warmed. The metrics collector fix (PR #181) was..."
+      },
+      {
+        "task": "Post-mortem: January 15, 2026 Production Outage",
+        "chunkIndex": 1,
+        "score": 0.7577420473098755,
+        "preview": "refactor in PR #178, the file `src/config/database.js` was renamed to `src/config/db.js`. The import in `src/app.js` was updated, but the import..."
+      },
+      {
+        "task": "Post-mortem: January 15, 2026 Production Outage",
+        "chunkIndex": 3,
+        "score": 0.7464215755462646,
+        "preview": "pipeline for all entry point files (done January 16, PR #182); (2) Bob — add the metrics collector to the..."
+      },
+      {
+        "task": "Auth Token Expiry Bug — Investigation & Fix",
+        "chunkIndex": 0,
+        "score": 0.6826723217964172,
+        "preview": "The auth token expiry bug was first reported on January 15, 2026 at 3:22 PM PST by a user on..."
+      }
+    ]
+  }
+}
+###
+
+# A2. Specific meeting date in content
+POST {{baseUrl}}/projects/{{projectId}}/chat?debug=true
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "messages": [{ "role": "user", "content": "When was the API rate limiting design review meeting held?" }]
+}
+[RAG] {
+  "query": "When was the API rate limiting design review meeting held?",
+  "reply": "The API rate limiting design review meeting was held on **February 3, 2026** at 11:00 AM PST.",
+  "debug": {
+    "strategy": "chunked",
+    "retrieved": [
+      {
+        "task": "API Rate Limiting — Design & Implementation",
+        "chunkIndex": 0,
+        "score": 0.8720721006393433,
+        "preview": "A design review for the API rate limiting feature was held on February 3, 2026 at 11:00 AM PST. Attendees:..."
+      },
+      {
+        "task": "API Rate Limiting — Design & Implementation",
+        "chunkIndex": 2,
+        "score": 0.834867537021637,
+        "preview": "(February 20). Rollback plan: disable the flag. No schema migrations required. Open questions as of February 6: should rate limit..."
+      },
+      {
+        "task": "API Rate Limiting — Design & Implementation",
+        "chunkIndex": 1,
+        "score": 0.798582911491394,
+        "preview": "returns HTTP 429 with a Retry-After header set to the number of seconds until the window resets. A X-RateLimit-Limit and..."
+      },
+      {
+        "task": "Code Review Standards & Team Guidelines",
+        "chunkIndex": 0,
+        "score": 0.7523515224456787,
+        "preview": "A working group was formed on January 27, 2026 to define code review standards for the Atlas team. Members: Alice..."
+      },
+      {
+        "task": "Code Review Standards & Team Guidelines",
+        "chunkIndex": 1,
+        "score": 0.7423135042190552,
+        "preview": "changes to public API contracts. PR description template was agreed upon in the January 27 meeting: every PR must include..."
+      }
+    ]
+  }
+}
+
+###
+
+# A3. Specific go-live date
+POST {{baseUrl}}/projects/{{projectId}}/chat?debug=true
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "messages": [{ "role": "user", "content": "What date did the Stripe integration go live in production?" }]
+}
+
+[RAG] {
+  "query": "What date did the Stripe integration go live in production?",
+  "reply": "The Stripe integration went live in production on **March 15, 2026** at 10:00 AM PST.",
+  "debug": {
+    "strategy": "chunked",
+    "retrieved": [
+      {
+        "task": "Stripe Payment Integration — Developer Portal",
+        "chunkIndex": 1,
+        "score": 0.7976680994033813,
+        "preview": "`https://api.atlas.dev/webhooks/stripe`. The following events are handled: `checkout.session.completed` (provision subscription), `customer.subscription.updated` (plan change), `customer.subscription.deleted` (downgrade to free), `invoice.payment_failed` (send dunning email..."
+      },
+      {
+        "task": "Stripe Payment Integration — Developer Portal",
+        "chunkIndex": 0,
+        "score": 0.7827479839324951,
+        "preview": "The decision to use Stripe for subscription billing was confirmed in the product meeting on January 13, 2026. Stripe was..."
+      },
+      {
+        "task": "Stripe Payment Integration — Developer Portal",
+        "chunkIndex": 2,
+        "score": 0.7608840465545654,
+        "preview": "3 users. Fixed by adding idempotency checks using the Stripe `idempotency_key` header. Hotfix deployed March 16 at 2:00 PM PST...."
+      },
+      {
+        "task": "Production Deployment Runbook — Update",
+        "chunkIndex": 0,
+        "score": 0.7487847805023193,
+        "preview": "The production deployment runbook was last updated on October 15, 2025 and no longer reflected the current deploy process (GitHub..."
+      },
+      {
+        "task": "Production Deployment Runbook — Update",
+        "chunkIndex": 1,
+        "score": 0.7267045378684998,
+        "preview": "open critical or high Sentry issues related to the changes; (4) Notify `#deployments` Slack channel: 'Deploying vX.Y.Z at HH:MM PST..."
+      }
+    ]
+  }
+}
+
+###
+
+# A4. Date buried in content, different from task dueDate
+POST {{baseUrl}}/projects/{{projectId}}/chat?debug=true
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "messages": [{ "role": "user", "content": "When did Marcus Chen's first PR get merged?" }]
+}
+
+[RAG] {
+  "query": "When did Marcus Chen's first PR get merged?",
+  "reply": "Based on the provided information, Marcus Chen's first PR (PR #207) was merged on **February 6, 2026**.",
+  "debug": {
+    "strategy": "chunked",
+    "retrieved": [
+      {
+        "task": "New Engineer Onboarding — Marcus Chen",
+        "chunkIndex": 2,
+        "score": 0.7434918880462646,
+        "preview": "bug fixes; weeks 3–4, take ownership of the design system checkbox and modal components (target completion February 28); by March..."
+      },
+      {
+        "task": "New Engineer Onboarding — Marcus Chen",
+        "chunkIndex": 1,
+        "score": 0.7272442579269409,
+        "preview": "Alice. Dev environment setup was completed by 1:15 PM on February 1. Marcus ran into one issue: the local Docker..."
+      },
+      {
+        "task": "New Engineer Onboarding — Marcus Chen",
+        "chunkIndex": 0,
+        "score": 0.7191680669784546,
+        "preview": "Marcus Chen joined the Atlas team as a full-stack engineer on February 1, 2026, reporting to Alice Wang. Marcus was..."
+      },
+      {
+        "task": "Code Review Standards & Team Guidelines",
+        "chunkIndex": 0,
+        "score": 0.6881165504455566,
+        "preview": "A working group was formed on January 27, 2026 to define code review standards for the Atlas team. Members: Alice..."
+      },
+      {
+        "task": "Bug Triage Session — March 3, 2026",
+        "chunkIndex": 0,
+        "score": 0.6480106115341187,
+        "preview": "The weekly bug triage session was held on March 3, 2026 at 10:00 AM PST. Attendees: Charlie Li (facilitator), Alice..."
+      }
+    ]
+  }
+}
+
+###
+
+# ============================================================
+# CATEGORY B — Specific numbers and metrics
+# Tests whether chunks containing facts are retrieved correctly.
+# ============================================================
+
+# B1. Latency numbers before and after fix
+POST {{baseUrl}}/projects/{{projectId}}/chat?debug=true
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "messages": [{ "role": "user", "content": "What was the P95 search latency before and after the fix in January?" }]
+}
+
+[RAG] {
+  "query": "What was the P95 search latency before and after the fix in January?",
+  "reply": "Based on the context, the P95 search latency before the fix (after the regression) was **870ms**, and after the fix it returned to **115ms**, which was back within the baseline range.",
+  "debug": {
+    "strategy": "chunked",
+    "retrieved": [
+      {
+        "task": "Search Index Performance Optimization",
+        "chunkIndex": 2,
+        "score": 0.847676694393158,
+        "preview": "to 12ms for cached queries and brought average database load down by 31%. Action items from the fix: (1) add..."
+      },
+      {
+        "task": "Search Index Performance Optimization",
+        "chunkIndex": 0,
+        "score": 0.8263183832168579,
+        "preview": "A search latency regression was detected on January 17, 2026 via the Grafana dashboard. The P95 response time for the..."
+      },
+      {
+        "task": "Search Index Performance Optimization",
+        "chunkIndex": 1,
+        "score": 0.8117409944534302,
+        "preview": "— it had been created concurrently during the January 15 migration and failed partway through due to a lock timeout...."
+      },
+      {
+        "task": "Post-mortem: January 15, 2026 Production Outage",
+        "chunkIndex": 2,
+        "score": 0.7335716485977173,
+        "preview": "12:52 PM PST, P95 latency returned to baseline (< 200ms) as caches warmed. The metrics collector fix (PR #181) was..."
+      },
+      {
+        "task": "Post-mortem: January 15, 2026 Production Outage",
+        "chunkIndex": 1,
+        "score": 0.7092345952987671,
+        "preview": "refactor in PR #178, the file `src/config/database.js` was renamed to `src/config/db.js`. The import in `src/app.js` was updated, but the import..."
+      }
+    ]
+  }
+}
+
+###
+
+# B2. Cost / budget fact
+POST {{baseUrl}}/projects/{{projectId}}/chat?debug=true
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "messages": [{ "role": "user", "content": "How much did the Jenkins to GitHub Actions migration save per year?" }]
+}
+
+[RAG] {
+  "query": "How much did the Jenkins to GitHub Actions migration save per year?",
+  "reply": "Based on the context, the migration saved approximately **$9,600** per year in EC2 costs.",
+  "debug": {
+    "strategy": "chunked",
+    "retrieved": [
+      {
+        "task": "GitHub Actions CI/CD Pipeline Upgrade",
+        "chunkIndex": 2,
+        "score": 0.8723418712615967,
+        "preview": "approximately $9,600 in EC2 costs. Post-migration metrics (first two weeks of March 2026): average CI pipeline duration 4 minutes 10..."
+      },
+      {
+        "task": "GitHub Actions CI/CD Pipeline Upgrade",
+        "chunkIndex": 0,
+        "score": 0.8467686772346497,
+        "preview": "The decision to migrate from Jenkins to GitHub Actions was made in the Q1 planning meeting on January 6, 2026...."
+      },
+      {
+        "task": "GitHub Actions CI/CD Pipeline Upgrade",
+        "chunkIndex": 1,
+        "score": 0.8320034146308899,
+        "preview": "action and caches `node_modules` using the `actions/cache@v4` action. Pipeline startup time reduced to 45 seconds. Phase 2 (staging deploy pipeline)..."
+      },
+      {
+        "task": "Production Deployment Runbook — Update",
+        "chunkIndex": 1,
+        "score": 0.7094980478286743,
+        "preview": "open critical or high Sentry issues related to the changes; (4) Notify `#deployments` Slack channel: 'Deploying vX.Y.Z at HH:MM PST..."
+      },
+      {
+        "task": "Production Deployment Runbook — Update",
+        "chunkIndex": 0,
+        "score": 0.6994861364364624,
+        "preview": "The production deployment runbook was last updated on October 15, 2025 and no longer reflected the current deploy process (GitHub..."
+      }
+    ]
+  }
+}
+
+###
+
+# B3. Load test numbers
+POST {{baseUrl}}/projects/{{projectId}}/chat?debug=true
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "messages": [{ "role": "user", "content": "What were the load test results at 500 concurrent users?" }]
+}
+
+[RAG] {
+  "query": "What were the load test results at 500 concurrent users?",
+  "reply": "Based on the load test report, at 500 concurrent users (ramp-up scenario), the results were:\n\n- **P50**: 88ms\n- **P95**: 410ms\n- **P99**: 780ms\n- **Throughput**: 2,890 requests/second\n- **Error rate**: 0.08%\n- **App server CPU**: peaked at 78% during the hold phase\n- **RDS CPU**: peaked at 52%\n\nThe `/api/search` endpoint degraded first, reaching a P95 of 1,100ms at peak load.",
+  "debug": {
+    "strategy": "chunked",
+    "retrieved": [
+      {
+        "task": "Load Testing Report — February 2026",
+        "chunkIndex": 0,
+        "score": 0.8005681037902832,
+        "preview": "Load testing was conducted on February 12, 2026 against the staging environment (`staging.atlas.internal`), which mirrors production infrastructure (2x t3.large app..."
+      },
+      {
+        "task": "Load Testing Report — February 2026",
+        "chunkIndex": 1,
+        "score": 0.7901109457015991,
+        "preview": "P50 = 88ms, P95 = 410ms, P99 = 780ms. Throughput: 2,890 requests/second. Error rate: 0.08%. App server CPU peaked at..."
+      },
+      {
+        "task": "Load Testing Report — February 2026",
+        "chunkIndex": 2,
+        "score": 0.7647007703781128,
+        "preview": "to the spike — minimum instance count will be raised from 2 to 3 effective March 1; (3) RDS connection..."
+      },
+      {
+        "task": "Search Index Performance Optimization",
+        "chunkIndex": 0,
+        "score": 0.7135186791419983,
+        "preview": "A search latency regression was detected on January 17, 2026 via the Grafana dashboard. The P95 response time for the..."
+      },
+      {
+        "task": "Search Index Performance Optimization",
+        "chunkIndex": 2,
+        "score": 0.7107723355293274,
+        "preview": "to 12ms for cached queries and brought average database load down by 31%. Action items from the fix: (1) add..."
+      }
+    ]
+  }
+}
+
+###
+
+# B4. Stripe first-day numbers
+POST {{baseUrl}}/projects/{{projectId}}/chat?debug=true
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "messages": [{ "role": "user", "content": "How many subscriptions were created on the first day Stripe launched?" }]
+}
+
+[RAG] {
+  "query": "How many subscriptions were created on the first day Stripe launched?",
+  "reply": "On the first day (March 15, 2026), 12 subscriptions were created:\n- 8 Standard monthly\n- 2 Standard annual\n- 2 Pro monthly",
+  "debug": {
+    "strategy": "chunked",
+    "retrieved": [
+      {
+        "task": "Stripe Payment Integration — Developer Portal",
+        "chunkIndex": 1,
+        "score": 0.7653542757034302,
+        "preview": "`https://api.atlas.dev/webhooks/stripe`. The following events are handled: `checkout.session.completed` (provision subscription), `customer.subscription.updated` (plan change), `customer.subscription.deleted` (downgrade to free), `invoice.payment_failed` (send dunning email..."
+      },
+      {
+        "task": "Stripe Payment Integration — Developer Portal",
+        "chunkIndex": 0,
+        "score": 0.7464113831520081,
+        "preview": "The decision to use Stripe for subscription billing was confirmed in the product meeting on January 13, 2026. Stripe was..."
+      },
+      {
+        "task": "Stripe Payment Integration — Developer Portal",
+        "chunkIndex": 2,
+        "score": 0.7277326583862305,
+        "preview": "3 users. Fixed by adding idempotency checks using the Stripe `idempotency_key` header. Hotfix deployed March 16 at 2:00 PM PST...."
+      },
+      {
+        "task": "Sentry Error Monitoring — Configuration & Alerting",
+        "chunkIndex": 2,
+        "score": 0.6793277263641357,
+        "preview": "PST — a `fatal` error in the Stripe webhook handler (the duplicate event issue, later resolved February 16). Sentry team..."
+      },
+      {
+        "task": "Sentry Error Monitoring — Configuration & Alerting",
+        "chunkIndex": 1,
+        "score": 0.6636866927146912,
+        "preview": "than 50 times in 1 hour; notify `#alerts-high` Slack channel within 5 minutes. (3) Daily digest — sent to `#alerts-digest`..."
+      }
+    ]
+  }
+}
+
+###
+
+# ============================================================
+# CATEGORY C — Person / responsibility facts
+# Tests attribution retrieval.
+# ============================================================
+
+# C1. Who did what
+POST {{baseUrl}}/projects/{{projectId}}/chat?debug=true
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "messages": [{ "role": "user", "content": "Who ran the load testing in February and what tool did they use?" }]
+}
+
+[RAG] {
+  "query": "Who ran the load testing in February and what tool did they use?",
+  "reply": "The load testing was run by Charlie Li using the tool **k6 v0.50**.",
+  "debug": {
+    "strategy": "chunked",
+    "retrieved": [
+      {
+        "task": "Load Testing Report — February 2026",
+        "chunkIndex": 0,
+        "score": 0.7970213890075684,
+        "preview": "Load testing was conducted on February 12, 2026 against the staging environment (`staging.atlas.internal`), which mirrors production infrastructure (2x t3.large app..."
+      },
+      {
+        "task": "Load Testing Report — February 2026",
+        "chunkIndex": 1,
+        "score": 0.7831001281738281,
+        "preview": "P50 = 88ms, P95 = 410ms, P99 = 780ms. Throughput: 2,890 requests/second. Error rate: 0.08%. App server CPU peaked at..."
+      },
+      {
+        "task": "Load Testing Report — February 2026",
+        "chunkIndex": 2,
+        "score": 0.7826902866363525,
+        "preview": "to the spike — minimum instance count will be raised from 2 to 3 effective March 1; (3) RDS connection..."
+      },
+      {
+        "task": "Search Index Performance Optimization",
+        "chunkIndex": 2,
+        "score": 0.7039058804512024,
+        "preview": "to 12ms for cached queries and brought average database load down by 31%. Action items from the fix: (1) add..."
+      },
+      {
+        "task": "Post-mortem: January 15, 2026 Production Outage",
+        "chunkIndex": 2,
+        "score": 0.703320324420929,
+        "preview": "12:52 PM PST, P95 latency returned to baseline (< 200ms) as caches warmed. The metrics collector fix (PR #181) was..."
+      }
+    ]
+  }
+}
+
+###
+
+# C2. Who found the root cause
+POST {{baseUrl}}/projects/{{projectId}}/chat?debug=true
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "messages": [{ "role": "user", "content": "Who identified the root cause of the auth token expiry bug and when?" }]
+}
+
+[RAG] {
+  "query": "Who identified the root cause of the auth token expiry bug and when?",
+  "reply": "Based on the context, the root cause of the auth token expiry bug was identified on **January 19, 2026**, but the specific person who identified it is **not mentioned**. The task was assigned to Bob Chen as the primary investigator, but the context does not explicitly state who made the root cause discovery.",
+  "debug": {
+    "strategy": "chunked",
+    "retrieved": [
+      {
+        "task": "Auth Token Expiry Bug — Investigation & Fix",
+        "chunkIndex": 0,
+        "score": 0.8470346927642822,
+        "preview": "The auth token expiry bug was first reported on January 15, 2026 at 3:22 PM PST by a user on..."
+      },
+      {
+        "task": "Auth Token Expiry Bug — Investigation & Fix",
+        "chunkIndex": 2,
+        "score": 0.8329686522483826,
+        "preview": "the fix. The #support channel received no further logout complaints. Impacted user count estimated at 340 based on Sentry session..."
+      },
+      {
+        "task": "Auth Token Expiry Bug — Investigation & Fix",
+        "chunkIndex": 1,
+        "score": 0.8272992372512817,
+        "preview": "TTL config. `JWT_ACCESS_TTL_SECONDS` was renamed to `JWT_ACCESS_EXPIRATION_TTL` in the codebase but the production environment was not updated. The token generation..."
+      },
+      {
+        "task": "Post-mortem: January 15, 2026 Production Outage",
+        "chunkIndex": 1,
+        "score": 0.7128233909606934,
+        "preview": "refactor in PR #178, the file `src/config/database.js` was renamed to `src/config/db.js`. The import in `src/app.js` was updated, but the import..."
+      },
+      {
+        "task": "Post-mortem: January 15, 2026 Production Outage",
+        "chunkIndex": 2,
+        "score": 0.7112103700637817,
+        "preview": "12:52 PM PST, P95 latency returned to baseline (< 200ms) as caches warmed. The metrics collector fix (PR #181) was..."
+      }
+    ]
+  }
+}
+
+###
+
+# ============================================================
+# CATEGORY D — Multi-chunk within one task
+# Answer requires facts from different paragraphs of the same task.
+# Good result = multiple chunks from the same task retrieved.
+# ============================================================
+
+# D1. Timeline question (spans multiple paragraphs of post-mortem)
+POST {{baseUrl}}/projects/{{projectId}}/chat?debug=true
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "messages": [{ "role": "user", "content": "Walk me through the full timeline of the January 15 outage from alert to full recovery." }]
+}
+
+[RAG] {
+  "query": "Walk me through the full timeline of the January 15 outage from alert to full recovery.",
+  "reply": "Here is the full timeline of the January 15, 2026 production outage, from alert to full recovery:\n\n- **10:12 AM PST:** First PagerDuty alert fired (Sentry fatal error spike). API requests began returning HTTP 502.\n- **10:15 AM:** Alice Wang acknowledged the alert and began investigation.\n- **10:20 AM:** Alice confirmed the API pods were crashlooping in Kubernetes; logs showed `Error: Cannot find module '../config/db'`.\n- **10:25 AM:** Alice identified that the January 15 deploy (released at 10:05 AM) included a file rename that was missed in an import path.\n- **10:30 AM:** Alice triggered the rollback workflow (reverted the deploy).\n- **10:38 AM:** Rollback completed, but the API did not recover because Kubernetes readiness probes were still failing for old pods.\n- **10:40 AM:** Bob joined and identified the stuck pods.\n- **11:15 AM:** Manual pod restart was performed.\n- **11:22 AM:** API recovered but with degraded performance (P95 = 1,200ms) due to cache warming.\n- **12:52 PM PST:** Full recovery — P95 latency returned to baseline (< 200ms) as caches warmed.\n- **2:30 PM PST:** The metrics collector fix (PR #181) was merged and deployed with no incident.\n\n**Total user-visible downtime:** 2 hours 40 minutes (10:12 AM – 12:52 PM PST). Cache degradation lasted an additional 90 minutes.",
+  "debug": {
+    "strategy": "chunked",
+    "retrieved": [
+      {
+        "task": "Post-mortem: January 15, 2026 Production Outage",
+        "chunkIndex": 1,
+        "score": 0.7792516350746155,
+        "preview": "refactor in PR #178, the file `src/config/database.js` was renamed to `src/config/db.js`. The import in `src/app.js` was updated, but the import..."
+      },
+      {
+        "task": "Post-mortem: January 15, 2026 Production Outage",
+        "chunkIndex": 2,
+        "score": 0.7699134349822998,
+        "preview": "12:52 PM PST, P95 latency returned to baseline (< 200ms) as caches warmed. The metrics collector fix (PR #181) was..."
+      },
+      {
+        "task": "Post-mortem: January 15, 2026 Production Outage",
+        "chunkIndex": 3,
+        "score": 0.7648706436157227,
+        "preview": "pipeline for all entry point files (done January 16, PR #182); (2) Bob — add the metrics collector to the..."
+      },
+      {
+        "task": "Post-mortem: January 15, 2026 Production Outage",
+        "chunkIndex": 0,
+        "score": 0.7643985748291016,
+        "preview": "On January 15, 2026, the Atlas API was unavailable for 2 hours and 40 minutes (10:12 AM – 12:52 PM..."
+      },
+      {
+        "task": "Auth Token Expiry Bug — Investigation & Fix",
+        "chunkIndex": 2,
+        "score": 0.696106493473053,
+        "preview": "the fix. The #support channel received no further logout complaints. Impacted user count estimated at 340 based on Sentry session..."
+      }
+    ]
+  }
+}
+
+###
+
+# D2. Action items (last paragraph of a task)
+POST {{baseUrl}}/projects/{{projectId}}/chat?debug=true
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "messages": [{ "role": "user", "content": "What action items came out of the January 15 outage post-mortem?" }]
+}
+[RAG] {
+  "query": "What action items came out of the January 15 outage post-mortem?",
+  "reply": "Based on the post-mortem context, the following five action items came out of the January 15 outage (all completed by January 23, 2026):\n\n1. **Alice** — Add `node --check` to the CI pipeline for all entry point files (done January 16, PR #182).\n2. **Bob** — Add the metrics collector to the integration test startup (done January 18, PR #184).\n3. **Alice** — Update the rollback runbook with explicit pod restart steps (done January 20).\n4. **Charlie** — Add a Grafana alert for crashlooping pods (done January 17).\n5. **All** — Hold a retrospective meeting (held January 20 at 2:00 PM PST, notes published to Confluence).",
+  "debug": {
+    "strategy": "chunked",
+    "retrieved": [
+      {
+        "task": "Post-mortem: January 15, 2026 Production Outage",
+        "chunkIndex": 3,
+        "score": 0.8136879205703735,
+        "preview": "pipeline for all entry point files (done January 16, PR #182); (2) Bob — add the metrics collector to the..."
+      },
+      {
+        "task": "Post-mortem: January 15, 2026 Production Outage",
+        "chunkIndex": 2,
+        "score": 0.812981128692627,
+        "preview": "12:52 PM PST, P95 latency returned to baseline (< 200ms) as caches warmed. The metrics collector fix (PR #181) was..."
+      },
+      {
+        "task": "Post-mortem: January 15, 2026 Production Outage",
+        "chunkIndex": 1,
+        "score": 0.802781343460083,
+        "preview": "refactor in PR #178, the file `src/config/database.js` was renamed to `src/config/db.js`. The import in `src/app.js` was updated, but the import..."
+      },
+      {
+        "task": "Post-mortem: January 15, 2026 Production Outage",
+        "chunkIndex": 0,
+        "score": 0.7887980937957764,
+        "preview": "On January 15, 2026, the Atlas API was unavailable for 2 hours and 40 minutes (10:12 AM – 12:52 PM..."
+      },
+      {
+        "task": "Bug Triage Session — March 3, 2026",
+        "chunkIndex": 1,
+        "score": 0.7380094528198242,
+        "preview": "type instead of returning 200 (reported March 2). Assigned to Bob Chen, target fix March 5. Normal priority issues: 11..."
+      }
+    ]
+  }
+}
+
+###
+
+# ============================================================
+# CATEGORY E — Strategy comparison (chunked vs single)
+# Run the same query both ways and compare _debug.retrieved scores.
+# ============================================================
+
+# E1. chunked (default)
+POST {{baseUrl}}/projects/{{projectId}}/chat?strategy=chunked&debug=true
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "messages": [{ "role": "user", "content": "What was the root cause of the auth token expiry bug?" }]
+}
+[RAG] {
+  "query": "What was the root cause of the auth token expiry bug?",
+  "reply": "The root cause of the auth token expiry bug was that an environment variable was renamed from `JWT_ACCESS_TTL_SECONDS` to `JWT_ACCESS_EXPIRATION_TTL` in the codebase, but the production environment was not updated with the new variable name. The token generation code silently fell back to a hardcoded default of 300 seconds (5 minutes) instead of the intended 4 hours (14400 seconds).",
+  "debug": {
+    "strategy": "chunked",
+    "retrieved": [
+      {
+        "task": "Auth Token Expiry Bug — Investigation & Fix",
+        "chunkIndex": 0,
+        "score": 0.8554742932319641,
+        "preview": "The auth token expiry bug was first reported on January 15, 2026 at 3:22 PM PST by a user on..."
+      },
+      {
+        "task": "Auth Token Expiry Bug — Investigation & Fix",
+        "chunkIndex": 2,
+        "score": 0.8426209688186646,
+        "preview": "the fix. The #support channel received no further logout complaints. Impacted user count estimated at 340 based on Sentry session..."
+      },
+      {
+        "task": "Auth Token Expiry Bug — Investigation & Fix",
+        "chunkIndex": 1,
+        "score": 0.8422673940658569,
+        "preview": "TTL config. `JWT_ACCESS_TTL_SECONDS` was renamed to `JWT_ACCESS_EXPIRATION_TTL` in the codebase but the production environment was not updated. The token generation..."
+      },
+      {
+        "task": "Post-mortem: January 15, 2026 Production Outage",
+        "chunkIndex": 0,
+        "score": 0.7110101580619812,
+        "preview": "On January 15, 2026, the Atlas API was unavailable for 2 hours and 40 minutes (10:12 AM – 12:52 PM..."
+      },
+      {
+        "task": "Post-mortem: January 15, 2026 Production Outage",
+        "chunkIndex": 1,
+        "score": 0.7064353227615356,
+        "preview": "refactor in PR #178, the file `src/config/database.js` was renamed to `src/config/db.js`. The import in `src/app.js` was updated, but the import..."
+      }
+    ]
+  }
+}
+
+###
+
+# E1. single — same query
+POST {{baseUrl}}/projects/{{projectId}}/chat?strategy=single&debug=true
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "messages": [{ "role": "user", "content": "What was the root cause of the auth token expiry bug?" }]
+}
+
+[RAG] {
+  "query": "What was the root cause of the auth token expiry bug?",
+  "reply": "The root cause was an environment variable rename during the v2.1 deployment on December 14, 2025. `JWT_ACCESS_TTL_SECONDS` was renamed to `JWT_ACCESS_EXPIRATION_TTL` in the codebase, but the production environment variable was not updated. The token generation code then fell back to a hardcoded default of 300 seconds (5 minutes) without any warning log.",
+  "debug": {
+    "strategy": "single",
+    "retrieved": [
+      {
+        "task": "Auth Token Expiry Bug — Investigation & Fix",
+        "score": 0.8452218770980835,
+        "preview": "The auth token expiry bug was first reported on January 15, 2026 at 3:22 PM PST by a user on..."
+      },
+      {
+        "task": "Post-mortem: January 15, 2026 Production Outage",
+        "score": 0.6912679076194763,
+        "preview": "On January 15, 2026, the Atlas API was unavailable for 2 hours and 40 minutes (10:12 AM – 12:52 PM..."
+      },
+      {
+        "task": "Q1 Security Audit — External Review",
+        "score": 0.671913743019104,
+        "preview": "An external security audit was contracted with SecureLayer Inc. on February 14, 2026. The statement of work covers a black-box..."
+      }
+    ]
+  }
+}
+
+###
+
+# ============================================================
+# CATEGORY F — Negative / boundary cases
+# ============================================================
+
+# F1. Question answerable from task overview alone (no content needed)
+# Expect: correct answer, but _debug.retrieved may be irrelevant tasks
+POST {{baseUrl}}/projects/{{projectId}}/chat?debug=true
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "messages": [{ "role": "user", "content": "Which tasks are currently in progress?" }]
+}
+
+[RAG] {
+  "query": "Which tasks are currently in progress?",
+  "reply": "Based on the task list, the following tasks are currently **in progress**:\n\n1. **API Rate Limiting — Design & Implementation** (high priority, due Feb 20, 2026 ⚠ OVERDUE)\n2. **Frontend Design System — Initial Setup** (normal priority, due Mar 15, 2026 ⚠ OVERDUE)\n3. **OpenAPI Documentation Rewrite** (normal priority, due Mar 31, 2026 ⚠ OVERDUE)\n4. **Mobile Responsive Redesign — Dashboard** (normal priority, due Apr 1, 2026 ⚠ OVERDUE)\n5. **Analytics Dashboard v2 — Design & Build** (normal priority, due May 1, 2026 ⚠ OVERDUE)",
+  "debug": {
+    "strategy": "chunked",
+    "retrieved": [
+      {
+        "task": "Bug Triage Session — March 3, 2026",
+        "chunkIndex": 1,
+        "score": 0.7057783007621765,
+        "preview": "type instead of returning 200 (reported March 2). Assigned to Bob Chen, target fix March 5. Normal priority issues: 11..."
+      },
+      {
+        "task": "Q1 Sprint Planning & Roadmap Review",
+        "chunkIndex": 2,
+        "score": 0.7041534185409546,
+        "preview": "new tooling is in place. Three high-priority carryovers from Q4 2025 were reviewed: the auth token expiry bug (critical, assigned..."
+      },
+      {
+        "task": "Bug Triage Session — March 3, 2026",
+        "chunkIndex": 2,
+        "score": 0.7019246220588684,
+        "preview": "had no activity for 30+ days and were not reproducible on the current version. They were closed with the label..."
+      },
+      {
+        "task": "Q1 Sprint Planning & Roadmap Review",
+        "chunkIndex": 1,
+        "score": 0.7015565037727356,
+        "preview": "Thursday at 2:00 PM PST. Key risks identified: the service registry depends on the PostgreSQL schema migration being completed first,..."
+      },
+      {
+        "task": "Bug Triage Session — March 3, 2026",
+        "chunkIndex": 0,
+        "score": 0.6973631381988525,
+        "preview": "The weekly bug triage session was held on March 3, 2026 at 10:00 AM PST. Attendees: Charlie Li (facilitator), Alice..."
+      }
+    ]
+  }
+}
+
+###
+
+# F2. Question with no answer in any content
+# Expect: AI should say it doesn't have the information
+POST {{baseUrl}}/projects/{{projectId}}/chat?debug=true
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "messages": [{ "role": "user", "content": "What is the team's Figma file URL?" }]
+}
+
+[RAG] {
+  "query": "What is the team's Figma file URL?",
+  "reply": "The context does not contain the team's Figma file URL.",
+  "debug": {
+    "strategy": "chunked",
+    "retrieved": [
+      {
+        "task": "Frontend Design System — Initial Setup",
+        "chunkIndex": 1,
+        "score": 0.7003810405731201,
+        "preview": "colors (6 shades each), 8 spacing steps, and 5 type scales. Base components prioritized for the first milestone (due March..."
+      },
+      {
+        "task": "Mobile Responsive Redesign — Dashboard",
+        "chunkIndex": 0,
+        "score": 0.6688631772994995,
+        "preview": "The mobile responsive redesign was initiated following a user survey conducted February 10–14, 2026 (87 respondents). 34% of respondents reported..."
+      },
+      {
+        "task": "Frontend Design System — Initial Setup",
+        "chunkIndex": 2,
+        "score": 0.6585036516189575,
+        "preview": "check using axe-core. The `main` branch is protected — all contributions go through PRs reviewed by Alice. A design system..."
+      },
+      {
+        "task": "Frontend Design System — Initial Setup",
+        "chunkIndex": 0,
+        "score": 0.6581077575683594,
+        "preview": "The design system initiative was kicked off on January 20, 2026 with a meeting between Alice Wang (engineering lead) and..."
+      },
+      {
+        "task": "Q2 Stakeholder Demo Preparation",
+        "chunkIndex": 1,
+        "score": 0.6549449563026428,
+        "preview": "deck (Alice); March 28 — first internal rehearsal with Bob and Charlie (1 hour); April 1 — incorporate feedback and..."
+      }
+    ]
+  }
+}
+
+###
+
+# F3. Vague query — tests whether retrieval degrades gracefully
+POST {{baseUrl}}/projects/{{projectId}}/chat?debug=true
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "messages": [{ "role": "user", "content": "Tell me about the project." }]
+}
+[RAG] {
+  "query": "Tell me about the project.",
+  "reply": "Here's a summary of **Project Atlas** based on the context:\n\n**Project Atlas** is an internal developer platform designed to streamline engineering workflows, including CI/CD, monitoring, and team collaboration. The team consists of three members:\n- **Alice Wang** (Manager)\n- **Bob Chen** (Editor)\n- **Charlie Li** (Editor)\n\nThe project has a broad set of completed, in-progress, and upcoming tasks covering areas such as:\n- **API & Infrastructure**: Rate limiting, PostgreSQL schema migrations, GitHub Actions CI/CD pipeline upgrades, load testing, and production deployment runbooks.\n- **Developer Experience**: A frontend design system (Storybook + Tailwind), mobile responsive dashboard redesign, and an analytics dashboard v2.\n- **Monitoring & Security**: Sentry error monitoring setup and a Q1 security audit.\n- **Communication & Planning**: Sprint planning, Q1/Q2 roadmap reviews, stakeholder demos, and bug triage sessions.\n- **Incident Management**: A post-mortem for a January 15, 2026 production outage (2h 40m of API downtime).\n\nThe project recently completed Q1 and is actively preparing for a **Q2 stakeholder demo on April 8, 2026**, where Alice will present key achievements (e.g., 99.97% API uptime, reduced CI pipeline startup time from 4 min to 45 sec, and improved search latency). Several tasks are currently overdue, including the Q1 security audit, frontend design system init, OpenAPI docs rewrite, and the Q2 demo prep itself.",
+  "debug": {
+    "strategy": "chunked",
+    "retrieved": [
+      {
+        "task": "Q2 Stakeholder Demo Preparation",
+        "chunkIndex": 1,
+        "score": 0.6678793430328369,
+        "preview": "deck (Alice); March 28 — first internal rehearsal with Bob and Charlie (1 hour); April 1 — incorporate feedback and..."
+      },
+      {
+        "task": "Q2 Stakeholder Demo Preparation",
+        "chunkIndex": 0,
+        "score": 0.6618768572807312,
+        "preview": "The Q2 stakeholder demo is scheduled for April 8, 2026 at 2:00 PM PST. Attendees will include the VP of..."
+      },
+      {
+        "task": "Q2 Stakeholder Demo Preparation",
+        "chunkIndex": 2,
+        "score": 0.6589837670326233,
+        "preview": "— 4 minutes; (6) Q2 roadmap — 8 minutes; (7) Questions — 20 minutes. Key metrics to highlight in the..."
+      },
+      {
+        "task": "Frontend Design System — Initial Setup",
+        "chunkIndex": 2,
+        "score": 0.6562411189079285,
+        "preview": "check using axe-core. The `main` branch is protected — all contributions go through PRs reviewed by Alice. A design system..."
+      },
+      {
+        "task": "Frontend Design System — Initial Setup",
+        "chunkIndex": 1,
+        "score": 0.6536324620246887,
+        "preview": "colors (6 shades each), 8 spacing steps, and 5 type scales. Base components prioritized for the first milestone (due March..."
+      }
+    ]
+  }
+}
+
+###

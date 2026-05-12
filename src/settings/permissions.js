@@ -26,6 +26,9 @@ const permissions = {
     PATCH: ["editor", "manager"],
     DELETE: ["manager"],
   },
+  projectChat: {
+    POST: ["viewer", "editor", "manager"],
+  },
 };
 
 module.exports = permissions;

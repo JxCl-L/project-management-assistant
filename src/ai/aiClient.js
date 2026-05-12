@@ -32,4 +32,13 @@ async function callAI(messages, maxTokens = 600) {
   }
 }
 
-module.exports = { callAI };
+// text-embedding-3-small: 1536 dimensions, cheap (~$0.00002 / 1K tokens)
+async function generateEmbedding(text) {
+  const response = await getOpenAIClient().embeddings.create({
+    model: "text-embedding-3-small",
+    input: text,
+  });
+  return response.data[0].embedding;
+}
+
+module.exports = { callAI, generateEmbedding };

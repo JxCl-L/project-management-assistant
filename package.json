@@ -8,7 +8,8 @@
     "dev": "cross-env NODE_ENV=development nodemon src/index.js",
     "staging": "cross-env NODE_ENV=staging nodemon src/index.js",
     "start": "cross-env NODE_ENV=production nodemon src/index.js",
-    "seed": "cross-env NODE_ENV=development node scripts/seed.js"
+    "seed": "cross-env NODE_ENV=development node scripts/seed.js",
+    "dev:rag-test": "cross-env NODE_ENV=development DATABASE_NAME=fullstackTasks_rag_test nodemon src/index.js"
   },
   "repository": {
     "type": "git",

@@ -10,6 +10,7 @@ const usersRouter = require("../users/users.router.js");
 const projectsRouter = require("../projects/projects.router.js");
 const membersRouter = require("../projectMembers/members.router.js");
 const taskContentRouter = require("../taskContent/taskContent.router.js");
+const chatRouter = require("../ai/chat/chat.router.js");
 const expressWinstonLogger = require("../middleware/expressWinston.middleware.js");
 const swaggerUi = require("swagger-ui-express");
 const swaggerSpecs = require("./swagger.config.js");
@@ -41,6 +42,7 @@ function configuraApp(app) {
     app.use("/projects/:projectId/tasks/:taskId/contents", taskContentRouter);
     app.use("/projects/:projectId/tasks", tasksRouter);
     app.use("/projects/:projectId/members", membersRouter);
+    app.use("/projects/:projectId/chat", chatRouter);
     app.use("/auth", authRouter);
     app.use("/users", usersRouter);
     app.use("/projects", projectsRouter);

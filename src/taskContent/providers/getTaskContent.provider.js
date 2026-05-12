@@ -17,9 +17,10 @@ async function getTaskContentProvider(req, res) {
     }
 
     // fetch task contents
-    const taskContents = await TaskContent.findOne({
-      task: taskId,
-    });
+    const taskContents = await TaskContent.findOne(
+      { task: taskId },
+      { embedding: 0, embeddingStale: 0 }
+    );
     if (!taskContents) {
       return res.status(StatusCodes.NOT_FOUND).json({
         message: "Task content not found.",
