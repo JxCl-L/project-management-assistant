@@ -68,7 +68,7 @@ A RESTful Express.js backend for a collaborative project & task management syste
    | Variable | Description |
    |---|---|
    | `DATABASE_URL` | MongoDB Atlas connection string |
-   | `DATABASE_NAME` | Database name (e.g. `fullstackTasks`) |
+   | `DATABASE_NAME` | Database name — only used by `npm run dev`. Can be any name (e.g. `fullstackTasks`) |
    | `JWT_SECRET` | Any long random string |
    | `OPENAI_API_KEY` | OpenAI API key — used for embeddings and GPT-4o-mini fallback |
    | `DEEPSEEK_API_KEY` | DeepSeek API key — primary chat model |
@@ -76,18 +76,22 @@ A RESTful Express.js backend for a collaborative project & task management syste
    | `CHUNK_OVERLAP` | Overlap words between chunks (default: `25`) |
    | `EMBEDDING_DEBOUNCE_MS` | Delay before re-embedding after a content save (default: `15000`) |
 
-4. Seed the database with demo data
+4. Seed the RAG test database
    ```bash
-   npm run seed
+   node scripts/seed-rag-test.js
+   ```
+   This creates an isolated database (`fullstackTasks_rag_test`) with 1 project and 20 tasks with rich content — fully compatible with the current app schema including task content and embeddings.
+
+5. Generate embeddings for the seeded tasks
+   ```bash
+   node scripts/backfill-embeddings-rag-test.js
    ```
 
-5. Create the Atlas Vector Search indexes on your cluster in the Atlas UI (Atlas Search tab):
+6. Create the Atlas Vector Search index on your cluster in the Atlas UI (Atlas Search tab):
 
-   **Index name:** `taskChunkEmbedding_vector_index` — collection: `taskchunkembeddings`
+   **Index name:** `taskChunkEmbedding_vector_index` — collection: `taskchunkembeddings` (database: `fullstackTasks_rag_test`)
 
-   **Index name:** `taskContent_vector_index` — collection: `taskcontents`
-
-   Use this definition for both:
+   Use this definition:
    ```json
    {
      "fields": [
@@ -96,11 +100,11 @@ A RESTful Express.js backend for a collaborative project & task management syste
      ]
    }
    ```
-   > **M0 free tier limit:** max 3 search indexes per cluster. If you hit the limit, prioritise `taskChunkEmbedding_vector_index` — it powers the default `chunked` strategy.
+   > **M0 free tier limit:** max 3 search indexes per cluster total.
 
-6. Start the development server
+7. Start the development server
    ```bash
-   npm run dev
+   npm run dev:rag-test
    ```
 
 The server will run on `http://localhost:3001`
@@ -109,33 +113,9 @@ The server will run on `http://localhost:3001`
 
 | Script | Description |
 |---|---|
-| `npm run dev` | Start dev server using `fullstackTasks` database |
-| `npm run dev:rag-test` | Start dev server using `fullstackTasks_rag_test` database (isolated RAG testing) |
-| `npm run seed` | Seed `fullstackTasks` with demo users, projects, and tasks |
+| `npm run dev:rag-test` | Start dev server using `fullstackTasks_rag_test` — **use this for development** |
+| `npm run dev` | Start dev server using `DATABASE_NAME` from `.env.development` |
 | `npm run start` | Start production server |
-
-## RAG Test Dataset
-
-A dedicated seed and backfill script are provided for testing the AI/RAG feature in isolation. They target a separate database (`fullstackTasks_rag_test`) so dev data is never affected.
-
-```bash
-# 1. Seed the RAG test database
-#    Creates 1 project ("Project Atlas") with 20 tasks,
-#    each containing ~500 words of realistic engineering content
-#    with embedded facts (dates, names, metrics) for retrieval testing.
-node scripts/seed-rag-test.js
-
-# 2. Generate embeddings for all seeded tasks
-#    Processes all TaskContent docs with embeddingStale: true,
-#    generates both chunked (150w/25 overlap) and single embeddings.
-node scripts/backfill-embeddings-rag-test.js
-
-# 3. Create the Atlas Vector Search index for fullstackTasks_rag_test
-#    (same definition as above, applied to the rag_test database)
-
-# 4. Run the server against the RAG test database
-npm run dev:rag-test
-```
 
 Test queries covering date facts, numbers, attribution, multi-chunk retrieval, strategy comparison, and edge cases are in `src/ai/chat/chat-rag-test.http`. Append `?debug=true` to any chat request to see retrieved chunks and similarity scores in the response.
 
@@ -179,9 +159,9 @@ src/
 │   └── taskChunkEmbedding.schema.js  # Stores per-chunk embeddings for vector search
 └── settings/
 scripts/
-├── seed.js                           # Seeds fullstackTasks (dev)
-├── seed-rag-test.js                  # Seeds fullstackTasks_rag_test (RAG testing)
-└── backfill-embeddings-rag-test.js   # Generates embeddings for RAG test dataset
+├── seed-rag-test.js                  # Seeds fullstackTasks_rag_test — use this
+├── backfill-embeddings-rag-test.js   # Generates embeddings for RAG test dataset
+└── seed.js                           # Legacy seed (outdated schema — do not use)
 ```
 
 ## Role-Based Access
