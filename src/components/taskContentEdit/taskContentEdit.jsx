@@ -19,6 +19,7 @@ import {
   Copy,
   X,
   ClipboardCheck,
+  Save,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { PresenceField } from "@/components/task/PresenceField.jsx";
@@ -85,6 +86,7 @@ function EditorWrapper({
   const [previewData, setPreviewData] = useState(null);
   const [copied, setCopied] = useState(false);
   const [rewriteError, setRewriteError] = useState(null);
+  const [isDirty, setIsDirty] = useState(false);
 
   const { mutate: rewrite, isPending: isRewriting } = useRewriteTaskContent();
 
@@ -99,7 +101,12 @@ function EditorWrapper({
     onBlur: () => {
       setIsFocused(false);
       onFieldBlur?.("content");
-      if (!previewMode) handleSave();
+    },
+    onUpdate: ({ editor: e }) => {
+      if (!previewMode) {
+        const contentString = JSON.stringify(e.getJSON());
+        setIsDirty(contentString !== rawContent);
+      }
     },
   });
 
@@ -123,7 +130,10 @@ function EditorWrapper({
     const plainText = editor.getText();
     const contentString = JSON.stringify(json);
     if (contentString === rawContent) return;
-    mutate({ projectId, taskId, taskContentData: { content: contentString, plainText, contentType: "tiptap-json" } });
+    mutate(
+      { projectId, taskId, taskContentData: { content: contentString, plainText, contentType: "tiptap-json" } },
+      { onSuccess: () => setIsDirty(false) }
+    );
   }, [editor, canEdit, rawContent, mutate, projectId, taskId]);
 
   // --- Rewrite handlers ---
@@ -236,6 +246,21 @@ function EditorWrapper({
               <ToolbarButton onClick={() => editor.chain().focus().toggleOrderedList().run()} active={editor.isActive("orderedList")} disabled={isPending} title="Ordered list">
                 <ListOrdered className="h-3.5 w-3.5" />
               </ToolbarButton>
+              {isDirty && (
+                <>
+                  <div className="w-px h-4 bg-border mx-1" />
+                  <button
+                    type="button"
+                    onClick={handleSave}
+                    disabled={isPending}
+                    title="Save changes"
+                    className="flex items-center gap-1 px-2 h-7 rounded text-xs font-medium text-blue-400 border border-blue-500/30 bg-blue-500/10 hover:bg-blue-500/20 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+                  >
+                    <Save className="h-3.5 w-3.5" />
+                    {isPending ? "Saving…" : "Save"}
+                  </button>
+                </>
+              )}
             </div>
           )}
 
