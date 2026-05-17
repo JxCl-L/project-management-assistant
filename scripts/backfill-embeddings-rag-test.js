@@ -6,7 +6,7 @@ dotenv.config({ path: path.resolve(__dirname, "../.env.development") });
 
 // override chunk settings for this RAG test run
 process.env.CHUNK_SIZE = "150";
-process.env.CHUNK_OVERLAP = "25";
+process.env.CHUNK_OVERLAP = "50";
 
 const TaskContent = require("../src/taskContent/taskContent.schema");
 const TaskChunkEmbedding = require("../src/taskContent/taskChunkEmbedding.schema");

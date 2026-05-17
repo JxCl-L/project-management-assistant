@@ -23,17 +23,23 @@ const DEBOUNCE_MS = parseInt(process.env.EMBEDDING_DEBOUNCE_MS) || 15000;
  * @param {() => Promise<void>} embeddingFn - async function that generates and saves embeddings
  */
 function scheduleEmbedding(taskId, embeddingFn) {
-  // cancel any pending embedding for this task
+  const short = taskId.slice(-6);
+
   if (timers.has(taskId)) {
     clearTimeout(timers.get(taskId));
+    console.log(`[debouncer] ...${short} reset  (pending: ${timers.size})`);
+  } else {
+    console.log(`[debouncer] ...${short} queued (pending: ${timers.size + 1}, delay: ${DEBOUNCE_MS}ms)`);
   }
 
   const timer = setTimeout(async () => {
     timers.delete(taskId);
+    console.log(`[debouncer] ...${short} fired  (pending: ${timers.size})`);
     try {
       await embeddingFn();
+      console.log(`[debouncer] ...${short} done`);
     } catch (err) {
-      console.error(`[embeddingDebouncer] embedding failed for task ${taskId}:`, err.message);
+      console.error(`[debouncer] ...${short} failed:`, err.message);
     }
   }, DEBOUNCE_MS);
 

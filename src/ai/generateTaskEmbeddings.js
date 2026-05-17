@@ -33,6 +33,7 @@ async function generateTaskEmbeddings({ taskContentId, taskId, projectId, taskTi
     const chunkSize = parseInt(process.env.CHUNK_SIZE) || 300;
     const chunkOverlap = parseInt(process.env.CHUNK_OVERLAP) || 50;
     const chunks = chunkText(text, chunkSize, chunkOverlap);
+    console.log(`[embeddings] task ${taskId.toString().slice(-6)}: ${chunks.length} chunks (size=${chunkSize}, overlap=${chunkOverlap})`);
 
     await TaskChunkEmbedding.deleteMany({ taskContent: taskContentId });
 

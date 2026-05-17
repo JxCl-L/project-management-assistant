@@ -8,13 +8,53 @@ const mongoose = require("mongoose");
 const { StatusCodes } = require("http-status-codes");
 const errorLogger = require("../../helpers/errorLogger.helper.js");
 
+// --- Hybrid search helpers ---
+
+const STOP_WORDS = new Set([
+  'what','which','who','when','where','how','why','did','does','was','were',
+  'have','been','will','would','could','should','the','and','for','are','with',
+  'from','that','this','their','they','them','than','then','also','any','all',
+  'about','make','made','work','worked','some','into','over','after','before',
+  'during','each','work',
+]);
+
+function extractKeywords(text) {
+  return [...new Set(
+    text.toLowerCase()
+      .replace(/[^\w\s]/g, ' ')
+      .split(/\s+/)
+      .filter((w) => w.length >= 3 && !STOP_WORDS.has(w))
+  )];
+}
+
+// Reciprocal Rank Fusion — merges multiple ranked lists into one
+// Each doc scores sum of 1/(k + rank) across all lists it appears in
+function reciprocalRankFusion(lists, k = 60) {
+  const scores = new Map();
+  for (const list of lists) {
+    list.forEach((doc, rank) => {
+      const key = doc._id.toString();
+      const entry = scores.get(key) || { doc, score: 0 };
+      entry.score += 1 / (k + rank + 1);
+      scores.set(key, entry);
+    });
+  }
+  return [...scores.values()]
+    .sort((a, b) => b.score - a.score)
+    .map((e) => ({ ...e.doc, _rrfScore: e.score }));
+}
+
 async function chatProvider(req, res) {
   try {
     const { projectId } = req.params;
     const { messages } = req.body; // [{ role: "user"|"assistant", content: string }]
     // ?strategy=chunked (default) uses TaskChunkEmbedding collection
     // ?strategy=single uses the one-vector-per-task embedding on TaskContent
-    const strategy = req.query.strategy === "single" ? "single" : "chunked";
+    // ?strategy=fullcontext dumps all task plainText into the prompt — no retrieval, baseline comparison
+    // ?strategy=hybrid vector search + keyword regex merged via Reciprocal Rank Fusion
+    const strategy = ["single", "fullcontext", "hybrid"].includes(req.query.strategy)
+      ? req.query.strategy
+      : "chunked";
     const debug = req.query.debug === "true";
 
     const [project, currentMember] = await Promise.all([
@@ -56,9 +96,92 @@ async function chatProvider(req, res) {
 
     if (lastUserMessage && allTasks.length > 0) {
       try {
-        const queryEmbedding = await generateEmbedding(lastUserMessage.content);
+        if (strategy === "fullcontext") {
+          // --- FULLCONTEXT STRATEGY (no retrieval — baseline comparison) ---
+          // Fetch all task plainText and dump into context.
+          // Gives the AI the same information RAG would retrieve, but without selection.
+          const allContents = await TaskContent.find(
+            { task: { $in: allTasks.map((t) => t._id) } }
+          ).select("task plainText").lean();
 
-        if (strategy === "chunked") {
+          const taskMap = Object.fromEntries(allTasks.map((t) => [t._id.toString(), t]));
+
+          retrievedContext = allContents
+            .filter((c) => c.plainText?.trim())
+            .map((c) => {
+              const task = taskMap[c.task.toString()];
+              return `### ${task?.title ?? "Unknown task"}\n${c.plainText}`;
+            })
+            .join("\n\n---\n\n");
+
+          if (debug) {
+            debugChunks = allContents
+              .filter((c) => c.plainText?.trim())
+              .map((c) => ({
+                task: taskMap[c.task.toString()]?.title ?? "Unknown",
+                words: c.plainText.trim().split(/\s+/).length,
+              }));
+          }
+        } else {
+          const queryEmbedding = await generateEmbedding(lastUserMessage.content);
+
+          if (strategy === "hybrid") {
+            // --- HYBRID STRATEGY: vector + keyword regex merged via RRF ---
+            const projectOid = new mongoose.Types.ObjectId(projectId);
+
+            // 1. Vector search (wide net)
+            const vectorResults = await TaskChunkEmbedding.aggregate([
+              {
+                $vectorSearch: {
+                  index: "taskChunkEmbedding_vector_index",
+                  path: "embedding",
+                  queryVector: queryEmbedding,
+                  numCandidates: 100,
+                  limit: 20,
+                  filter: { project: projectOid },
+                },
+              },
+              { $lookup: { from: "tasks", localField: "task", foreignField: "_id", as: "taskInfo" } },
+              { $unwind: "$taskInfo" },
+              { $project: { chunkText: 1, chunkIndex: 1, chunkSize: 1, chunkOverlap: 1, task: 1, "taskInfo.title": 1, "taskInfo.description": 1, score: { $meta: "vectorSearchScore" } } },
+            ]);
+
+            // 2. Keyword search (regex on chunkText)
+            const keywords = extractKeywords(lastUserMessage.content);
+            let keywordResults = [];
+            if (keywords.length > 0) {
+              const pattern = keywords.map((k) => `\\b${k}\\b`).join("|");
+              const rawKw = await TaskChunkEmbedding.find({
+                project: projectOid,
+                chunkText: { $regex: pattern, $options: "i" },
+              }).select("chunkText chunkIndex chunkSize chunkOverlap task").limit(20).lean();
+
+              const kwTaskIds = [...new Set(rawKw.map((c) => c.task.toString()))];
+              const kwTasks = await Task.find({ _id: { $in: kwTaskIds } }).select("title description").lean();
+              const kwTaskMap = Object.fromEntries(kwTasks.map((t) => [t._id.toString(), t]));
+              keywordResults = rawKw.map((c) => ({
+                ...c,
+                taskInfo: kwTaskMap[c.task.toString()] || { title: "Unknown", description: "" },
+              }));
+            }
+
+            // 3. RRF merge → top 8
+            const merged = reciprocalRankFusion([vectorResults, keywordResults]).slice(0, 8);
+
+            if (merged.length > 0) {
+              retrievedContext = merged
+                .map((r) => `### ${r.taskInfo.title} (chunk ${r.chunkIndex + 1}, size=${r.chunkSize}, overlap=${r.chunkOverlap})\nDescription: ${r.taskInfo.description}\nContent excerpt:\n${r.chunkText}`)
+                .join("\n\n---\n\n");
+              if (debug) {
+                debugChunks = merged.map((r) => ({
+                  task: r.taskInfo.title,
+                  chunkIndex: r.chunkIndex,
+                  rrfScore: Math.round(r._rrfScore * 10000) / 10000,
+                  preview: r.chunkText.split(" ").slice(0, 20).join(" ") + "...",
+                }));
+              }
+            }
+          } else if (strategy === "chunked") {
           // --- CHUNKED STRATEGY ---
           // Atlas Vector Search index: "taskChunkEmbedding_vector_index" on taskchunkembeddings
           // vector field: embedding (1536 dims, cosine), filter field: project
@@ -68,8 +191,8 @@ async function chatProvider(req, res) {
                 index: "taskChunkEmbedding_vector_index",
                 path: "embedding",
                 queryVector: queryEmbedding,
-                numCandidates: 50,
-                limit: 5,
+                numCandidates: 100,
+                limit: 8,
                 filter: { project: new mongoose.Types.ObjectId(projectId) },
               },
             },
@@ -162,7 +285,8 @@ async function chatProvider(req, res) {
               }));
             }
           }
-        }
+        } // end if/else chunked vs single
+        } // end else (not fullcontext)
       } catch (ragError) {
         // non-fatal: fall back to compact summary only
         errorLogger(`RAG retrieval failed (strategy=${strategy}): ${ragError.message}`, req, ragError);

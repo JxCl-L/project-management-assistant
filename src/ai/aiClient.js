@@ -30,6 +30,13 @@ async function callAI(messages, maxTokens = 600) {
     });
     return response.choices[0].message.content;
   }
+  // TEMP: using gpt-4o to test reasoning on H4 — revert to deepseek-chat after
+  // const response = await getOpenAIClient().chat.completions.create({
+  //   model: "gpt-4o",
+  //   messages,
+  //   max_tokens: maxTokens,
+  // });
+  // return response.choices[0].message.content;
 }
 
 // text-embedding-3-small: 1536 dimensions, cheap (~$0.00002 / 1K tokens)
