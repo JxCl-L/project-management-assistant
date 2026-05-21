@@ -8,24 +8,7 @@ const mongoose = require("mongoose");
 const { StatusCodes } = require("http-status-codes");
 const errorLogger = require("../../helpers/errorLogger.helper.js");
 
-// --- Hybrid search helpers ---
-
-const STOP_WORDS = new Set([
-  'what','which','who','when','where','how','why','did','does','was','were',
-  'have','been','will','would','could','should','the','and','for','are','with',
-  'from','that','this','their','they','them','than','then','also','any','all',
-  'about','make','made','work','worked','some','into','over','after','before',
-  'during','each','work',
-]);
-
-function extractKeywords(text) {
-  return [...new Set(
-    text.toLowerCase()
-      .replace(/[^\w\s]/g, ' ')
-      .split(/\s+/)
-      .filter((w) => w.length >= 3 && !STOP_WORDS.has(w))
-  )];
-}
+// --- RRF: merges vector and BM25 ranked lists into one ---
 
 // Reciprocal Rank Fusion — merges multiple ranked lists into one
 // Each doc scores sum of 1/(k + rank) across all lists it appears in
@@ -51,7 +34,7 @@ async function chatProvider(req, res) {
     // ?strategy=chunked (default) uses TaskChunkEmbedding collection
     // ?strategy=single uses the one-vector-per-task embedding on TaskContent
     // ?strategy=fullcontext dumps all task plainText into the prompt — no retrieval, baseline comparison
-    // ?strategy=hybrid vector search + keyword regex merged via Reciprocal Rank Fusion
+    // ?strategy=hybrid BM25 (Atlas Search) + vector search merged via Reciprocal Rank Fusion
     const strategy = ["single", "fullcontext", "hybrid"].includes(req.query.strategy)
       ? req.query.strategy
       : "chunked";
@@ -126,7 +109,7 @@ async function chatProvider(req, res) {
           const queryEmbedding = await generateEmbedding(lastUserMessage.content);
 
           if (strategy === "hybrid") {
-            // --- HYBRID STRATEGY: vector + keyword regex merged via RRF ---
+            // --- HYBRID STRATEGY: Atlas Search BM25 + vector search merged via RRF ---
             const projectOid = new mongoose.Types.ObjectId(projectId);
 
             // 1. Vector search (wide net)
@@ -146,27 +129,40 @@ async function chatProvider(req, res) {
               { $project: { chunkText: 1, chunkIndex: 1, chunkSize: 1, chunkOverlap: 1, task: 1, "taskInfo.title": 1, "taskInfo.description": 1, score: { $meta: "vectorSearchScore" } } },
             ]);
 
-            // 2. Keyword search (regex on chunkText)
-            const keywords = extractKeywords(lastUserMessage.content);
-            let keywordResults = [];
-            if (keywords.length > 0) {
-              const pattern = keywords.map((k) => `\\b${k}\\b`).join("|");
-              const rawKw = await TaskChunkEmbedding.find({
-                project: projectOid,
-                chunkText: { $regex: pattern, $options: "i" },
-              }).select("chunkText chunkIndex chunkSize chunkOverlap task").limit(20).lean();
-
-              const kwTaskIds = [...new Set(rawKw.map((c) => c.task.toString()))];
-              const kwTasks = await Task.find({ _id: { $in: kwTaskIds } }).select("title description").lean();
-              const kwTaskMap = Object.fromEntries(kwTasks.map((t) => [t._id.toString(), t]));
-              keywordResults = rawKw.map((c) => ({
-                ...c,
-                taskInfo: kwTaskMap[c.task.toString()] || { title: "Unknown", description: "" },
-              }));
+            // 2. BM25 full-text search via Atlas Search (Lucene BM25 scoring)
+            // Requires Atlas Search index "taskChunkEmbedding_text_index" on taskchunkembeddings
+            // with chunkText mapped as "string" and project mapped as "objectId"
+            let bm25Results = [];
+            try {
+              bm25Results = await TaskChunkEmbedding.aggregate([
+                {
+                  $search: {
+                    index: "taskChunkEmbedding_text_index",
+                    compound: {
+                      filter: [{ equals: { path: "project", value: projectOid } }],
+                      should: [{ text: { query: lastUserMessage.content, path: "chunkText" } }],
+                      minimumShouldMatch: 1,
+                    },
+                  },
+                },
+                { $limit: 20 },
+                { $lookup: { from: "tasks", localField: "task", foreignField: "_id", as: "taskInfo" } },
+                { $unwind: "$taskInfo" },
+                {
+                  $project: {
+                    chunkText: 1, chunkIndex: 1, chunkSize: 1, chunkOverlap: 1, task: 1,
+                    "taskInfo.title": 1, "taskInfo.description": 1,
+                    score: { $meta: "searchScore" },
+                  },
+                },
+              ]);
+            } catch (bm25Error) {
+              // Atlas Search index missing or unavailable — falls back to vector-only
+              errorLogger(`BM25 search failed (index may not exist): ${bm25Error.message}`, req, bm25Error);
             }
 
             // 3. RRF merge → top 8
-            const merged = reciprocalRankFusion([vectorResults, keywordResults]).slice(0, 8);
+            const merged = reciprocalRankFusion([vectorResults, bm25Results]).slice(0, 8);
 
             if (merged.length > 0) {
               retrievedContext = merged
