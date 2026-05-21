@@ -246,21 +246,17 @@ function EditorWrapper({
               <ToolbarButton onClick={() => editor.chain().focus().toggleOrderedList().run()} active={editor.isActive("orderedList")} disabled={isPending} title="Ordered list">
                 <ListOrdered className="h-3.5 w-3.5" />
               </ToolbarButton>
-              {isDirty && (
-                <>
-                  <div className="w-px h-4 bg-border mx-1" />
-                  <button
-                    type="button"
-                    onClick={handleSave}
-                    disabled={isPending}
-                    title="Save changes"
-                    className="flex items-center gap-1 px-2 h-7 rounded text-xs font-medium text-blue-400 border border-blue-500/30 bg-blue-500/10 hover:bg-blue-500/20 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
-                  >
-                    <Save className="h-3.5 w-3.5" />
-                    {isPending ? "Saving…" : "Save"}
-                  </button>
-                </>
-              )}
+              <div className="w-px h-4 bg-border mx-1" />
+              <button
+                type="button"
+                onClick={handleSave}
+                disabled={isPending || !isDirty}
+                title={!isDirty ? "No changes to save" : "Save changes"}
+                className="flex items-center gap-1 px-2 h-7 rounded text-xs font-medium text-blue-400 border border-blue-500/30 bg-blue-500/10 hover:bg-blue-500/20 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+              >
+                <Save className="h-3.5 w-3.5" />
+                {isPending ? "Saving…" : isDirty ? "Save" : "No changes"}
+              </button>
             </div>
           )}
 
@@ -376,7 +372,7 @@ export default function TaskContentEdit({ projectId, taskId, role, fieldEditors,
       projectId={projectId}
       taskId={taskId}
       fetchedContent={fetchedContent}
-      rawContent={data?.content ?? null}
+      rawContent={data?.data?.content ?? null}
       canEdit={canEdit}
       mutate={mutate}
       isSuccess={isSuccess}

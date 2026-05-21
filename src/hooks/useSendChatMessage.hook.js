@@ -4,7 +4,7 @@ import api from "@/lib/api.js";
 export function useSendChatMessage() {
   return useMutation({
     mutationFn: async ({ projectId, messages, strategy }) => {
-      const params = strategy ? `?strategy=${strategy}` : "";
+      const params = strategy ? `?strategy=${strategy}&debug=true` : "?debug=true";
       const { data } = await api.post(`projects/${projectId}/chat${params}`, { messages });
       return data.data; // unwrap envelope: { status, message: 'OK', data: { message, _debug } }
     },

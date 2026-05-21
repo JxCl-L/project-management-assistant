@@ -128,7 +128,8 @@ export function AiPanel({ isOpen, onClose, projectId, projectName }) {
       {
         onSuccess: (data) => {
           const reply = data?.message || "No response received.";
-setMessages((prev) => [...prev, { id: Date.now().toString(), role: "ai", content: reply }]);
+          console.log("[RAG]", JSON.stringify({ query: text, reply, debug: data?._debug }, null, 2));
+          setMessages((prev) => [...prev, { id: Date.now().toString(), role: "ai", content: reply }]);
           setApiHistory((prev) => [...prev, { role: "assistant", content: reply }]);
         },
         onError: (error) => {
@@ -256,7 +257,7 @@ setMessages((prev) => [...prev, { id: Date.now().toString(), role: "ai", content
           {/* Strategy toggle */}
           <div className="flex items-center gap-1 mb-2">
             <span className="text-xs text-muted-foreground mr-1">RAG:</span>
-            {["chunked", "single"].map((s) => (
+            {["chunked", "single", "hybrid", "fullcontext"].map((s) => (
               <button
                 key={s}
                 onClick={() => setStrategy(s)}
