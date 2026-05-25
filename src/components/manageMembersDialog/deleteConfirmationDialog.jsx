@@ -37,7 +37,7 @@ export const DeleteConfirmationDialog = ({
     } else if (isDeleteError) {
       toast({
         title: "Failed to delete member",
-        description: deleteError?.message || "Please try again",
+        description: deleteError?.response?.data?.error?.message || deleteError?.message || "Please try again",
         variant: "destructive",
       });
     }

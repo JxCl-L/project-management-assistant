@@ -33,15 +33,12 @@ export function useDeleteMember() {
       return data;
     },
     onSuccess: (response, variables) => {
-      console.log("Member deleted successfully:", response);
       queryClient.invalidateQueries({
         queryKey: ["fetchMembers", variables.projectId ],
         refetchType: "all",
         exact: false
       });
     },
-    onError: (error) => {
-      console.error("Error deleting member:", error);
-    },
+    onError: () => {},
   });
 }
