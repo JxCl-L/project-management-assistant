@@ -1,6 +1,27 @@
 import { useState, useRef, useEffect } from "react";
 import { X, Sparkles, Send, Bot, AlertCircle } from "lucide-react";
+import ReactMarkdown from "react-markdown";
 import { useProjectSummary } from "@/hooks/useProjectSummary.hook.js";
+import { useSendChatMessage } from "@/hooks/useSendChatMessage.hook.js";
+
+const markdownComponents = {
+  h1: ({ children }) => <h1 className="text-base font-bold mt-3 mb-1 first:mt-0">{children}</h1>,
+  h2: ({ children }) => <h2 className="text-sm font-bold mt-3 mb-1 first:mt-0">{children}</h2>,
+  h3: ({ children }) => <h3 className="text-sm font-semibold mt-2 mb-0.5 first:mt-0">{children}</h3>,
+  p: ({ children }) => <p className="mb-2 last:mb-0">{children}</p>,
+  ul: ({ children }) => <ul className="mb-2 last:mb-0 space-y-0.5 pl-4 list-disc">{children}</ul>,
+  ol: ({ children }) => <ol className="mb-2 last:mb-0 space-y-0.5 pl-4 list-decimal">{children}</ol>,
+  li: ({ children }) => <li className="leading-relaxed">{children}</li>,
+  strong: ({ children }) => <strong className="font-semibold">{children}</strong>,
+  em: ({ children }) => <em className="italic">{children}</em>,
+  pre: ({ children }) => (
+    <pre className="bg-black/20 rounded-lg p-3 text-xs font-mono overflow-x-auto my-2">{children}</pre>
+  ),
+  code: ({ children, className }) => (
+    <code className={`bg-black/20 rounded px-1 py-0.5 text-xs font-mono ${className ?? ""}`}>{children}</code>
+  ),
+  hr: () => <hr className="border-border my-2" />,
+};
 
 function AiMessage({ content, isError }) {
   return (
@@ -19,7 +40,11 @@ function AiMessage({ content, isError }) {
             : "bg-muted text-foreground"
         }`}
       >
-        {content}
+        {isError ? (
+          content
+        ) : (
+          <ReactMarkdown components={markdownComponents}>{content}</ReactMarkdown>
+        )}
       </div>
     </div>
   );
@@ -60,8 +85,14 @@ export function AiPanel({ isOpen, onClose, projectId, projectName }) {
   const [messages, setMessages] = useState([WELCOME_MESSAGE]);
   const [inputValue, setInputValue] = useState("");
   const [summarized, setSummarized] = useState(false);
+  const [strategy, setStrategy] = useState("chunked"); // "chunked" | "single"
+  // conversation history sent to the API — excludes the welcome message
+  const [apiHistory, setApiHistory] = useState([]);
   const messagesEndRef = useRef(null);
-  const { mutate: summarize, isPending } = useProjectSummary();
+  const inputRef = useRef(null);
+  const { mutate: summarize, isPending: isSummarizing } = useProjectSummary();
+  const { mutate: sendMessage, isPending: isChatPending } = useSendChatMessage();
+  const isPending = isSummarizing || isChatPending;
 
   useEffect(() => {
     if (messagesEndRef.current) {
@@ -72,8 +103,52 @@ export function AiPanel({ isOpen, onClose, projectId, projectName }) {
   // Reset when a different project is opened
   useEffect(() => {
     setMessages([WELCOME_MESSAGE]);
+    setApiHistory([]);
     setSummarized(false);
   }, [projectId]);
+
+  // Focus input when panel opens
+  useEffect(() => {
+    if (isOpen) inputRef.current?.focus();
+  }, [isOpen]);
+
+  const handleSend = () => {
+    const text = inputValue.trim();
+    if (!text || isPending) return;
+
+    const userDisplayMsg = { id: Date.now().toString(), role: "user", content: text };
+    const updatedHistory = [...apiHistory, { role: "user", content: text }];
+
+    setMessages((prev) => [...prev, userDisplayMsg]);
+    setApiHistory(updatedHistory);
+    setInputValue("");
+
+    sendMessage(
+      { projectId, messages: updatedHistory, strategy },
+      {
+        onSuccess: (data) => {
+          const reply = data?.message || "No response received.";
+          console.log("[RAG]", JSON.stringify({ query: text, reply, debug: data?._debug }, null, 2));
+          setMessages((prev) => [...prev, { id: Date.now().toString(), role: "ai", content: reply }]);
+          setApiHistory((prev) => [...prev, { role: "assistant", content: reply }]);
+        },
+        onError: (error) => {
+          const msg =
+            error?.response?.status === 403
+              ? "You don't have permission to use AI chat in this project."
+              : "Something went wrong. Please try again.";
+          setMessages((prev) => [...prev, { id: Date.now().toString(), role: "ai", content: msg, isError: true }]);
+        },
+      }
+    );
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      handleSend();
+    }
+  };
 
   const handleSummarize = () => {
     const userMsg = {
@@ -90,6 +165,12 @@ export function AiPanel({ isOpen, onClose, projectId, projectName }) {
         setMessages((prev) => [
           ...prev,
           { id: Date.now().toString(), role: "ai", content: summary },
+        ]);
+        // add to apiHistory so follow-up questions have context
+        setApiHistory((prev) => [
+          ...prev,
+          { role: "user", content: "Summarize this project for me." },
+          { role: "assistant", content: summary },
         ]);
       },
       onError: (error) => {
@@ -173,24 +254,42 @@ export function AiPanel({ isOpen, onClose, projectId, projectName }) {
 
         {/* Input */}
         <div className="shrink-0 px-4 py-3 border-t border-border">
+          {/* Strategy toggle */}
+          <div className="flex items-center gap-1 mb-2">
+            <span className="text-xs text-muted-foreground mr-1">RAG:</span>
+            {["chunked", "single", "hybrid", "fullcontext"].map((s) => (
+              <button
+                key={s}
+                onClick={() => setStrategy(s)}
+                className={`px-2 py-0.5 rounded text-xs transition-colors ${
+                  strategy === s
+                    ? "bg-violet-600/30 text-violet-300 border border-violet-500/40"
+                    : "text-muted-foreground hover:text-foreground"
+                }`}
+              >
+                {s}
+              </button>
+            ))}
+          </div>
           <div className="flex items-center gap-2 bg-muted rounded-xl px-3 py-2">
             <input
+              ref={inputRef}
               type="text"
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
+              onKeyDown={handleKeyDown}
               placeholder="Message AI assistant…"
-              className="flex-1 bg-transparent text-sm outline-none placeholder:text-muted-foreground"
+              disabled={isPending}
+              className="flex-1 bg-transparent text-sm outline-none placeholder:text-muted-foreground disabled:opacity-50"
             />
             <button
-              disabled
-              className="shrink-0 p-1.5 rounded-lg bg-violet-600/20 text-violet-400 opacity-50 cursor-not-allowed"
+              onClick={handleSend}
+              disabled={!inputValue.trim() || isPending}
+              className="shrink-0 p-1.5 rounded-lg bg-violet-600/20 text-violet-400 hover:bg-violet-600/30 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
             >
               <Send className="h-3.5 w-3.5" />
             </button>
           </div>
-          <p className="text-xs text-muted-foreground text-center mt-2">
-            Chat coming soon
-          </p>
         </div>
       </div>
     </>

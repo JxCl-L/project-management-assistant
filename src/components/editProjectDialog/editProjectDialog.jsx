@@ -30,19 +30,16 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 import { UpdateProjectSchema } from "@/schema/updateProject.schema.js";
 import { useForm } from "react-hook-form";
-import { useEffect, useState, useContext } from "react";
+import { useEffect, useState } from "react";
 import { useUpdateProject } from "@/hooks/useUpdateProject.hook.js";
 import { useDeleteProject } from "@/hooks/useDeleteProject.hook.js";
 import { useToast } from "@/hooks/use-toast.js";
 import { Toaster } from "@/components/ui/toaster";
 import { Trash2 } from "lucide-react";
-import { ProjectsContext } from "@/context/projects.context.jsx";
-
 
 export function EditProjectDialog({ open, onOpenChange, project }) {
   const [showDeleteAlert, setShowDeleteAlert] = useState(false);
   const { toast } = useToast();
-  const { currentProject, setCurrentProject } = useContext(ProjectsContext);
 
   const {
     mutate: updateProject,
@@ -76,15 +73,6 @@ export function EditProjectDialog({ open, onOpenChange, project }) {
   useEffect(() => {
     if (isUpdateSuccess) {
       toast({ title: "Project updated successfully" });
-
-      // if (currentProject?._id === project._id) {
-      //   setCurrentProject({
-      //     _id: project._id,
-      //     name: project.name,
-      //     description: form.getValues("description"),
-      //   });
-      // }
-
       form.reset();
       onOpenChange(false);
     } else if (isUpdateError) {
@@ -94,7 +82,7 @@ export function EditProjectDialog({ open, onOpenChange, project }) {
         variant: "destructive",
       });
     }
-  }, [isUpdateSuccess, isUpdateError, toast, form, onOpenChange, currentProject, setCurrentProject, project]);
+  }, [isUpdateSuccess, isUpdateError, toast, form, onOpenChange]);
 
   useEffect(() => {
     if (isDeleteSuccess) {
@@ -117,7 +105,6 @@ export function EditProjectDialog({ open, onOpenChange, project }) {
 
   const handleDelete = () => {
     deleteProject({ _id: project._id });
-    console.log("Deleting project with ID:", project._id);
   };
 
   const handleCancel = () => {
