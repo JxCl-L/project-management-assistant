@@ -8,6 +8,12 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { useUpdateTask } from "@/hooks/useUpdateTask.hook.js";
@@ -37,6 +43,13 @@ export function TaskCard(props) {
   const formattedDueDate = dueDate.toLocaleDateString("en-GB", {
     day: "numeric",
     month: "short",
+    year: "numeric",
+  });
+
+  const fullDueDate = dueDate.toLocaleDateString("en-GB", {
+    weekday: "long",
+    day: "numeric",
+    month: "long",
     year: "numeric",
   });
 
@@ -89,7 +102,7 @@ export function TaskCard(props) {
         onClick={handleCardClick}
       >
         <CardHeader className="flex flex-row justify-between items-center">
-          <CardTitle className={cn("basis-2/3 leading-8 transition-colors duration-300", completingStep === "flash" && "text-green-400")}>
+          <CardTitle className={cn("basis-2/3 text-lg font-semibold leading-6 transition-colors duration-300", completingStep === "flash" && "text-green-400")}>
             {title}
           </CardTitle>
           <div className="flex flex-wrap gap-2 justify-end items-center">
@@ -98,11 +111,32 @@ export function TaskCard(props) {
                 <CheckCircle2 className="h-3 w-3" /> Completed!
               </Badge>
             )}
-            <Badge variant="outline">{formattedDueDate}</Badge>
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Badge variant="outline" className="cursor-default">{formattedDueDate}</Badge>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Due date: {fullDueDate}</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
 
-            {priority === "normal" && <Badge className="bg-sky-800" variant="outline">{priority}</Badge>}
-            {priority === "high"   && <Badge className="bg-red-800"  variant="outline">{priority}</Badge>}
-            {priority === "low"    && <Badge className="bg-green-800" variant="outline">{priority}</Badge>}
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  {priority === "normal"
+                    ? <Badge className="bg-sky-800 cursor-default"   variant="outline">{priority}</Badge>
+                    : priority === "high"
+                    ? <Badge className="bg-red-800 cursor-default"   variant="outline">{priority}</Badge>
+                    : <Badge className="bg-green-800 cursor-default" variant="outline">{priority}</Badge>
+                  }
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Priority: {priority}</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
 
           </div>
         </CardHeader>
@@ -119,15 +153,32 @@ export function TaskCard(props) {
             {status === "completed" ? (
               <div className="text-muted-foreground font-bold">Task already completed</div>
             ) : (
-              <>
+              <div className="flex items-center gap-2">
+                <Label
+                  htmlFor="in-progress"
+                  className={cn(
+                    "text-sm transition-colors",
+                    !progress ? "text-foreground font-medium" : "text-muted-foreground"
+                  )}
+                >
+                  Todo
+                </Label>
                 <Switch
                   id="in-progress"
                   checked={progress}
                   onCheckedChange={handleProgressChange}
                   disabled={!permissions.canEditTask}
                 />
-                <Label className="ml-4" htmlFor="in-progress">In Progress</Label>
-              </>
+                <Label
+                  htmlFor="in-progress"
+                  className={cn(
+                    "text-sm transition-colors",
+                    progress ? "text-foreground font-medium" : "text-muted-foreground"
+                  )}
+                >
+                  In Progress
+                </Label>
+              </div>
             )}
           </div>
 

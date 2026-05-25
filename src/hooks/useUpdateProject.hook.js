@@ -27,15 +27,11 @@ export function useUpdateProject() {
       const { data } = await api.patch(`projects`, projectData);
       return data;
     },
-    onSuccess: (response) => {
+    onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: ["fetchProjects"],
         refetchType: "all",
       });
-      console.log("Task updated successfully:", response);
-    },
-    onError: (error) => {
-      console.error("Error updating task:", error);
     },
   });
 }
