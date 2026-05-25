@@ -9,7 +9,7 @@ A collaborative project & task management app with real-time editing and an AI a
 | Framework    | React 19 + Vite                     |
 | Routing      | React Router v7                     |
 | Server State | TanStack React Query v5             |
-| Client State | React Context API                   |
+| Client State | URL params + cookies                |
 | Forms        | React Hook Form + Zod validation    |
 | UI           | Radix UI + Tailwind CSS (shadcn/ui) |
 | HTTP         | Axios with interceptors             |
@@ -19,7 +19,7 @@ A collaborative project & task management app with real-time editing and an AI a
 ## Features
 
 - **Authentication** — register, login, logout with JWT
-- **Projects** — create and manage projects
+- **Projects** — create and manage projects with a collapsible sidebar (state persisted across sessions)
 - **Role-based access** — manager / editor / viewer permissions
 - **Tasks** — create tasks with title, description, priority, status, and due date
 - **Rich text editor** — task content powered by Tiptap

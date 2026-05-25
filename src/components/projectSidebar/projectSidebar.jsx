@@ -1,14 +1,15 @@
-import { ProjectsContext } from "@/context/projects.context.jsx";
 import { useFetchProjects } from "@/hooks/useFetchProjects.hook.js";
-import { useNavigate, useSearchParams, useParams } from "react-router";
-import { useMemo, useContext, useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router";
+import { useState } from "react";
 import Cookies from "js-cookie";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
   SidebarFooter,
+  useSidebar,
   SidebarGroup,
   SidebarHeader,
 } from "@/components/ui/sidebar";
@@ -28,103 +29,38 @@ import { ManageMembersDialog } from "@/components/manageMembersDialog/manageMemb
 import { UserProfile } from "@/components/userProfile/userProfile.jsx";
 
 export function ProjectSidebar() {
-  console.log("🌍 Environment check:", {
-    VITE_API_URL: import.meta.env.VITE_API_URL,
-    mode: import.meta.env.MODE,
-  });
-
-  const [searchParams, setSearchParams] = useSearchParams();
   const { projectId } = useParams();
   const navigate = useNavigate();
   const user = Cookies.get("user") ? JSON.parse(Cookies.get("user")) : null;
 
-  const { projects, setProjects, currentProject, setCurrentProject } =
-    useContext(ProjectsContext);
-
+  const { open, toggleSidebar } = useSidebar();
   const [editProjectDialogOpen, setEditProjectDialogOpen] = useState(false);
   const [manageMembersDialogOpen, setManageMembersDialogOpen] = useState(false);
   const [selectedProject, setSelectedProject] = useState(null);
 
-  let querySortBy = searchParams.get("sortBy") ?? "createdAt";
-  let queryOrder = searchParams.get("order") ?? "asc";
-  let querySearch = searchParams.get("search") ?? "";
-  let queryStatus = searchParams.get("status") ?? "todo,inProgress";
+  const { data, isError, isPending, error } = useFetchProjects({
+    sortBy: "createdAt",
+    order: "asc",
+  });
 
-  const { data, isError, isSuccess, isPending, error, fetchStatus } =
-    useFetchProjects({
-      sortBy: querySortBy,
-      order: queryOrder,
-      search: querySearch,
-      status: queryStatus,
-    });
-
-  // update projects in context when data fetched
-  useEffect(() => {
-    console.log("🔄 useEffect triggered with projects data:", data);
-    if (data?.data?.data) {
-      setProjects(data.data.data);
-    }
-    console.log("✅ Projects set in context:", data?.data?.data);
-    // console.log("📊 Current projects in context:", projects);
-    // projects = [] while data.data.data has values.
-    // why: setProjects is asynchronous.
-    // When you call setProjects(data.data),
-    // the projects state doesn't update immediately in that same render.
-    // It will update in the next render.
-    // So when you log projects right after setProjects,
-    // you're seeing the old value (empty array []),
-    // not the new value.
-  }, [data, setProjects]);
+  const projects = data?.data?.data ?? [];
 
   const selectProject = (project) => {
-    console.log("Selecting project:", project.name, "Role:", project.userRole);
-    setCurrentProject(project);
     navigate(`/projects/${project._id}/tasks`);
   };
 
-  // Sync currentProject with URL param projectId
-  useEffect(() => {
-    if (projects.length > 0 && projectId) {
-      const matched = projects.find((p) => p._id === projectId);
-      if (matched) {
-        setCurrentProject(matched);
-        console.log(
-          "🎯 Current project set:",
-          matched.name,
-          "Role:",
-          matched.userRole
-        );
-      }
-    }
-  }, [projects, projectId, setCurrentProject]);
-
-  console.log("📊 fetchProjects component state:", {
-    fetchStatus,
-    isPending,
-    isError,
-    hasData: !!data,
-    projectsInContext: projects,
-    currentProjectInContext: currentProject?.name,
-    currentRole: currentProject?.userRole,
-    error: error?.message,
-  });
-
-  // handlers for dropdown menu actions
   const handleEditProject = (project, e) => {
     e.stopPropagation();
-    console.log("✏️ Edit project:", project.name);
     setSelectedProject(project);
     setEditProjectDialogOpen(true);
   };
 
   const handleManageMembers = (project, e) => {
     e.stopPropagation();
-    console.log("👥 Manage members for project:", project.name);
     setSelectedProject(project);
     setManageMembersDialogOpen(true);
   };
 
-  // helper to get role badge colors
   const getRoleBadgeColor = (role) => {
     switch (role) {
       case "manager":
@@ -146,46 +82,15 @@ export function ProjectSidebar() {
     return (
       <div className="ml-2 my-2">
         Error loading projects: {error.message}
-        <Button className="mt-2" onClick={() => setSearchParams({})}>Retry</Button>
+        <Button className="mt-2" onClick={() => window.location.reload()}>Retry</Button>
       </div>
     );
   }
 
-  console.log("✅ Projects fetched:", projects);
-  // const projectList = Array.isArray(projects.data) ? projects.data : [];
-  // console.log("📋 project to array as projectList:", projectList);
-
   return (
     <>
-      <div className="flex flex-col items-center h-full">
-        {/* <h1 className="text-white font-bold text-2xl mb-8 w-full">Projects</h1>
-      <ScrollArea className="h-[500px] w-full">
-        <div className="p-2 space-y-1">
-          {projects.length === 0 ? (
-            <p>No projects found.</p>
-          ) : (
-            projects.map((project) => (
-              <Card
-                key={project._id}
-                variant="ghost"
-                className={cn(
-                  "w-full justify-start hover:bg-gray-700 radius-0 rounded-none",
-                  currentProject._id === project._id ? 
-                  "bg-zinc-600 text-white font-bold" 
-                  : 
-                  "text-gray-200"
-
-                )}
-                onClick={() => selectProject(project)}
-              >
-                {project.name}
-              </Card>
-            ))
-          )}
-        </div>
-      </ScrollArea> */}
-        <Sidebar
-          collapsible="none"
+      <Sidebar
+          collapsible="offcanvas"
           className="flex flex-col h-full bg-sidebar-background text-sidebar-foreground border-r border-sidebar-border"
         >
           <SidebarHeader className=" text-xl p-4 border-b border-sidebar-border flex-shrink-0">
@@ -197,8 +102,6 @@ export function ProjectSidebar() {
           </SidebarHeader>
 
           <SidebarContent className="flex-1 overflow-y-auto  px-2 py-4 min-h-0">
-            {/* <div className="flex-1 overflow-y-scroll px-2 py-4"> */}
-
             {projects.length === 0 ? (
               <p className="text-muted-foreground text-sm px-2">
                 No projects found.
@@ -215,9 +118,8 @@ export function ProjectSidebar() {
                       projectId === project._id
                         ? "bg-sidebar-primary text-sidebar-primary-foreground font-bold"
                         : "bg-sidebar-background text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
-                    )} // group: hover to show dropdown menu
+                    )}
                   >
-                    {/* project name and role badge */}
                     <button
                       onClick={() => selectProject(project)}
                       variant="ghost"
@@ -235,7 +137,6 @@ export function ProjectSidebar() {
                       </Badge>
                     </button>
 
-                    {/* dropdown menu */}
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
                         <Button
@@ -245,7 +146,7 @@ export function ProjectSidebar() {
                             "h-8 w-8 opacity-0 group-hover:opacity-100 transition-opacity",
                             projectId === project._id && "opacity-100"
                           )}
-                          onClick={(e) => e.stopPropagation()} // prevent triggering parent onClick: select project
+                          onClick={(e) => e.stopPropagation()}
                         >
                           <MoreVertical className="h-4 w-4" />
                           <span className="sr-only">Open menu</span>
@@ -271,16 +172,6 @@ export function ProjectSidebar() {
                               : "View Members"}
                           </DropdownMenuItem>
                         )}
-
-                        {/* <DropdownMenuSeparator />
-
-                    <DropdownMenuItem
-                      onClick={(e) => handleDeleteProject(project, e)}
-                      className="text-red-600 focus:text-red-600 focus:bg-red-50"
-                    >
-                      <Trash2 className="mr-2 h-4 w-4" />
-                      Delete Project
-                    </DropdownMenuItem> */}
                       </DropdownMenuContent>
                     </DropdownMenu>
                   </div>
@@ -288,7 +179,7 @@ export function ProjectSidebar() {
               })
             )}
           </SidebarContent>
-          {/* </div> */}
+
           <SidebarFooter className=" flex flex-row justify-between border-t border-sidebar-border p-4 bg-sidebar-accent/20 flex-shrink-0">
             <UserProfile
               firstName={user?.firstName}
@@ -298,14 +189,26 @@ export function ProjectSidebar() {
             <Logout />
           </SidebarFooter>
         </Sidebar>
-      </div>
-      {/* Edit Project Dialog */}
+
+      {/* Edge toggle tab */}
+      <button
+        onClick={toggleSidebar}
+        style={{ left: open ? "calc(var(--sidebar-width) - 1px)" : "0" }}
+        className="fixed top-1/2 -translate-y-1/2 z-50 h-10 w-5 hidden md:flex items-center justify-center rounded-r-md bg-sidebar border-y border-r border-sidebar-border shadow-sm hover:bg-sidebar-accent transition-[left] duration-200 ease-linear"
+        aria-label="Toggle sidebar"
+      >
+        {open ? (
+          <ChevronLeft className="h-3 w-3 text-sidebar-foreground" />
+        ) : (
+          <ChevronRight className="h-3 w-3 text-sidebar-foreground" />
+        )}
+      </button>
+
       <EditProjectDialog
         project={selectedProject}
         open={editProjectDialogOpen}
         onOpenChange={setEditProjectDialogOpen}
       />
-      {/* Manage Members Dialog */}
       <ManageMembersDialog
         project={selectedProject}
         open={manageMembersDialogOpen}

@@ -13,8 +13,6 @@ const fetchMembers = async (projectId) => {
     `${import.meta.env.VITE_API_URL}projects/${projectId}/members`
   );
 
-  console.log("🔄 Fetching members for Project:", projectId);
-
   const response = await fetch(url, {
     method: "GET",
     headers: {
@@ -40,6 +38,5 @@ export function useFetchMembers(projectId) {
     // retry: 2,
     enabled: !!projectId,
   });
-  console.log("📊 useFetchMembers Query result:", result?.data);
   return result;
 }
