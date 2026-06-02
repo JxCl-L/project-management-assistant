@@ -223,6 +223,8 @@ $RECYCLE.BIN/
 # Local test result files (contain pasted RAG responses — not for repo)
 src/ai/chat/chat-rag-test-result.http
 src/ai/chat/rag-performance-report.md
+scripts/rag-eval-results*.json
+scripts/rag-eval-report*.md
 
 # End of custom rules
 src/ai/chat/http-client.private.env.json

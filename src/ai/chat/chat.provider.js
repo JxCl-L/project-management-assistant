@@ -40,6 +40,21 @@ async function chatProvider(req, res) {
       : "chunked";
     const debug = req.query.debug === "true";
 
+    // CHUNK_RETRIEVAL_CONFIG=150:50 selects which stored chunk version to retrieve against
+    // defaults to first entry in CHUNK_CONFIGS, or 300/50 if neither is set
+    // _chunkConfig query param overrides env — for eval scripts only, not a user-facing feature
+    const chunkFilter = (() => {
+      const param = req.query._chunkConfig || process.env.CHUNK_RETRIEVAL_CONFIG;
+      if (param) {
+        const [size, overlap] = param.split(":").map(Number);
+        return { chunkSize: size, chunkOverlap: overlap };
+      }
+      try {
+        const { size, overlap } = JSON.parse(process.env.CHUNK_CONFIGS)[0];
+        return { chunkSize: size, chunkOverlap: overlap };
+      } catch { return { chunkSize: 300, chunkOverlap: 50 }; }
+    })();
+
     const [project, currentMember] = await Promise.all([
       Project.findById(projectId).lean(),
       Member.findOne({ user: req.user?.sub, project: projectId }),
@@ -76,6 +91,7 @@ async function chatProvider(req, res) {
     const lastUserMessage = [...messages].reverse().find((m) => m.role === "user");
     let retrievedContext = "";
     let debugChunks = []; // only populated when ?debug=true
+    let hybridStats = null; // {vectorCount, bm25Count, bm25Errored} — hybrid only, surfaces silent BM25 fallback
 
     if (lastUserMessage && allTasks.length > 0) {
       try {
@@ -121,7 +137,7 @@ async function chatProvider(req, res) {
                   queryVector: queryEmbedding,
                   numCandidates: 100,
                   limit: 20,
-                  filter: { project: projectOid },
+                  filter: { project: projectOid, ...chunkFilter },
                 },
               },
               { $lookup: { from: "tasks", localField: "task", foreignField: "_id", as: "taskInfo" } },
@@ -130,16 +146,24 @@ async function chatProvider(req, res) {
             ]);
 
             // 2. BM25 full-text search via Atlas Search (Lucene BM25 scoring)
-            // Requires Atlas Search index "taskChunkEmbedding_text_index" on taskchunkembeddings
-            // with chunkText mapped as "string" and project mapped as "objectId"
+            // Requires Atlas Search index "taskChunkEmbedding_text_index" on taskchunkembeddings,
+            // mapping (dynamic:false): chunkText "string", project "objectId",
+            // chunkSize "number", chunkOverlap "number".
+            // NOTE: the chunkSize/chunkOverlap equals-filters below match NOTHING if those two
+            // fields aren't mapped — BM25 silently returns 0 results (bm25Count=0, no error).
             let bm25Results = [];
+            let bm25Errored = false;
             try {
               bm25Results = await TaskChunkEmbedding.aggregate([
                 {
                   $search: {
                     index: "taskChunkEmbedding_text_index",
                     compound: {
-                      filter: [{ equals: { path: "project", value: projectOid } }],
+                      filter: [
+                        { equals: { path: "project", value: projectOid } },
+                        { equals: { path: "chunkSize", value: chunkFilter.chunkSize } },
+                        { equals: { path: "chunkOverlap", value: chunkFilter.chunkOverlap } },
+                      ],
                       should: [{ text: { query: lastUserMessage.content, path: "chunkText" } }],
                       minimumShouldMatch: 1,
                     },
@@ -158,8 +182,12 @@ async function chatProvider(req, res) {
               ]);
             } catch (bm25Error) {
               // Atlas Search index missing or unavailable — falls back to vector-only
+              bm25Errored = true;
               errorLogger(`BM25 search failed (index may not exist): ${bm25Error.message}`, req, bm25Error);
             }
+
+            // record retrieval composition so eval/debug can detect a silent BM25 fallback
+            hybridStats = { vectorCount: vectorResults.length, bm25Count: bm25Results.length, bm25Errored };
 
             // 3. RRF merge → top 8
             const merged = reciprocalRankFusion([vectorResults, bm25Results]).slice(0, 8);
@@ -189,7 +217,7 @@ async function chatProvider(req, res) {
                 queryVector: queryEmbedding,
                 numCandidates: 100,
                 limit: 8,
-                filter: { project: new mongoose.Types.ObjectId(projectId) },
+                filter: { project: new mongoose.Types.ObjectId(projectId), ...chunkFilter },
               },
             },
             {
@@ -310,7 +338,7 @@ Answer the user's questions based on the context above. If the information is no
     const reply = await callAI(aiMessages, 1000);
 
     const response = { message: reply };
-    if (debug) response._debug = { strategy, retrieved: debugChunks };
+    if (debug) response._debug = { strategy, chunkFilter, retrieved: debugChunks, ...(hybridStats ? { hybrid: hybridStats } : {}) };
     return res.status(StatusCodes.OK).json(response);
   } catch (error) {
     errorLogger(`Error in AI chat: ${error.message}`, req, error);

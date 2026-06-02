@@ -1,19 +1,26 @@
 /**
+ * Returns all chunk configs from CHUNK_CONFIGS env var.
+ * Format: JSON array  e.g. '[{"size":150,"overlap":50},{"size":150,"overlap":25}]'
+ * Falls back to a single default config (size=300, overlap=50) if not set.
+ */
+function getChunkConfigs() {
+  if (process.env.CHUNK_CONFIGS) {
+    return JSON.parse(process.env.CHUNK_CONFIGS);
+  }
+  return [{ size: 300, overlap: 50 }];
+}
+
+/**
  * Splits text into overlapping word-based chunks.
  *
- * chunkSize  — number of words per chunk        (default: CHUNK_SIZE env var or 300)
- * chunkOverlap — words shared between adjacent chunks (default: CHUNK_OVERLAP env var or 50)
- *
- * Example with chunkSize=5, overlap=2 and text "a b c d e f g h":
+ * Example with size=5, overlap=2 and text "a b c d e f g h":
  *   chunk 0: "a b c d e"
  *   chunk 1: "d e f g h"   ← starts 3 words (5-2) after previous chunk start
  *
  * Overlap ensures a sentence split across a boundary still appears fully in at least one chunk,
  * so the vector for that chunk captures the complete thought.
  */
-function chunkText(text, chunkSize, chunkOverlap) {
-  const size = chunkSize || parseInt(process.env.CHUNK_SIZE) || 300;
-  const overlap = chunkOverlap || parseInt(process.env.CHUNK_OVERLAP) || 50;
+function chunkText(text, size, overlap) {
 
   const words = text.trim().split(/\s+/).filter(Boolean);
 
@@ -34,4 +41,4 @@ function chunkText(text, chunkSize, chunkOverlap) {
   return chunks;
 }
 
-module.exports = { chunkText };
+module.exports = { chunkText, getChunkConfigs };

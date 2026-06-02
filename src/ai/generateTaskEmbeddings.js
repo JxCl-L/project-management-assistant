@@ -1,5 +1,5 @@
 const { generateEmbedding } = require("./aiClient.js");
-const { chunkText } = require("./chunker.js");
+const { chunkText, getChunkConfigs } = require("./chunker.js");
 const TaskContent = require("../taskContent/taskContent.schema.js");
 const TaskChunkEmbedding = require("../taskContent/taskChunkEmbedding.schema.js");
 
@@ -28,32 +28,33 @@ async function generateTaskEmbeddings({ taskContentId, taskId, projectId, taskTi
     console.error(`[generateTaskEmbeddings] single-chunk failed for task ${taskId}:`, err.message);
   }
 
-  // chunked embeddings
+  // chunked embeddings — one set of docs per config version
   try {
-    const chunkSize = parseInt(process.env.CHUNK_SIZE) || 300;
-    const chunkOverlap = parseInt(process.env.CHUNK_OVERLAP) || 50;
-    const chunks = chunkText(text, chunkSize, chunkOverlap);
-    console.log(`[embeddings] task ${taskId.toString().slice(-6)}: ${chunks.length} chunks (size=${chunkSize}, overlap=${chunkOverlap})`);
-
     await TaskChunkEmbedding.deleteMany({ taskContent: taskContentId });
 
-    const chunkDocs = await Promise.all(
-      chunks.map(async (chunk, index) => {
-        const embedding = await generateEmbedding(`${taskTitle}\n${taskDescription}\n${chunk}`);
-        return {
-          taskContent: taskContentId,
-          task: taskId,
-          project: projectId,
-          chunkIndex: index,
-          chunkText: chunk,
-          embedding,
-          chunkSize,
-          chunkOverlap,
-        };
-      })
-    );
+    const configs = getChunkConfigs();
+    for (const { size, overlap } of configs) {
+      const chunks = chunkText(text, size, overlap);
+      console.log(`[embeddings] task ${taskId.toString().slice(-6)}: ${chunks.length} chunks (size=${size}, overlap=${overlap})`);
 
-    await TaskChunkEmbedding.insertMany(chunkDocs);
+      const chunkDocs = await Promise.all(
+        chunks.map(async (chunk, index) => {
+          const embedding = await generateEmbedding(`${taskTitle}\n${taskDescription}\n${chunk}`);
+          return {
+            taskContent: taskContentId,
+            task: taskId,
+            project: projectId,
+            chunkIndex: index,
+            chunkText: chunk,
+            embedding,
+            chunkSize: size,
+            chunkOverlap: overlap,
+          };
+        })
+      );
+
+      await TaskChunkEmbedding.insertMany(chunkDocs);
+    }
   } catch (err) {
     console.error(`[generateTaskEmbeddings] chunked failed for task ${taskId}:`, err.message);
   }

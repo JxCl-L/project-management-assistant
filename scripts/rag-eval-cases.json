@@ -1,0 +1,263 @@
+[
+  {
+    "id": "A1",
+    "category": "Specific time and duration facts",
+    "expectedBehavior": "answerable",
+    "expectedTasks": [
+      "Post-mortem: January 15, 2026 Production Outage"
+    ],
+    "query": "What time did the January 15 outage start and how long did it last?",
+    "groundTruth": "The outage started at 10:12 AM PST on January 15, 2026 (when the first PagerDuty alert fired) and lasted 2 hours and 40 minutes, ending at 12:52 PM PST."
+  },
+  {
+    "id": "A2",
+    "category": "Specific date facts",
+    "expectedBehavior": "answerable",
+    "expectedTasks": [
+      "API Rate Limiting — Design & Implementation"
+    ],
+    "query": "When was the API rate limiting design review meeting held?",
+    "groundTruth": "The API rate limiting design review was held on February 3, 2026 at 11:00 AM PST. It lasted 90 minutes; attendees were Bob Chen (lead), Alice Wang (architecture review), and Marcus Chen (implementation)."
+  },
+  {
+    "id": "A3",
+    "category": "Specific date facts",
+    "expectedBehavior": "answerable",
+    "expectedTasks": [
+      "Stripe Payment Integration — Developer Portal"
+    ],
+    "query": "What date did the Stripe integration go live in production?",
+    "groundTruth": "The Stripe integration went live in production on March 15, 2026 at 10:00 AM PST."
+  },
+  {
+    "id": "A4",
+    "category": "Specific date facts",
+    "expectedBehavior": "answerable",
+    "expectedTasks": [
+      "New Engineer Onboarding — Marcus Chen"
+    ],
+    "query": "When did Marcus Chen's first PR get merged?",
+    "groundTruth": "Marcus Chen's first PR (PR #207) was merged on February 6, 2026 and was reviewed by Charlie."
+  },
+  {
+    "id": "B1",
+    "category": "Specific numbers and metrics",
+    "expectedBehavior": "answerable",
+    "expectedTasks": [
+      "Search Index Performance Optimization"
+    ],
+    "query": "What was the P95 search latency before and after the fix in January?",
+    "groundTruth": "Before the fix, the search P95 had regressed to roughly 850ms (the January 22 benchmark measured P95 = 870ms; the pre-regression baseline was 120ms). After the fix, the post-fix benchmark on January 24 showed P95 = 115ms, back within the baseline range."
+  },
+  {
+    "id": "B2",
+    "category": "Specific numbers and metrics",
+    "expectedBehavior": "answerable",
+    "expectedTasks": [
+      "GitHub Actions CI/CD Pipeline Upgrade"
+    ],
+    "query": "How much did the Jenkins to GitHub Actions migration save per year?",
+    "groundTruth": "Approximately $9,600 per year in EC2 costs (the decommissioned Jenkins EC2 instance had cost about $800/month)."
+  },
+  {
+    "id": "B3",
+    "category": "Specific numbers and metrics",
+    "expectedBehavior": "answerable",
+    "expectedTasks": [
+      "Load Testing Report — February 2026"
+    ],
+    "query": "What were the load test results at 500 concurrent users?",
+    "groundTruth": "At 500 concurrent users (the ramp-up scenario): P50 = 88ms, P95 = 410ms, P99 = 780ms; throughput 2,890 requests/second; error rate 0.08%; app-server CPU peaked at 78% and RDS CPU peaked at 52%. The /api/search endpoint degraded first, with P95 reaching 1,100ms at peak load."
+  },
+  {
+    "id": "B4",
+    "category": "Specific numbers and metrics",
+    "expectedBehavior": "answerable",
+    "expectedTasks": [
+      "Stripe Payment Integration — Developer Portal"
+    ],
+    "query": "How many subscriptions were created on the first day Stripe launched?",
+    "groundTruth": "12 subscriptions were created on day one (March 15, 2026): 8 Standard monthly, 2 Standard annual, and 2 Pro monthly."
+  },
+  {
+    "id": "C1",
+    "category": "Person attribution",
+    "expectedBehavior": "answerable",
+    "expectedTasks": [
+      "Load Testing Report — February 2026"
+    ],
+    "query": "Who ran the load testing in February and what tool did they use?",
+    "groundTruth": "Charlie Li ran the load testing (conducted February 12, 2026 against the staging environment), using k6 v0.50."
+  },
+  {
+    "id": "C2",
+    "category": "Person attribution",
+    "expectedBehavior": "unanswerable",
+    "expectedTasks": [
+      "Auth Token Expiry Bug — Investigation & Fix"
+    ],
+    "query": "Who identified the root cause of the auth token expiry bug and when?",
+    "groundTruth": "The root cause was identified on January 19, 2026. Bob Chen was assigned as the primary investigator on January 16, 2026. The seed does not explicitly state who identified the root cause — only that Bob was the lead investigator."
+  },
+  {
+    "id": "C3",
+    "category": "Technical root cause",
+    "expectedBehavior": "answerable",
+    "expectedTasks": [
+      "Auth Token Expiry Bug — Investigation & Fix"
+    ],
+    "query": "What was the root cause of the auth token expiry bug?",
+    "groundTruth": "During the v2.1 deployment on December 14, 2025, an environment-variable rename broke the token TTL config: JWT_ACCESS_TTL_SECONDS was renamed to JWT_ACCESS_EXPIRATION_TTL in the codebase, but the production environment was not updated. The token-generation code then fell back to a hardcoded default of 300 seconds (5 minutes) with no warning log, so access tokens expired after 5 minutes instead of the configured 4 hours (14400 seconds)."
+  },
+  {
+    "id": "D1",
+    "category": "Multi-chunk within one task",
+    "expectedBehavior": "summary",
+    "expectedTasks": [
+      "Post-mortem: January 15, 2026 Production Outage"
+    ],
+    "query": "Walk me through the full timeline of the January 15 outage from alert to full recovery.",
+    "groundTruth": "Timeline (all times PST, January 15, 2026): 10:05 AM — the triggering deploy was released. 10:12 AM — the first PagerDuty alert fired (Sentry fatal error spike); start of the outage. 10:15 AM — Alice Wang acknowledged the alert and began investigating. 10:20 AM — Alice confirmed the API pods were crashlooping in Kubernetes (logs showed 'Error: Cannot find module ../config/db'). 10:25 AM — Alice identified that the 10:05 AM deploy included a file rename not reflected in an import path. 10:30 AM — Alice reverted the deploy via the rollback workflow. 10:38 AM — rollback completed, but the API did not recover because Kubernetes readiness probes were still failing for old pods. 10:40 AM — Bob joined and identified the stuck pods. 11:15 AM — manual pod restart was performed. 11:22 AM — the API recovered but with degraded performance (P95 = 1,200ms) due to cache warming. 12:52 PM — full recovery; P95 returned to baseline (< 200ms) as caches warmed. Total user-visible downtime was 2 hours 40 minutes (10:12 AM – 12:52 PM); cache degradation lasted an additional 90 minutes. The metrics-collector fix (PR #181) was merged and deployed at 2:30 PM with no incident."
+  },
+  {
+    "id": "D2",
+    "category": "Multi-chunk within one task",
+    "expectedBehavior": "summary",
+    "expectedTasks": [
+      "Post-mortem: January 15, 2026 Production Outage"
+    ],
+    "query": "What action items came out of the January 15 outage post-mortem?",
+    "groundTruth": "All action items were assigned and completed by January 23, 2026: (1) Alice — add 'node --check' to the CI pipeline for all entry-point files (done January 16, PR #182); (2) Bob — add the metrics collector to the integration-test startup (done January 18, PR #184); (3) Alice — update the rollback runbook with explicit pod-restart steps (done January 20); (4) Charlie — add a Grafana alert for crashlooping pods (done January 17); (5) all — retrospective meeting held January 20 at 2:00 PM PST, with notes published to Confluence."
+  },
+  {
+    "id": "D3",
+    "category": "Multi-chunk within one task",
+    "expectedBehavior": "summary",
+    "expectedTasks": [
+      "New Engineer Onboarding — Marcus Chen"
+    ],
+    "query": "What was Marcus Chen's schedule on his first day and what issue did he run into with Docker?",
+    "groundTruth": "Marcus's Day 1 schedule (February 1, 2026): 9:00 AM — welcome call with Alice and Bob; 10:00 AM — HR orientation (30 min); 11:00 AM — dev-environment setup session with Bob (estimated 2 hours); 2:00 PM — codebase walkthrough with Charlie; 4:00 PM — end-of-day check-in with Alice. Docker issue: the local Docker Compose setup for the test database required Docker Desktop 4.28+, but his laptop shipped with 4.26; Bob then updated CONTRIBUTING.md to add the minimum Docker Desktop version requirement. (Dev-environment setup was completed by 1:15 PM.)"
+  },
+  {
+    "id": "D4",
+    "category": "Multi-chunk within one task",
+    "expectedBehavior": "summary",
+    "expectedTasks": [
+      "Load Testing Report — February 2026"
+    ],
+    "query": "What were the load test results and what bottlenecks were found?",
+    "groundTruth": "Load test results (k6 v0.50, February 12, 2026, against staging): Steady load (200 users) — P50 = 45ms, P95 = 180ms, P99 = 320ms; throughput 1,240 req/s; error rate 0.02%. Ramp-up (500 users) — P50 = 88ms, P95 = 410ms, P99 = 780ms; throughput 2,890 req/s; error rate 0.08%; /api/search degraded first (P95 1,100ms). Spike (800 users) — P99 reached 4,200ms and error rate hit 2.3% (HTTP 503) in first 30s; after 45s auto-scaling launched a third server and P99 returned to 820ms. Bottlenecks: (1) search endpoint degrades first (partially addressed by Redis query cache, Feb 3); (2) auto-scaling took 45s to respond (minimum instance count raised from 2 to 3); (3) RDS connection pool exhausted during spike (max_connections=100, peak 97; pool size increased to 150). CPU metrics are supporting detail, not required."
+  },
+  {
+    "id": "F1",
+    "category": "Edge case — no content needed",
+    "expectedBehavior": "answerable",
+    "expectedTasks": [],
+    "query": "Which tasks are currently in progress?",
+    "groundTruth": "Six tasks have status 'inProgress': API Rate Limiting — Design & Implementation; Frontend Design System — Initial Setup; OpenAPI Documentation Rewrite; Mobile Responsive Redesign — Dashboard; Analytics Dashboard v2 — Design & Build; and Atlas Core Service Registry — Technical Design."
+  },
+  {
+    "id": "F2",
+    "category": "Edge case — unanswerable",
+    "expectedBehavior": "unanswerable",
+    "expectedTasks": [],
+    "query": "What is the team's Figma file URL?",
+    "groundTruth": "Not answerable from the seed data. Figma is referenced (Priya Sharma delivered Figma mockups/specs for the design system and the mobile redesign), but no Figma file URL appears anywhere in the seed."
+  },
+  {
+    "id": "F3",
+    "category": "Edge case — vague query",
+    "expectedBehavior": "summary",
+    "expectedTasks": [],
+    "query": "Tell me about the project.",
+    "groundTruth": "The project is 'Project Atlas', described as an 'Internal developer platform to streamline engineering workflows, CI/CD, monitoring, and team collaboration.' It was created by Alice Wang. Members: Alice Wang (manager), Bob Chen (editor), and Charlie Li (editor). It contains 21 tasks spanning planning, infrastructure, features, security, and operations."
+  },
+  {
+    "id": "F4",
+    "category": "Edge case — false-positive detection",
+    "expectedBehavior": "answerable",
+    "expectedTasks": [
+      "Post-mortem: January 15, 2026 Production Outage"
+    ],
+    "query": "How long was the January 15 outage?",
+    "groundTruth": "2 hours and 40 minutes (10:12 AM – 12:52 PM PST on January 15, 2026)."
+  },
+  {
+    "id": "G1",
+    "category": "Cross-task synthesis",
+    "expectedBehavior": "multi_task_synthesis",
+    "expectedTasks": [
+      "Search Index Performance Optimization",
+      "GitHub Actions CI/CD Pipeline Upgrade",
+      "Load Testing Report — February 2026"
+    ],
+    "query": "What performance improvements were made this quarter?",
+    "groundTruth": "Performance improvements made this quarter: (1) Search index optimization — the invalid GIN index on content_tsv was dropped and recreated on January 24, bringing search P95 from ~850ms back to 115ms; a Redis query-result cache (60-second TTL) added on February 3 further cut P50 to 12ms for cached queries and reduced average database load by 31%. (2) CI/CD migration (Jenkins to GitHub Actions) — pipeline startup time dropped from about 4 minutes to 45 seconds, average CI duration from 11 minutes to 4 minutes 10 seconds, and failure rate from 7.8% to 3.2%. (3) Load-test-driven capacity changes — minimum app-server count was raised from 2 to 3 on February 25, and the RDS connection pool was increased from 100 to 150 on February 22. Enabling ElastiCache for session storage was planned for March 5, not yet completed in the seed."
+  },
+  {
+    "id": "G2",
+    "category": "Cross-task synthesis",
+    "expectedBehavior": "multi_task_synthesis",
+    "expectedTasks": [
+      "API Rate Limiting — Design & Implementation",
+      "GitHub Actions CI/CD Pipeline Upgrade",
+      "Stripe Payment Integration — Developer Portal",
+      "Analytics Dashboard v2 — Design & Build",
+      "New Engineer Onboarding — Marcus Chen",
+      "Atlas Core Service Registry — Technical Design"
+    ],
+    "query": "What did Bob Chen work on in February?",
+    "groundTruth": "In February 2026 Bob Chen worked on: (1) API Rate Limiting (lead) — led the February 3 design review and opened draft PR #214 on February 5. (2) Jenkins → GitHub Actions migration (lead) — completed Phase 2 (staging deploy pipeline) on February 5, completed Phase 3 (production deploy pipeline) on February 24, and decommissioned the Jenkins instance on February 28. (3) Stripe payment integration (lead) — started integration work on February 3 and ran testing February 24–28. (4) Analytics Dashboard v2 (lead) — completed the API backend (three /api/v1/analytics/ endpoints) on February 28. (5) Marcus Chen's onboarding — ran the dev-environment setup session on February 1 and updated CONTRIBUTING.md with the minimum Docker Desktop version. (6) Atlas Core service registry (infrastructure) — attended the February 10 design kickoff, prepared the cost analysis on February 12 (approved by Alice on February 13), and was assigned to provision the MongoDB collection and Redis key namespace on staging in Phase 1 (starting February 17). He was also a contributor to the OpenAPI rewrite (rate-limiting and auth sections), though the seed gives no specific February date for that work."
+  },
+  {
+    "id": "H1",
+    "category": "Long task — early facts",
+    "expectedBehavior": "answerable",
+    "expectedTasks": [
+      "Atlas Core Service Registry — Technical Design"
+    ],
+    "query": "When was the Atlas Core service registry kickoff meeting and who attended?",
+    "groundTruth": "The design kickoff meeting was held on February 10, 2026 at 2:00 PM PST and lasted two hours. Attendees: Alice Wang (architect), Charlie Li (tech lead), Bob Chen (infrastructure), and Priya Sharma (product)."
+  },
+  {
+    "id": "H2",
+    "category": "Long task — middle facts",
+    "expectedBehavior": "answerable",
+    "expectedTasks": [
+      "Atlas Core Service Registry — Technical Design"
+    ],
+    "query": "What is the Redis cache TTL and what is the maximum number of services that can be registered?",
+    "groundTruth": "For the main service-registry discovery cache, the Redis TTL is 60 seconds. The maximum capacity is 500 registered services per Atlas project. Note: the separate health-check endpoint response cache is 15 seconds."
+  },
+  {
+    "id": "H3",
+    "category": "Long task — deep retrieval",
+    "expectedBehavior": "answerable",
+    "expectedTasks": [
+      "Atlas Core Service Registry — Technical Design"
+    ],
+    "query": "What is the estimated monthly cost of the service registry and who approved it?",
+    "groundTruth": "The total estimated incremental monthly cost is under $20. The cost analysis was prepared by Bob Chen on February 12, 2026 and approved by Alice Wang on February 13, 2026."
+  },
+  {
+    "id": "H4",
+    "category": "Long task — deep retrieval",
+    "expectedBehavior": "answerable",
+    "expectedTasks": [
+      "Atlas Core Service Registry — Technical Design"
+    ],
+    "query": "What technologies were evaluated and rejected for the service registry, and why?",
+    "groundTruth": "For storage, etcd was rejected (operational complexity) and Consul was rejected (licensing cost at scale) — MongoDB was chosen. For the communication protocol, gRPC was evaluated and rejected (on February 10, 2026) because most Atlas services are Node.js-based and the Node.js gRPC ecosystem requires native bindings that complicate Docker builds — REST over HTTPS was chosen."
+  },
+  {
+    "id": "H5",
+    "category": "Long task — deep retrieval",
+    "expectedBehavior": "answerable",
+    "expectedTasks": [
+      "Atlas Core Service Registry — Technical Design"
+    ],
+    "query": "What are the three migration waves for onboarding existing services, and what are their dates?",
+    "groundTruth": "Three waves onboard the 47 existing microservices: Wave 1 (April 1–14, 2026) — the 5 pilot teams (Platform Infrastructure, Developer Experience, Data Pipelines, Payments, Identity), 18 services total; Wave 2 (April 15–30, 2026) — the next 19 highest-traffic services, prioritized by request volume from load balancer logs; Wave 3 (May 1–15, 2026) — the remaining 10 services, including legacy systems."
+  }
+]

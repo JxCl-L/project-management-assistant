@@ -4,9 +4,6 @@ const path = require("path");
 
 dotenv.config({ path: path.resolve(__dirname, "../.env.development") });
 
-// override chunk settings for this RAG test run
-process.env.CHUNK_SIZE = "150";
-process.env.CHUNK_OVERLAP = "50";
 
 const TaskContent = require("../src/taskContent/taskContent.schema");
 const TaskChunkEmbedding = require("../src/taskContent/taskChunkEmbedding.schema");
@@ -16,12 +13,22 @@ const { generateTaskEmbeddings } = require("../src/ai/generateTaskEmbeddings");
 const RAG_TEST_DB = "fullstackTasks_rag_test";
 
 async function backfill() {
+  // --force marks all TaskContent as stale before running, use when CHUNK_CONFIGS changes
+  const force = process.argv.includes("--force");
+
   await mongoose.connect(process.env.DATABASE_URL, { dbName: RAG_TEST_DB });
   console.log(`✅ Connected to MongoDB: ${RAG_TEST_DB}`);
-  console.log(`   CHUNK_SIZE=${process.env.CHUNK_SIZE}, CHUNK_OVERLAP=${process.env.CHUNK_OVERLAP}\n`);
+  console.log(`   CHUNK_CONFIGS=${process.env.CHUNK_CONFIGS}`);
+  console.log(`   mode: ${force ? "force (all)" : "stale only"}\n`);
+
+  if (force) {
+    await TaskChunkEmbedding.deleteMany({});
+    await TaskContent.updateMany({}, { embeddingStale: true });
+    console.log("🔁 Cleared all chunk embeddings and marked all TaskContent as stale\n");
+  }
 
   const staleContents = await TaskContent.find({ embeddingStale: true }).lean();
-  console.log(`📋 Found ${staleContents.length} stale TaskContent(s) to process\n`);
+  console.log(`📋 Found ${staleContents.length} TaskContent(s) to process\n`);
 
   if (staleContents.length === 0) {
     console.log("Nothing to do. All embeddings are up to date.");

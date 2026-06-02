@@ -10,6 +10,7 @@ const Project = require("../src/projects/project.schema");
 const Member = require("../src/projectMembers/member.schema");
 const Task = require("../src/tasks/task.schema");
 const TaskContent = require("../src/taskContent/taskContent.schema");
+const TaskChunkEmbedding = require("../src/taskContent/taskChunkEmbedding.schema");
 
 const RAG_TEST_DB = "fullstackTasks_rag_test";
 
@@ -342,6 +343,7 @@ async function seed() {
   await mongoose.connect(process.env.DATABASE_URL, { dbName: RAG_TEST_DB });
   console.log(`✅ Connected to MongoDB: ${RAG_TEST_DB}`);
 
+  await TaskChunkEmbedding.deleteMany({});
   await TaskContent.deleteMany({});
   await Task.deleteMany({});
   await Member.deleteMany({});

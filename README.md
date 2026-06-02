@@ -72,8 +72,7 @@ A RESTful Express.js backend for a collaborative project & task management syste
    | `JWT_SECRET` | Any long random string |
    | `OPENAI_API_KEY` | OpenAI API key — used for embeddings and GPT-4o-mini fallback |
    | `DEEPSEEK_API_KEY` | DeepSeek API key — primary chat model |
-   | `CHUNK_SIZE` | Words per chunk for RAG (default: `150`) |
-   | `CHUNK_OVERLAP` | Overlap words between chunks (default: `25`) |
+   | `CHUNK_CONFIGS` | JSON array of chunk versions, e.g. `[{"size":150,"overlap":50},{"size":150,"overlap":25}]` (default: single version size=300, overlap=50) |
    | `EMBEDDING_DEBOUNCE_MS` | Delay before re-embedding after a content save (default: `15000`) |
 
 4. Seed the RAG test database
@@ -86,17 +85,47 @@ A RESTful Express.js backend for a collaborative project & task management syste
    ```bash
    node scripts/backfill-embeddings-rag-test.js
    ```
+   Add `--force` to wipe all existing chunk embeddings and re-generate from scratch (required when `CHUNK_CONFIGS` changes):
+   ```bash
+   CHUNK_CONFIGS='[{"size":150,"overlap":50},{"size":150,"overlap":25}]' \
+     node scripts/backfill-embeddings-rag-test.js --force
+   ```
 
-6. Create the Atlas Vector Search index on your cluster in the Atlas UI (Atlas Search tab):
+6. Create the Atlas Search indexes on your cluster in the Atlas UI (Atlas Search tab):
 
-   **Index name:** `taskChunkEmbedding_vector_index` — collection: `taskchunkembeddings` (database: `fullstackTasks_rag_test`)
+   **Vector index** — `taskChunkEmbedding_vector_index` on `taskchunkembeddings` (database: `fullstackTasks_rag_test`):
+   ```json
+   {
+     "fields": [
+       { "type": "vector",  "path": "embedding", "numDimensions": 1536, "similarity": "cosine" },
+       { "type": "filter",  "path": "project" },
+       { "type": "filter",  "path": "chunkSize" },
+       { "type": "filter",  "path": "chunkOverlap" }
+     ]
+   }
+   ```
 
-   Use this definition:
+   **BM25 search index** — `taskChunkEmbedding_text_index` on `taskchunkembeddings` (required for hybrid strategy):
+   ```json
+   {
+     "mappings": {
+       "dynamic": false,
+       "fields": {
+         "chunkText":    { "type": "string" },
+         "project":      { "type": "objectId" },
+         "chunkSize":    { "type": "number" },
+         "chunkOverlap": { "type": "number" }
+       }
+     }
+   }
+   ```
+
+   **Vector index** — `taskContent_vector_index` on `taskcontents` (required for `single` strategy):
    ```json
    {
      "fields": [
        { "type": "vector", "path": "embedding", "numDimensions": 1536, "similarity": "cosine" },
-       { "type": "filter", "path": "project" }
+       { "type": "filter", "path": "task" }
      ]
    }
    ```
@@ -116,6 +145,7 @@ The server will run on `http://localhost:3001`
 | `npm run dev:rag-test` | Start dev server using `fullstackTasks_rag_test` — **use this for development** |
 | `npm run dev` | Start dev server using `DATABASE_NAME` from `.env.development` |
 | `npm run start` | Start production server |
+| `npm run eval:rag` | Run RAG strategy comparison eval (requires server running via `dev:rag-test`) |
 
 Test queries covering date facts, numbers, attribution, multi-chunk retrieval, strategy comparison, and edge cases are in `src/ai/chat/chat-rag-test.http`. Append `?debug=true` to any chat request to see retrieved chunks and similarity scores in the response.
 
@@ -160,7 +190,9 @@ src/
 └── settings/
 scripts/
 ├── seed-rag-test.js                  # Seeds fullstackTasks_rag_test — use this
-├── backfill-embeddings-rag-test.js   # Generates embeddings for RAG test dataset
+├── backfill-embeddings-rag-test.js   # Generates embeddings for RAG test dataset (--force to rebuild)
+├── rag-eval.js                       # RAG strategy comparison runner (outputs .json + .md report)
+├── rag-eval-cases.json               # Eval test cases (questions + expected retrieval targets)
 └── seed.js                           # Legacy seed (outdated schema — do not use)
 ```
 
