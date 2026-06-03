@@ -1,5 +1,12 @@
 import "./index.css";
 
+// Apply saved theme before first render to avoid flash
+const savedTheme = localStorage.getItem("theme") ?? "dark";
+const root = document.documentElement;
+root.classList.remove("dark", "solarized-light");
+if (savedTheme === "dark") root.classList.add("dark");
+else if (savedTheme === "solarized-light") root.classList.add("solarized-light");
+
 import { RouterProvider } from "react-router";
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";

@@ -40,6 +40,10 @@ export function useUpdateMember() {
         refetchType: "all",
         exact: false,
       });
+      queryClient.invalidateQueries({
+        queryKey: ["fetchProjects"],
+        refetchType: "all",
+      });
     },
     onError: (error) => {
       console.error("Error updating member:", error);

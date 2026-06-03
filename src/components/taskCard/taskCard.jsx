@@ -19,7 +19,7 @@ import { Label } from "@/components/ui/label";
 import { useUpdateTask } from "@/hooks/useUpdateTask.hook.js";
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router";
-import { RotateCcw, Check, CheckCircle2 } from "lucide-react";
+import { RotateCcw, CheckCircle2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export function TaskCard(props) {
@@ -27,6 +27,7 @@ export function TaskCard(props) {
   const [progress, setProgress] = useState(false);
   const [isDeleting] = useState(false);
   const [completingStep, setCompletingStep] = useState(null); // null | 'flash' | 'collapse'
+  const [completeHovered, setCompleteHovered] = useState(false);
   const { projectId } = useParams();
   const navigate = useNavigate();
 
@@ -116,7 +117,7 @@ export function TaskCard(props) {
                 <TooltipTrigger asChild>
                   <Badge variant="outline" className="cursor-default">{formattedDueDate}</Badge>
                 </TooltipTrigger>
-                <TooltipContent>
+                <TooltipContent side="top" className="bg-transparent border-0 shadow-none text-foreground font-medium [text-shadow:_0_0_6px_hsl(var(--background)),_0_0_6px_hsl(var(--background))]">
                   <p>Due date: {fullDueDate}</p>
                 </TooltipContent>
               </Tooltip>
@@ -125,14 +126,17 @@ export function TaskCard(props) {
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger asChild>
-                  {priority === "normal"
-                    ? <Badge className="bg-sky-800 cursor-default"   variant="outline">{priority}</Badge>
-                    : priority === "high"
-                    ? <Badge className="bg-red-800 cursor-default"   variant="outline">{priority}</Badge>
-                    : <Badge className="bg-green-800 cursor-default" variant="outline">{priority}</Badge>
-                  }
+                  <Badge
+                    className="cursor-default border-0"
+                    style={{
+                      backgroundColor: `hsl(var(--priority-${priority === "normal" ? "normal" : priority}-bg))`,
+                      color: `hsl(var(--priority-${priority === "normal" ? "normal" : priority}-text))`,
+                    }}
+                  >
+                    {priority}
+                  </Badge>
                 </TooltipTrigger>
-                <TooltipContent>
+                <TooltipContent side="bottom" className="bg-transparent border-0 shadow-none text-foreground font-medium [text-shadow:_0_0_6px_hsl(var(--background)),_0_0_6px_hsl(var(--background))]">
                   <p>Priority: {priority}</p>
                 </TooltipContent>
               </Tooltip>
@@ -190,7 +194,24 @@ export function TaskCard(props) {
                   Reopen Task
                 </Button>
               ) : (
-                <Button onClick={handleTaskCompleted}>Completed</Button>
+                <Button
+                  variant="outline"
+                  onClick={handleTaskCompleted}
+                  onMouseEnter={() => setCompleteHovered(true)}
+                  onMouseLeave={() => setCompleteHovered(false)}
+                  className="group/btn transition-all duration-200"
+                  style={completeHovered ? {
+                    borderColor: "hsl(var(--complete-action-border))",
+                    color: "hsl(var(--complete-action))",
+                    backgroundColor: "hsl(var(--complete-action-bg))",
+                  } : {}}
+                >
+                  <span className="relative mr-2 h-4 w-4">
+                    <CheckCircle2 className="absolute inset-0 h-4 w-4 text-foreground/50 transition-all duration-200 group-hover/btn:opacity-0 group-hover/btn:scale-50" />
+                    <CheckCircle2 className="absolute inset-0 h-4 w-4 opacity-0 scale-50 transition-all duration-200 group-hover/btn:opacity-100 group-hover/btn:scale-100" />
+                  </span>
+                  Completed
+                </Button>
               )}
             </div>
           )}

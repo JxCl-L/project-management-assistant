@@ -1,8 +1,6 @@
 import { ProjectSidebar } from "@/components/projectSidebar/projectSidebar.jsx";
-import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
-import { Button } from "@/components/ui/button";
+import { SidebarProvider } from "@/components/ui/sidebar";
 import { CreateProjectDialog } from "@/components/createProjectDialog/createProjectDialog.jsx";
-import { useState } from "react";
 
 
 export default function Projects() {
@@ -13,7 +11,7 @@ export default function Projects() {
 
         {/* Sidebar section */}
         <section className="flex h-full basis-1/4 flex-shrink-0">
-          <ProjectSidebar />
+          <ProjectSidebar collapsible="none" />
         </section>
 
         {/* Main Content */}

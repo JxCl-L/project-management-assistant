@@ -156,28 +156,20 @@ export default function Task() {
         {/* task header */}
 
         <header className="p-8">
-          <div className="flex flex-row justify-between items-center gap-4">
-            <TaskTitleEdit
-              projectId={projectId}
-              taskId={_id}
-              initialTitle={title}
-              role={projectData?.data?.currentUserRole}
-            />
-            <div className="flex items-center gap-3">
-              <PresenceAvatarStack roomUsers={roomUsers} />
-              <div className="flex items-center gap-1 text-sm text-center text-gray-400">
-                <span>
-                  Created by{" "}
-                  <span className="text-gray-100">{creatorName}</span>
-                </span>
-                <span>•</span>
-                <span>{formatDate(createdAt)}</span>
-              </div>
+          <div className="flex flex-col gap-2">
+            {/* Row 1: title + delete */}
+            <div className="flex flex-row justify-between items-start gap-4">
+              <TaskTitleEdit
+                projectId={projectId}
+                taskId={_id}
+                initialTitle={title}
+                role={projectData?.data?.currentUserRole}
+              />
               {projectData?.data?.currentUserRole === "manager" && (
                 <AlertDialog>
                   <AlertDialogTrigger asChild>
                     <button
-                      className="p-1.5 rounded-md text-muted-foreground hover:text-red-400 hover:bg-red-500/10 transition-colors"
+                      className="p-1.5 rounded-md text-muted-foreground hover:text-red-400 hover:bg-red-500/10 transition-colors flex-shrink-0"
                       aria-label="Delete task"
                     >
                       <Trash2 className="h-4 w-4" />
@@ -204,11 +196,20 @@ export default function Task() {
                 </AlertDialog>
               )}
             </div>
+            {/* Row 2: avatars + creator + date */}
+            <div className="flex items-center gap-3">
+              <PresenceAvatarStack roomUsers={roomUsers} />
+              <div className="flex items-center gap-1.5 text-sm text-muted-foreground">
+                <span>Created by <span className="text-foreground">{creatorName}</span></span>
+                <span>·</span>
+                <span>{formatDate(createdAt)}</span>
+              </div>
+            </div>
           </div>
         </header>
 
-        <div className="flex flex-col gap-4 px-8">
-          <div className="flex flex-row gap-4 h-20">
+        <div className="flex flex-col gap-6 px-8">
+          <div className="flex flex-row gap-4">
             {/* due date */}
             <TaskDueDateSelection
               projectId={projectId}

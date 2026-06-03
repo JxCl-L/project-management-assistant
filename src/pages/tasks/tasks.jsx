@@ -77,13 +77,13 @@ export default function Tasks() {
             <header className="mb-6 flex flex-row justify-between">
               <SidebarTrigger className="md:hidden self-start mt-1 mr-2" />
               <ProjectHeaderEditable project={project} />
-              <div className="flex items-start gap-2">
+              <div className="flex items-center gap-2">
                 <button
                   onClick={() => {
                     setIsAiPanelOpen((v) => !v);
                     setAiPanelEverOpened(true);
                   }}
-                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-sm transition-all duration-150 ${
+                  className={`flex items-center gap-1.5 px-3 h-10 rounded-lg border text-sm transition-all duration-150 ${
                     isAiPanelOpen
                       ? "bg-violet-600/20 border-violet-500/40 text-violet-300"
                       : "border-border text-foreground hover:bg-muted"

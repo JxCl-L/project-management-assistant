@@ -1,4 +1,4 @@
-import { UserAvatar, colorForUser } from "./UserAvatar";
+import { UserAvatar, indexForUser } from "./UserAvatar";
 
 export function PresenceField({ field, fieldEditors, roomUsers, children }) {
   const editorId = fieldEditors?.[field];
@@ -8,7 +8,7 @@ export function PresenceField({ field, fieldEditors, roomUsers, children }) {
     return <>{children}</>;
   }
 
-  const color = colorForUser(editorId);
+  const color = `var(--avatar-${indexForUser(editorId)})`;
   const name = `${editor.firstName} ${editor.lastName}`;
 
   return (

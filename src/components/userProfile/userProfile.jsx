@@ -1,15 +1,14 @@
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { UserAvatar } from "@/components/task/UserAvatar";
 
-export function UserProfile({firstName, lastName} = props) {
+export function UserProfile({ firstName, lastName, userId }) {
   return (
     <div className="flex items-center gap-3">
-      <Avatar className="h-9 w-9">
-        <AvatarImage src="https://github.com/shadcn.png" />
-        <AvatarFallback className="text-sm font-semibold cursor-default select-none">
-            {firstName.slice(0, 1)}{lastName.slice(0, 1)}
-        </AvatarFallback>
-      </Avatar>
-      {/* <h4 className="text-sm">Hello, {firstName}</h4> */}
+      <UserAvatar
+        firstName={firstName}
+        lastName={lastName}
+        userId={userId ?? "default"}
+        className="h-9 w-9"
+      />
     </div>
   );
 }

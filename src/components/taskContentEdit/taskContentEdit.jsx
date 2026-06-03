@@ -47,8 +47,8 @@ const ToolbarButton = ({ onClick, active, disabled, children, title }) => (
 
 const ContentSkeleton = ({ canEdit }) => (
   <div className="flex flex-col gap-2">
-    <div className="font-medium text-sm h-5">Content</div>
-    <div className="border rounded-md overflow-hidden">
+    <div className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-2">Content</div>
+    <div className="rounded-md overflow-hidden bg-muted/50">
       {canEdit && (
         <div className="flex items-center gap-0.5 px-2 py-1 border-b bg-muted/30">
           {Array.from({ length: 6 }).map((_, i) => (
@@ -198,13 +198,20 @@ function EditorWrapper({
     <div className="flex flex-col gap-2">
       {/* Header */}
       <div className="flex items-center justify-between h-5">
-        <span className="font-medium text-sm">Content</span>
+        <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Content</span>
         {canEdit && !previewMode && (
           <button
             onClick={handleRewrite}
             disabled={isRewriting || isPending || !editor.getText().trim()}
             title={!editor.getText().trim() ? "Add some content before rewriting" : "Rewrite with AI"}
-            className="flex items-center gap-1.5 px-2.5 py-1 rounded-md border border-violet-500/30 bg-violet-600/10 text-violet-300 text-xs hover:bg-violet-600/20 hover:border-violet-500/50 disabled:opacity-40 disabled:cursor-not-allowed transition-all duration-150"
+            className="flex items-center gap-1.5 px-2.5 py-1 rounded-md border text-xs disabled:opacity-40 disabled:cursor-not-allowed transition-all duration-150"
+            style={{
+              color: "hsl(var(--ai-accent))",
+              backgroundColor: "hsl(var(--ai-accent-bg))",
+              borderColor: "hsl(var(--ai-accent-border))",
+            }}
+            onMouseEnter={e => e.currentTarget.style.backgroundColor = "hsl(var(--ai-accent-hover-bg))"}
+            onMouseLeave={e => e.currentTarget.style.backgroundColor = "hsl(var(--ai-accent-bg))"}
           >
             <Sparkles className={cn("h-3 w-3", isRewriting && "animate-pulse")} />
             {isRewriting ? "Rewriting…" : "Rewrite"}
@@ -215,12 +222,8 @@ function EditorWrapper({
       <PresenceField field="content" fieldEditors={fieldEditors} roomUsers={roomUsers}>
         <div
           className={cn(
-            "border rounded-md transition-colors overflow-hidden",
-            previewMode
-              ? "border-violet-500/50 ring-1 ring-violet-500/25"
-              : isFocused && canEdit
-              ? "border-ring ring-1 ring-ring"
-              : "border-input",
+            "rounded-md transition-colors overflow-hidden bg-muted/50",
+            previewMode && "ring-1 ring-[hsl(var(--ai-accent-border))]",
             !canEdit && !previewMode && "opacity-60"
           )}
         >
@@ -262,9 +265,9 @@ function EditorWrapper({
 
           {/* Preview banner */}
           {previewMode && (
-            <div className="flex items-center gap-1.5 px-3 py-1.5 border-b border-violet-500/30 bg-violet-500/10">
-              <Sparkles className="h-3 w-3 text-violet-400 shrink-0" />
-              <span className="text-xs text-violet-300">AI rewrite preview — review before applying</span>
+            <div className="flex items-center gap-1.5 px-3 py-1.5 border-b" style={{ borderColor: "hsl(var(--ai-accent-border))", backgroundColor: "hsl(var(--ai-accent-bg))" }}>
+              <Sparkles className="h-3 w-3 shrink-0" style={{ color: "hsl(var(--ai-accent))" }} />
+              <span className="text-xs" style={{ color: "hsl(var(--ai-accent))" }}>AI rewrite preview — review before applying</span>
             </div>
           )}
 
@@ -273,7 +276,7 @@ function EditorWrapper({
             className={cn(
               "prose prose-sm max-w-none px-3 py-2 min-h-[120px] text-sm focus-within:outline-none",
               "[&_.ProseMirror]:outline-none [&_.ProseMirror]:min-h-[100px]",
-              previewMode && "bg-violet-950/10"
+              previewMode && "bg-[hsl(var(--ai-accent-bg))]"
             )}
           />
 
@@ -331,19 +334,18 @@ function EditorWrapper({
       )}
 
       {showMessage && isSuccess && !previewMode && (
-        <Alert className="bg-green-50 border-green-200">
+        <Alert className="bg-green-500/10 border-green-500/30">
           <div className="flex items-center gap-2">
-            <CheckCircle2 className="h-4 w-4 text-green-600" />
-            <AlertDescription className="text-green-800 text-sm">Content saved successfully!</AlertDescription>
+            <CheckCircle2 className="h-4 w-4 text-green-500" />
+            <AlertDescription className="text-green-500 text-sm">Content saved successfully!</AlertDescription>
           </div>
         </Alert>
       )}
-
       {showMessage && error && (
-        <Alert className="bg-red-50 border-red-200">
+        <Alert className="bg-red-500/10 border-red-500/30">
           <div className="flex items-center gap-2">
-            <XCircle className="h-4 w-4 text-red-600" />
-            <AlertDescription className="text-red-800 text-sm">Failed to save content. Please try again.</AlertDescription>
+            <XCircle className="h-4 w-4 text-red-500" />
+            <AlertDescription className="text-red-500 text-sm">Failed to save content. Please try again.</AlertDescription>
           </div>
         </Alert>
       )}

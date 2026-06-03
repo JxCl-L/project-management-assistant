@@ -1,4 +1,4 @@
-import { UserAvatar, colorForUser } from "./UserAvatar";
+import { UserAvatar } from "./UserAvatar";
 
 const MAX_VISIBLE = 4;
 

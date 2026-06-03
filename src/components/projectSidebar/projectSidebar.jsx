@@ -1,6 +1,6 @@
 import { useFetchProjects } from "@/hooks/useFetchProjects.hook.js";
 import { useNavigate, useParams } from "react-router";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Cookies from "js-cookie";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -23,15 +23,35 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { MoreVertical, Pencil, Users, Trash2 } from "lucide-react";
+import { MoreVertical, Pencil, Users, Trash2, Sun, Moon, Palette } from "lucide-react";
 import { EditProjectDialog } from "@/components/editProjectDialog/editProjectDialog.jsx";
 import { ManageMembersDialog } from "@/components/manageMembersDialog/manageMembersDialog.jsx";
 import { UserProfile } from "@/components/userProfile/userProfile.jsx";
 
-export function ProjectSidebar() {
+const THEMES = [
+  { key: "light", label: "Light", icon: Sun },
+  { key: "dark", label: "Dark", icon: Moon },
+  { key: "solarized-light", label: "Solarized", icon: Palette },
+];
+
+function applyTheme(theme) {
+  const root = document.documentElement;
+  root.classList.remove("dark", "solarized-light");
+  if (theme === "dark") root.classList.add("dark");
+  else if (theme === "solarized-light") root.classList.add("solarized-light");
+  localStorage.setItem("theme", theme);
+}
+
+export function ProjectSidebar({ collapsible = "offcanvas" }) {
   const { projectId } = useParams();
   const navigate = useNavigate();
   const user = Cookies.get("user") ? JSON.parse(Cookies.get("user")) : null;
+
+  const [currentTheme, setCurrentTheme] = useState(() => localStorage.getItem("theme") ?? "dark");
+
+  useEffect(() => {
+    applyTheme(currentTheme);
+  }, [currentTheme]);
 
   const { open, toggleSidebar } = useSidebar();
   const [editProjectDialogOpen, setEditProjectDialogOpen] = useState(false);
@@ -64,13 +84,13 @@ export function ProjectSidebar() {
   const getRoleBadgeColor = (role) => {
     switch (role) {
       case "manager":
-        return "bg-blue-500/20 text-blue-300";
+        return "bg-[hsl(var(--role-manager-bg))] text-[hsl(var(--role-manager-text))]";
       case "editor":
-        return "bg-green-500/20 text-green-300";
+        return "bg-[hsl(var(--role-editor-bg))] text-[hsl(var(--role-editor-text))]";
       case "viewer":
-        return "bg-gray-500/20 text-gray-300";
+        return "bg-[hsl(var(--role-viewer-bg))] text-[hsl(var(--role-viewer-text))]";
       default:
-        return "bg-gray-500/20 text-gray-300";
+        return "bg-[hsl(var(--role-viewer-bg))] text-[hsl(var(--role-viewer-text))]";
     }
   };
 
@@ -90,7 +110,7 @@ export function ProjectSidebar() {
   return (
     <>
       <Sidebar
-          collapsible="offcanvas"
+          collapsible={collapsible}
           className="flex flex-col h-full bg-sidebar-background text-sidebar-foreground border-r border-sidebar-border"
         >
           <SidebarHeader className=" text-xl p-4 border-b border-sidebar-border flex-shrink-0">
@@ -116,7 +136,7 @@ export function ProjectSidebar() {
                     className={cn(
                       "group relative flex w-full pl-4 pr-1 py-1 rounded-md transition-colors duration-150",
                       projectId === project._id
-                        ? "bg-sidebar-primary text-sidebar-primary-foreground font-bold"
+                        ? "bg-sidebar-accent text-sidebar-accent-foreground font-medium"
                         : "bg-sidebar-background text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
                     )}
                   >
@@ -185,24 +205,52 @@ export function ProjectSidebar() {
               firstName={user?.firstName}
               lastName={user?.lastName}
               email={user?.email}
+              userId={user?._id}
             />
-            <Logout />
+            <div className="flex items-center gap-1">
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" size="icon" className="h-8 w-8">
+                    {(() => {
+                      const Icon = THEMES.find(t => t.key === currentTheme)?.icon ?? Palette;
+                      return <Icon className="h-4 w-4" />;
+                    })()}
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  {THEMES.map(({ key, label, icon: Icon }) => (
+                    <DropdownMenuItem
+                      key={key}
+                      onClick={() => setCurrentTheme(key)}
+                      className={cn("flex items-center gap-2", currentTheme === key && "font-semibold")}
+                    >
+                      <Icon className="h-4 w-4" />
+                      {label}
+                      {currentTheme === key && <span className="ml-auto text-xs text-muted-foreground">✓</span>}
+                    </DropdownMenuItem>
+                  ))}
+                </DropdownMenuContent>
+              </DropdownMenu>
+              <Logout />
+            </div>
           </SidebarFooter>
         </Sidebar>
 
       {/* Edge toggle tab */}
-      <button
-        onClick={toggleSidebar}
-        style={{ left: open ? "calc(var(--sidebar-width) - 1px)" : "0" }}
-        className="fixed top-1/2 -translate-y-1/2 z-50 h-10 w-5 hidden md:flex items-center justify-center rounded-r-md bg-sidebar border-y border-r border-sidebar-border shadow-sm hover:bg-sidebar-accent transition-[left] duration-200 ease-linear"
-        aria-label="Toggle sidebar"
-      >
-        {open ? (
-          <ChevronLeft className="h-3 w-3 text-sidebar-foreground" />
-        ) : (
-          <ChevronRight className="h-3 w-3 text-sidebar-foreground" />
-        )}
-      </button>
+      {collapsible !== "none" && (
+        <button
+          onClick={toggleSidebar}
+          style={{ left: open ? "calc(var(--sidebar-width) - 1px)" : "0" }}
+          className="fixed top-1/2 -translate-y-1/2 z-50 h-10 w-5 hidden md:flex items-center justify-center rounded-r-md bg-sidebar border-y border-r border-sidebar-border shadow-sm hover:bg-sidebar-accent transition-[left] duration-200 ease-linear"
+          aria-label="Toggle sidebar"
+        >
+          {open ? (
+            <ChevronLeft className="h-3 w-3 text-sidebar-foreground" />
+          ) : (
+            <ChevronRight className="h-3 w-3 text-sidebar-foreground" />
+          )}
+        </button>
+      )}
 
       <EditProjectDialog
         project={selectedProject}

@@ -21,20 +21,20 @@ export function TasksProgressBar({ todo = 0, inProgress = 0, completed = 0 }) {
       <div className="flex w-full h-2.5 rounded-full overflow-hidden bg-muted gap-0.5">
         {todo > 0 && (
           <div
-            className="bg-red-500 rounded-l-full transition-all duration-500"
-            style={{ width: `${todoPct}%` }}
+            className="rounded-l-full transition-all duration-500"
+            style={{ width: `${todoPct}%`, backgroundColor: "hsl(var(--status-todo))" }}
           />
         )}
         {inProgress > 0 && (
           <div
-            className="bg-orange-400 transition-all duration-500"
-            style={{ width: `${inProgressPct}%` }}
+            className="transition-all duration-500"
+            style={{ width: `${inProgressPct}%`, backgroundColor: "hsl(var(--status-in-progress))" }}
           />
         )}
         {completed > 0 && (
           <div
-            className="bg-green-500 rounded-r-full transition-all duration-500"
-            style={{ width: `${completedPctBar}%` }}
+            className="rounded-r-full transition-all duration-500"
+            style={{ width: `${completedPctBar}%`, backgroundColor: "hsl(var(--status-completed))" }}
           />
         )}
       </div>
@@ -42,15 +42,15 @@ export function TasksProgressBar({ todo = 0, inProgress = 0, completed = 0 }) {
       {/* legend */}
       <div className="flex gap-5 mt-2.5">
         <div className="flex items-center gap-1.5">
-          <span className="inline-block w-2.5 h-2.5 rounded-full bg-red-500" />
+          <span className="inline-block w-2.5 h-2.5 rounded-full" style={{ backgroundColor: "hsl(var(--status-todo))" }} />
           <span className="text-xs text-muted-foreground">{todo} Todo</span>
         </div>
         <div className="flex items-center gap-1.5">
-          <span className="inline-block w-2.5 h-2.5 rounded-full bg-orange-400" />
+          <span className="inline-block w-2.5 h-2.5 rounded-full" style={{ backgroundColor: "hsl(var(--status-in-progress))" }} />
           <span className="text-xs text-muted-foreground">{inProgress} In Progress</span>
         </div>
         <div className="flex items-center gap-1.5">
-          <span className="inline-block w-2.5 h-2.5 rounded-full bg-green-500" />
+          <span className="inline-block w-2.5 h-2.5 rounded-full" style={{ backgroundColor: "hsl(var(--status-completed))" }} />
           <span className="text-xs text-muted-foreground">{completed} Completed</span>
         </div>
       </div>
