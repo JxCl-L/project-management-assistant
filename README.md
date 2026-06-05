@@ -166,6 +166,51 @@ Swagger UI is available at:
 http://localhost:3001/api-docs
 ```
 
+## Performance
+
+### Database Indexes
+
+The Task model defines indexes to avoid full collection scans on every query:
+
+```js
+taskSchema.index({ project: 1 });                // all queries filter by project
+taskSchema.index({ project: 1, status: 1 });     // status counts + filtered list
+taskSchema.index({ project: 1, createdAt: -1 }); // sort desc
+taskSchema.index({ project: 1, createdAt: 1 });  // sort asc
+```
+
+These become significant as task collections grow — without them every query scans the entire collection.
+
+### $facet Aggregation for Task Counts
+
+The `GET /tasks` endpoint previously ran **7 sequential database round-trips** per request (1 auth check + 5 count queries + 1 find). On MongoDB Atlas the network round-trip alone costs ~40ms per query.
+
+The 5 `countDocuments()` calls were replaced with a single `$facet` aggregation that computes all counts in one round-trip:
+
+```js
+Task.aggregate([
+  { $match: { project: projectId } },
+  { $facet: {
+    total:      [{ $count: "count" }],
+    completed:  [{ $match: { status: "completed"  } }, { $count: "count" }],
+    todo:       [{ $match: { status: "todo"        } }, { $count: "count" }],
+    inProgress: [{ $match: { status: "inProgress" } }, { $count: "count" }],
+    filtered:   [{ $match: { status: { $in: statusArray } } }, { $count: "count" }],
+  }},
+])
+```
+
+### Benchmark (local server → MongoDB Atlas M0)
+
+| Metric | Before | After | Improvement |
+|---|---|---|---|
+| Count queries (5 → 1) | ~210ms | ~44ms | **~166ms saved** |
+| Total per request | ~370ms | ~181ms | **~51% faster** |
+
+> Measured with `Date.now()` logs around each query. Numbers are averages across multiple project fetches.
+
+---
+
 ## Project Structure
 
 ```
