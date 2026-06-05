@@ -47,7 +47,7 @@
       "Search Index Performance Optimization"
     ],
     "query": "What was the P95 search latency before and after the fix in January?",
-    "groundTruth": "Before the fix, the search P95 had regressed to roughly 850ms (the January 22 benchmark measured P95 = 870ms; the pre-regression baseline was 120ms). After the fix, the post-fix benchmark on January 24 showed P95 = 115ms, back within the baseline range."
+    "groundTruth": "Required: before the fix the P95 had regressed to roughly 850ms (January 22 benchmark measured 870ms); after the fix the January 24 benchmark showed P95 = 115ms. Good-to-have: the pre-regression baseline was 120ms."
   },
   {
     "id": "B2",

@@ -81,13 +81,14 @@ const BEHAVIOR_EMOJI = {
 // ── helpers ──────────────────────────────────────────────────────────────────
 
 function parseArgs(argv) {
-  const args = { only: null, variants: null, skipPreflight: false, reportOnly: false };
+  const args = { only: null, variants: null, skipPreflight: false, reportOnly: false, out: null };
   for (let i = 0; i < argv.length; i++) {
     const a = argv[i];
-    if (a === "--only")          args.only       = new Set(argv[++i].split(",").map((s) => s.trim()));
-    if (a === "--variants")      args.variants   = new Set(argv[++i].split(",").map((s) => s.trim()));
+    if (a === "--only")           args.only          = new Set(argv[++i].split(",").map((s) => s.trim()));
+    if (a === "--variants")       args.variants      = new Set(argv[++i].split(",").map((s) => s.trim()));
     if (a === "--skip-preflight") args.skipPreflight = true;
-    if (a === "--report-only")   args.reportOnly = true;
+    if (a === "--report-only")    args.reportOnly    = true;
+    if (a === "--out")            args.out           = argv[++i].trim();
   }
   return args;
 }
@@ -470,6 +471,15 @@ function printConsoleSummary(cases, variants, cells) {
 async function main() {
   const args = parseArgs(process.argv.slice(2));
 
+  // ── resolve output paths (default → scripts/ ; --out → scripts/reruns/) ──
+  const outDir      = args.out
+    ? path.resolve(__dirname, "reruns")
+    : __dirname;
+  const suffix      = args.out ? `-${args.out}` : "";
+  fs.mkdirSync(outDir, { recursive: true });
+  const resultsPath = path.resolve(outDir, `rag-eval-results${suffix}.json`);
+  const reportPath  = path.resolve(outDir, `rag-eval-report${suffix}.md`);
+
   let cases = JSON.parse(fs.readFileSync(CASES_PATH, "utf8"));
   if (args.only) cases = cases.filter((c) => args.only.has(c.id));
   let variants = VARIANTS;
@@ -480,15 +490,15 @@ async function main() {
 
   // ── report-only mode: read saved results, skip all API calls ──────────────
   if (args.reportOnly) {
-    const saved = JSON.parse(fs.readFileSync(RESULTS_PATH, "utf8"));
+    const saved = JSON.parse(fs.readFileSync(resultsPath, "utf8"));
     const { projectId, cells, generatedAt } = saved;
     const filteredCells = cells.filter((c) =>
       (!args.only || args.only.has(c.caseId)) &&
       (!args.variants || args.variants.has(c.variantKey))
     );
-    fs.writeFileSync(REPORT_PATH, renderReport({ projectId, cases, variants, cells: filteredCells, preflightInfo: null, generatedAt }));
+    fs.writeFileSync(reportPath, renderReport({ projectId, cases, variants, cells: filteredCells, preflightInfo: null, generatedAt }));
     printConsoleSummary(cases, variants, filteredCells);
-    console.log(`\n📄 ${path.relative(process.cwd(), REPORT_PATH)}`);
+    console.log(`\n📄 ${path.relative(process.cwd(), reportPath)}`);
     return;
   }
 
@@ -536,12 +546,12 @@ async function main() {
 
   const generatedAt = new Date().toISOString();
 
-  fs.writeFileSync(RESULTS_PATH, JSON.stringify({ generatedAt, projectId, cells }, null, 2));
-  fs.writeFileSync(REPORT_PATH, renderReport({ projectId, cases, variants, cells, preflightInfo, generatedAt }));
+  fs.writeFileSync(resultsPath, JSON.stringify({ generatedAt, projectId, cells }, null, 2));
+  fs.writeFileSync(reportPath, renderReport({ projectId, cases, variants, cells, preflightInfo, generatedAt }));
 
   printConsoleSummary(cases, variants, cells);
-  console.log(`\n📄 ${path.relative(process.cwd(), REPORT_PATH)}`);
-  console.log(`📄 ${path.relative(process.cwd(), RESULTS_PATH)}`);
+  console.log(`\n📄 ${path.relative(process.cwd(), reportPath)}`);
+  console.log(`📄 ${path.relative(process.cwd(), resultsPath)}`);
 }
 
 main().catch((err) => {
