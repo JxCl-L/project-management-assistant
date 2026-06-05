@@ -255,7 +255,7 @@ function EditorWrapper({
                 onClick={handleSave}
                 disabled={isPending || !isDirty}
                 title={!isDirty ? "No changes to save" : "Save changes"}
-                className="flex items-center gap-1 px-2 h-7 rounded text-xs font-medium text-blue-400 border border-blue-500/30 bg-blue-500/10 hover:bg-blue-500/20 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+                className="flex items-center gap-1 px-2 h-7 rounded text-xs font-medium text-[hsl(var(--ai-accent))] border border-[hsl(var(--ai-accent-border))] bg-[hsl(var(--ai-accent-bg))] hover:bg-[hsl(var(--ai-accent-hover-bg))] disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
               >
                 <Save className="h-3.5 w-3.5" />
                 {isPending ? "Saving…" : isDirty ? "Save" : "No changes"}
@@ -295,7 +295,7 @@ function EditorWrapper({
 
       {/* Rewrite error */}
       {rewriteError && (
-        <div className="flex items-center gap-2 px-3 py-2 rounded-md bg-red-500/10 border border-red-500/20 text-red-400 text-xs">
+        <div className="flex items-center gap-2 px-3 py-2 rounded-md bg-destructive/10 border border-destructive/20 text-destructive text-xs">
           <XCircle className="h-3.5 w-3.5 shrink-0" />
           {rewriteError}
         </div>
@@ -309,7 +309,7 @@ function EditorWrapper({
             <button
               onClick={handleApply}
               disabled={isPending}
-              className="flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs text-green-400 border border-green-500/30 bg-green-500/10 hover:bg-green-500/20 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+              className="flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs text-[hsl(var(--success))] border border-[hsl(var(--success-border))] bg-[hsl(var(--success-muted))] hover:bg-[hsl(var(--success-muted))] disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
             >
               <Check className="h-3.5 w-3.5" />
               Apply
@@ -318,13 +318,13 @@ function EditorWrapper({
               onClick={handleCopy}
               className="flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs text-muted-foreground border border-border hover:bg-muted hover:text-foreground transition-colors"
             >
-              {copied ? <ClipboardCheck className="h-3.5 w-3.5 text-green-400" /> : <Copy className="h-3.5 w-3.5" />}
+              {copied ? <ClipboardCheck className="h-3.5 w-3.5 text-[hsl(var(--success))]" /> : <Copy className="h-3.5 w-3.5" />}
               {copied ? "Copied!" : "Copy"}
             </button>
             <button
               onClick={handleDiscard}
               disabled={isPending}
-              className="flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs text-red-400 border border-red-500/30 bg-red-500/10 hover:bg-red-500/20 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+              className="flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs text-destructive border border-destructive/30 bg-destructive/10 hover:bg-destructive/20 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
             >
               <X className="h-3.5 w-3.5" />
               Discard
@@ -334,18 +334,18 @@ function EditorWrapper({
       )}
 
       {showMessage && isSuccess && !previewMode && (
-        <Alert className="bg-green-500/10 border-green-500/30">
+        <Alert className="bg-[hsl(var(--success-muted))] border-[hsl(var(--success-border))]">
           <div className="flex items-center gap-2">
-            <CheckCircle2 className="h-4 w-4 text-green-500" />
-            <AlertDescription className="text-green-500 text-sm">Content saved successfully!</AlertDescription>
+            <CheckCircle2 className="h-4 w-4 text-[hsl(var(--success))]" />
+            <AlertDescription className="text-[hsl(var(--success))] text-sm">Content saved successfully!</AlertDescription>
           </div>
         </Alert>
       )}
       {showMessage && error && (
-        <Alert className="bg-red-500/10 border-red-500/30">
+        <Alert className="bg-destructive/10 border-destructive/30">
           <div className="flex items-center gap-2">
-            <XCircle className="h-4 w-4 text-red-500" />
-            <AlertDescription className="text-red-500 text-sm">Failed to save content. Please try again.</AlertDescription>
+            <XCircle className="h-4 w-4 text-destructive" />
+            <AlertDescription className="text-destructive text-sm">Failed to save content. Please try again.</AlertDescription>
           </div>
         </Alert>
       )}

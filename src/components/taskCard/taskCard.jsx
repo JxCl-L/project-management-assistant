@@ -95,20 +95,20 @@ export function TaskCard(props) {
         className={cn(
           "w-full min-w-96 cursor-pointer group transition-all duration-300",
           isDeleting
-            ? "bg-red-500/10 border-red-500/30"
+            ? "bg-destructive/10 border-destructive/30"
             : completingStep === "flash"
-            ? "bg-green-500/10 border-green-500/50 shadow-[0_0_12px_2px_rgba(34,197,94,0.2)]"
+            ? "bg-[hsl(var(--success-muted))] border-[hsl(var(--success-border))] shadow-[0_0_12px_2px_hsl(var(--success)/0.2)]"
             : "hover:bg-accent/50"
         )}
         onClick={handleCardClick}
       >
         <CardHeader className="flex flex-row justify-between items-center">
-          <CardTitle className={cn("basis-2/3 text-lg font-semibold leading-6 transition-colors duration-300", completingStep === "flash" && "text-green-400")}>
+          <CardTitle className={cn("basis-2/3 text-lg font-semibold leading-6 transition-colors duration-300", completingStep === "flash" && "text-[hsl(var(--success))]")}>
             {title}
           </CardTitle>
           <div className="flex flex-wrap gap-2 justify-end items-center">
             {completingStep === "flash" && (
-              <Badge className="bg-green-500/20 text-green-400 border-green-500/40 flex items-center gap-1">
+              <Badge className="bg-[hsl(var(--success-muted))] text-[hsl(var(--success))] border-[hsl(var(--success-border))] flex items-center gap-1">
                 <CheckCircle2 className="h-3 w-3" /> Completed!
               </Badge>
             )}

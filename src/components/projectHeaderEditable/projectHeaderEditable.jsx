@@ -84,7 +84,7 @@ export function ProjectHeaderEditable({ project }) {
           <button
             onClick={handleSave}
             disabled={isPending}
-            className="flex items-center gap-1 text-xs text-green-500 hover:text-green-400 disabled:opacity-50 transition-colors"
+            className="flex items-center gap-1 text-xs text-[hsl(var(--success))] hover:text-[hsl(var(--success))] disabled:opacity-50 transition-colors"
           >
             <Check className="h-3.5 w-3.5" />
             {isPending ? "Saving…" : "Save"}

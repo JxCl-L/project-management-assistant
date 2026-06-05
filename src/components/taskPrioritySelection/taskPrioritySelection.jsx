@@ -47,8 +47,8 @@ export default function TaskPrioritySelection({
     <div className="flex-1">
       <div className="flex items-center gap-2 mb-2">
         <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Priority</span>
-        {showMessage && isSuccess && <span className="text-xs text-green-500 transition-opacity duration-300">✓ Updated</span>}
-        {showMessage && error && <span className="text-xs text-red-500 transition-opacity duration-300">✗ Failed</span>}
+        {showMessage && isSuccess && <span className="text-xs text-[hsl(var(--success))] transition-opacity duration-300">✓ Updated</span>}
+        {showMessage && error && <span className="text-xs text-destructive transition-opacity duration-300">✗ Failed</span>}
       </div>
       <Select value={currentPriority} onValueChange={handlePriorityChange} disabled={isPending || !canEdit}>
         <SelectTrigger className="h-10 w-full px-3 py-2 text-sm border-none shadow-none bg-muted/50 rounded-md disabled:opacity-60 disabled:cursor-not-allowed focus:ring-0 focus:ring-offset-0">

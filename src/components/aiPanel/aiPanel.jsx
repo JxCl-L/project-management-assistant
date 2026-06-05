@@ -15,10 +15,10 @@ const markdownComponents = {
   strong: ({ children }) => <strong className="font-semibold">{children}</strong>,
   em: ({ children }) => <em className="italic">{children}</em>,
   pre: ({ children }) => (
-    <pre className="bg-black/20 rounded-lg p-3 text-xs font-mono overflow-x-auto my-2">{children}</pre>
+    <pre className="bg-foreground/10 rounded-lg p-3 text-xs font-mono overflow-x-auto my-2">{children}</pre>
   ),
   code: ({ children, className }) => (
-    <code className={`bg-black/20 rounded px-1 py-0.5 text-xs font-mono ${className ?? ""}`}>{children}</code>
+    <code className={`bg-foreground/10 rounded px-1 py-0.5 text-xs font-mono ${className ?? ""}`}>{children}</code>
   ),
   hr: () => <hr className="border-border my-2" />,
 };
@@ -26,17 +26,17 @@ const markdownComponents = {
 function AiMessage({ content, isError }) {
   return (
     <div className="flex items-start gap-2.5">
-      <div className="shrink-0 w-7 h-7 rounded-full bg-violet-600/20 border border-violet-500/30 flex items-center justify-center mt-0.5">
+      <div className="shrink-0 w-7 h-7 rounded-full bg-[hsl(var(--ai-accent-bg))] border border-[hsl(var(--ai-accent-border))] flex items-center justify-center mt-0.5">
         {isError ? (
-          <AlertCircle className="h-3.5 w-3.5 text-red-400" />
+          <AlertCircle className="h-3.5 w-3.5 text-destructive" />
         ) : (
-          <Bot className="h-3.5 w-3.5 text-violet-400" />
+          <Bot className="h-3.5 w-3.5 text-[hsl(var(--ai-accent))]" />
         )}
       </div>
       <div
         className={`max-w-[85%] rounded-2xl rounded-tl-sm px-4 py-2.5 text-sm leading-relaxed ${
           isError
-            ? "bg-red-500/10 text-red-300 border border-red-500/20"
+            ? "bg-destructive/10 text-destructive border border-destructive/20"
             : "bg-muted text-foreground"
         }`}
       >
@@ -53,7 +53,7 @@ function AiMessage({ content, isError }) {
 function UserMessage({ content }) {
   return (
     <div className="flex justify-end">
-      <div className="max-w-[85%] rounded-2xl rounded-tr-sm px-4 py-2.5 text-sm leading-relaxed bg-violet-600 text-white">
+      <div className="max-w-[85%] rounded-2xl rounded-tr-sm px-4 py-2.5 text-sm leading-relaxed bg-[hsl(var(--ai-accent))] text-[hsl(var(--primary-foreground))]">
         {content}
       </div>
     </div>
@@ -63,8 +63,8 @@ function UserMessage({ content }) {
 function TypingIndicator() {
   return (
     <div className="flex items-start gap-2.5">
-      <div className="shrink-0 w-7 h-7 rounded-full bg-violet-600/20 border border-violet-500/30 flex items-center justify-center">
-        <Bot className="h-3.5 w-3.5 text-violet-400" />
+      <div className="shrink-0 w-7 h-7 rounded-full bg-[hsl(var(--ai-accent-bg))] border border-[hsl(var(--ai-accent-border))] flex items-center justify-center">
+        <Bot className="h-3.5 w-3.5 text-[hsl(var(--ai-accent))]" />
       </div>
       <div className="bg-muted rounded-2xl rounded-tl-sm px-4 py-3 flex items-center gap-1">
         <span className="w-1.5 h-1.5 rounded-full bg-muted-foreground animate-bounce [animation-delay:0ms]" />
@@ -191,7 +191,7 @@ export function AiPanel({ isOpen, onClose, projectId, projectName }) {
     <>
       {/* Backdrop (mobile) */}
       <div
-        className={`fixed inset-0 z-40 bg-black/40 backdrop-blur-sm transition-opacity duration-300 lg:hidden ${
+        className={`fixed inset-0 z-40 bg-black/40 backdrop-blur-sm transition-opacity duration-300 ${
           isOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
         }`}
         onClick={onClose}
@@ -206,8 +206,8 @@ export function AiPanel({ isOpen, onClose, projectId, projectName }) {
         {/* Header */}
         <div className="flex items-center justify-between px-4 py-3.5 border-b border-border shrink-0">
           <div className="flex items-center gap-2">
-            <div className="w-7 h-7 rounded-full bg-violet-600/20 border border-violet-500/30 flex items-center justify-center">
-              <Sparkles className="h-3.5 w-3.5 text-violet-400" />
+            <div className="w-7 h-7 rounded-full bg-[hsl(var(--ai-accent-bg))] border border-[hsl(var(--ai-accent-border))] flex items-center justify-center">
+              <Sparkles className="h-3.5 w-3.5 text-[hsl(var(--ai-accent))]" />
             </div>
             <div>
               <p className="text-sm font-semibold leading-none">AI Assistant</p>
@@ -241,7 +241,7 @@ export function AiPanel({ isOpen, onClose, projectId, projectName }) {
             <div className="flex justify-center pt-2">
               <button
                 onClick={handleSummarize}
-                className="flex items-center gap-2 px-4 py-2 rounded-full border border-violet-500/40 bg-violet-600/10 text-violet-300 text-sm hover:bg-violet-600/20 hover:border-violet-500/60 transition-all duration-150"
+                className="flex items-center gap-2 px-4 py-2 rounded-full border border-[hsl(var(--ai-accent-border))] bg-[hsl(var(--ai-accent-bg))] text-[hsl(var(--ai-accent))] text-sm hover:bg-[hsl(var(--ai-accent-bg))] hover:border-[hsl(var(--ai-accent-border))] transition-all duration-150"
               >
                 <Sparkles className="h-3.5 w-3.5" />
                 Summarize this project
@@ -263,7 +263,7 @@ export function AiPanel({ isOpen, onClose, projectId, projectName }) {
                 onClick={() => setStrategy(s)}
                 className={`px-2 py-0.5 rounded text-xs transition-colors ${
                   strategy === s
-                    ? "bg-violet-600/30 text-violet-300 border border-violet-500/40"
+                    ? "bg-[hsl(var(--ai-accent-hover-bg))] text-[hsl(var(--ai-accent))] border border-[hsl(var(--ai-accent-border))]"
                     : "text-muted-foreground hover:text-foreground"
                 }`}
               >
@@ -285,7 +285,7 @@ export function AiPanel({ isOpen, onClose, projectId, projectName }) {
             <button
               onClick={handleSend}
               disabled={!inputValue.trim() || isPending}
-              className="shrink-0 p-1.5 rounded-lg bg-violet-600/20 text-violet-400 hover:bg-violet-600/30 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+              className="shrink-0 p-1.5 rounded-lg bg-[hsl(var(--ai-accent-bg))] text-[hsl(var(--ai-accent))] hover:bg-[hsl(var(--ai-accent-hover-bg))] transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
             >
               <Send className="h-3.5 w-3.5" />
             </button>

@@ -65,7 +65,7 @@ export default function TaskTitleEdit({ projectId, taskId, initialTitle, role })
         <button
           onClick={handleSave}
           disabled={isPending || !editingTitle.trim()}
-          className="shrink-0 p-1 rounded text-green-500 hover:text-green-400 hover:bg-green-500/10 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+          className="shrink-0 p-1 rounded text-[hsl(var(--success))] hover:text-[hsl(var(--success))] hover:bg-[hsl(var(--success-muted))] disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
           aria-label="Save title"
         >
           <Check className="h-5 w-5" />
@@ -73,7 +73,7 @@ export default function TaskTitleEdit({ projectId, taskId, initialTitle, role })
         <button
           onClick={handleCancel}
           disabled={isPending}
-          className="shrink-0 p-1 rounded text-red-500 hover:text-red-400 hover:bg-red-500/10 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+          className="shrink-0 p-1 rounded text-destructive hover:text-destructive hover:bg-destructive/10 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
           aria-label="Cancel edit"
         >
           <X className="h-5 w-5" />

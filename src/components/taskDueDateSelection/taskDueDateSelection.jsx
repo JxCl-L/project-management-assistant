@@ -50,8 +50,8 @@ export default function TaskDueDateSelection({
     <div className="flex-1">
       <div className="flex items-center gap-2 mb-2">
         <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Due Date</span>
-        {showMessage && isSuccess && <span className="text-xs text-green-500 transition-opacity duration-300">✓ Updated</span>}
-        {showMessage && error && <span className="text-xs text-red-500 transition-opacity duration-300">✗ Failed</span>}
+        {showMessage && isSuccess && <span className="text-xs text-[hsl(var(--success))] transition-opacity duration-300">✓ Updated</span>}
+        {showMessage && error && <span className="text-xs text-destructive transition-opacity duration-300">✗ Failed</span>}
       </div>
       <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>

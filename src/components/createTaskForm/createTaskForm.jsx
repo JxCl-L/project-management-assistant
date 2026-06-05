@@ -276,7 +276,7 @@ export function CreateTaskForm({ onSuccess }) {
 
             {/* Generate error */}
             {generateError && (
-              <p className="text-xs text-red-400">{generateError}</p>
+              <p className="text-xs text-destructive">{generateError}</p>
             )}
 
             {/* Generate button */}

@@ -11,7 +11,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useSearchParams, useParams } from "react-router";
 import Cookies from "js-cookie";
 import { ProjectSidebar } from "@/components/projectSidebar/projectSidebar.jsx";
-import { SidebarProvider, SidebarInset, SidebarTrigger } from "@/components/ui/sidebar";
+import { SidebarProvider, SidebarInset, SidebarTrigger, useSidebar } from "@/components/ui/sidebar";
 import { CreateTaskDialog } from "@/components/createTaskDialog/createTaskDialog.jsx";
 import { TaskPagination } from "@/components/taskPagination/taskPagination.jsx";
 import { AiPanel } from "@/components/aiPanel/aiPanel.jsx";
@@ -38,6 +38,12 @@ function todaysDate() {
     year: "numeric",
   };
   return today.toLocaleDateString("en-GB", options);
+}
+
+function ClosedSidebarTrigger() {
+  const { open, isMobile } = useSidebar();
+  if (!isMobile && open) return null;
+  return <SidebarTrigger className="fixed top-4 left-4 z-30" />;
 }
 
 export default function Tasks() {
@@ -69,13 +75,13 @@ export default function Tasks() {
     <SidebarProvider defaultOpen={defaultSidebarOpen}>
       <ProjectSidebar />
       <SidebarInset>
+        <ClosedSidebarTrigger />
         {/* Main Content */}
         <main className="flex flex-col p-8 overflow-y-auto h-full">
           <div className="w-11/12 mx-auto">
 
             {/* Project Header */}
             <header className="mb-6 flex flex-row justify-between">
-              <SidebarTrigger className="md:hidden self-start mt-1 mr-2" />
               <ProjectHeaderEditable project={project} />
               <div className="flex items-center gap-2">
                 <button
@@ -85,7 +91,7 @@ export default function Tasks() {
                   }}
                   className={`flex items-center gap-1.5 px-3 h-10 rounded-lg border text-sm transition-all duration-150 ${
                     isAiPanelOpen
-                      ? "bg-violet-600/20 border-violet-500/40 text-violet-300"
+                      ? "border-[hsl(var(--ai-accent-border))] text-[hsl(var(--ai-accent))] bg-[hsl(var(--ai-accent-bg))]"
                       : "border-border text-foreground hover:bg-muted"
                   }`}
                 >

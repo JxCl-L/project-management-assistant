@@ -4,14 +4,13 @@ import { useState, useEffect } from "react";
 import Cookies from "js-cookie";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { ChevronLeft, ChevronRight } from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
   SidebarFooter,
-  useSidebar,
   SidebarGroup,
   SidebarHeader,
+  SidebarTrigger,
 } from "@/components/ui/sidebar";
 import { cn } from "@/lib/utils.js";
 import { Logout } from "@/components/logout/logout.jsx";
@@ -53,7 +52,6 @@ export function ProjectSidebar({ collapsible = "offcanvas" }) {
     applyTheme(currentTheme);
   }, [currentTheme]);
 
-  const { open, toggleSidebar } = useSidebar();
   const [editProjectDialogOpen, setEditProjectDialogOpen] = useState(false);
   const [manageMembersDialogOpen, setManageMembersDialogOpen] = useState(false);
   const [selectedProject, setSelectedProject] = useState(null);
@@ -114,7 +112,10 @@ export function ProjectSidebar({ collapsible = "offcanvas" }) {
           className="flex flex-col h-full bg-sidebar-background text-sidebar-foreground border-r border-sidebar-border"
         >
           <SidebarHeader className=" text-xl p-4 border-b border-sidebar-border flex-shrink-0">
-            <h1 className="font-semibold">Projects</h1>
+            <div className="flex items-center justify-between">
+              <h1 className="font-semibold">Projects</h1>
+              <SidebarTrigger />
+            </div>
             <p className="text-muted-foreground text-sm mb-2">
               Manage your projects by selecting from the list
             </p>
@@ -236,21 +237,6 @@ export function ProjectSidebar({ collapsible = "offcanvas" }) {
           </SidebarFooter>
         </Sidebar>
 
-      {/* Edge toggle tab */}
-      {collapsible !== "none" && (
-        <button
-          onClick={toggleSidebar}
-          style={{ left: open ? "calc(var(--sidebar-width) - 1px)" : "0" }}
-          className="fixed top-1/2 -translate-y-1/2 z-50 h-10 w-5 hidden md:flex items-center justify-center rounded-r-md bg-sidebar border-y border-r border-sidebar-border shadow-sm hover:bg-sidebar-accent transition-[left] duration-200 ease-linear"
-          aria-label="Toggle sidebar"
-        >
-          {open ? (
-            <ChevronLeft className="h-3 w-3 text-sidebar-foreground" />
-          ) : (
-            <ChevronRight className="h-3 w-3 text-sidebar-foreground" />
-          )}
-        </button>
-      )}
 
       <EditProjectDialog
         project={selectedProject}

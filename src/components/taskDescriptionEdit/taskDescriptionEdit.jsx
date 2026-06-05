@@ -123,7 +123,7 @@ export default function TaskDescriptionEdit({
               <button
                 onClick={handleSave}
                 disabled={isPending}
-                className="p-1 rounded text-green-500 hover:text-green-400 hover:bg-green-500/10 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+                className="p-1 rounded text-[hsl(var(--success))] hover:text-[hsl(var(--success))] hover:bg-[hsl(var(--success-muted))] disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
                 aria-label="Save description"
               >
                 <Check className="h-4 w-4" />
@@ -131,7 +131,7 @@ export default function TaskDescriptionEdit({
               <button
                 onClick={handleCancel}
                 disabled={isPending}
-                className="p-1 rounded text-red-500 hover:text-red-400 hover:bg-red-500/10 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+                className="p-1 rounded text-destructive hover:text-destructive hover:bg-destructive/10 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
                 aria-label="Cancel edit"
               >
                 <X className="h-4 w-4" />

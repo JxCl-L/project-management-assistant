@@ -169,7 +169,7 @@ export default function Task() {
                 <AlertDialog>
                   <AlertDialogTrigger asChild>
                     <button
-                      className="p-1.5 rounded-md text-muted-foreground hover:text-red-400 hover:bg-red-500/10 transition-colors flex-shrink-0"
+                      className="p-1.5 rounded-md text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors flex-shrink-0"
                       aria-label="Delete task"
                     >
                       <Trash2 className="h-4 w-4" />
@@ -187,7 +187,7 @@ export default function Task() {
                       <AlertDialogAction
                         onClick={handleDelete}
                         disabled={isDeleting}
-                        className="bg-red-600 hover:bg-red-700 focus:ring-red-600"
+                        className="bg-destructive hover:bg-destructive/90 focus:ring-destructive"
                       >
                         {isDeleting ? "Deleting…" : "Delete"}
                       </AlertDialogAction>
