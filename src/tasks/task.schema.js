@@ -51,6 +51,12 @@ const taskSchema = new Schema(
   }
 );
 
+// Indexes for query performance
+taskSchema.index({ project: 1 });                  // all queries filter by project
+taskSchema.index({ project: 1, status: 1 });       // compound: status counts + filtered list
+taskSchema.index({ project: 1, createdAt: -1 });   // sorting by createdAt desc
+taskSchema.index({ project: 1, createdAt: 1 });    // sorting by createdAt asc
+
 const Task = model("Task", taskSchema); // "Task" is the name of the collection in MongoDB
 
 module.exports = Task;

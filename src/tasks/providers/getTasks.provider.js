@@ -1,21 +1,23 @@
 const Task = require("../task.schema.js");
 const Member = require("../../projectMembers/member.schema.js");
+const mongoose = require("mongoose");
 const { matchedData } = require("express-validator");
 const { StatusCodes } = require("http-status-codes");
 const errorLogger = require("../../helpers/errorLogger.helper.js");
-const User = require("../../users/user.schema.js");
 
 async function getTasksProvider(req, res) {
-  const data = matchedData(req); // get only validated query parameters
-  console.log("Fetch tasks from req.params.projectID:", req.params.projectId);
-  // console.log("Fetch tasks from data.projectID:", data.projectId);
-  console.log("Fetching tasks with query:", data);
+  const data = matchedData(req);
+  const t0 = Date.now();
+  console.log(`\n⏱  [getTasks] START — project: ${req.params.projectId}`);
 
   try {
+    // 1. Auth check
+    const t1 = Date.now();
     const isMember = await Member.find({
       user: req.user?.sub,
       project: req.params.projectId,
     });
+    console.log(`⏱  [getTasks] auth check:        ${Date.now() - t1}ms`);
 
     if (!isMember || isMember.length === 0) {
       return res.status(StatusCodes.FORBIDDEN).json({
@@ -23,32 +25,48 @@ async function getTasksProvider(req, res) {
       });
     }
 
-    // get task counts
-    const totalTasks = await Task.countDocuments({
-      project: req.params.projectId,
-    });
-    const completedTasks = await Task.countDocuments({
-      project: req.params.projectId,
-      status: "completed",
-    });
-    const todoTasks = await Task.countDocuments({
-      project: req.params.projectId,
-      status: "todo",
-    });
-    const inProgressTasks = await Task.countDocuments({
-      project: req.params.projectId,
-      status: "inProgress",
-    });
-
-    // pagination
+    // 2. Parse params early so status is available for the aggregation
     const currentPage = parseInt(data.page);
     const limit = parseInt(data.limit);
     const order = data.order;
     let statusFilter = data.status;
 
-    // handle empty status filter
+    // normalise missing status
+    if (statusFilter === undefined || statusFilter === null) {
+      statusFilter = "todo,inProgress";
+    }
+
+    const statusArray = statusFilter === ""
+      ? []
+      : statusFilter.split(",").map((s) => s.trim());
+
+    // 3. Single aggregation replaces 5 countDocuments round-trips
+    const t2 = Date.now();
+    const projectId = new mongoose.Types.ObjectId(req.params.projectId);
+
+    const [counts] = await Task.aggregate([
+      { $match: { project: projectId } },
+      {
+        $facet: {
+          total:      [{ $count: "count" }],
+          completed:  [{ $match: { status: "completed"  } }, { $count: "count" }],
+          todo:       [{ $match: { status: "todo"        } }, { $count: "count" }],
+          inProgress: [{ $match: { status: "inProgress" } }, { $count: "count" }],
+          // { $in: [] } correctly matches nothing when statusArray is empty
+          filtered:   [{ $match: { status: { $in: statusArray } } }, { $count: "count" }],
+        },
+      },
+    ]);
+    console.log(`⏱  [getTasks] all counts ($facet): ${Date.now() - t2}ms`);
+
+    const totalTasks      = counts.total[0]?.count      ?? 0;
+    const completedTasks  = counts.completed[0]?.count  ?? 0;
+    const todoTasks       = counts.todo[0]?.count       ?? 0;
+    const inProgressTasks = counts.inProgress[0]?.count ?? 0;
+    const filteredCount   = counts.filtered[0]?.count   ?? 0;
+
+    // 4. Early return for empty status filter
     if (statusFilter === "") {
-      // Skip all database queries for empty filter
       return res.status(StatusCodes.OK).json({
         data: [],
         pagination: {
@@ -56,89 +74,62 @@ async function getTasksProvider(req, res) {
             itemsPerPage: limit,
             totalItems: totalTasks,
             filteredItems: 0,
-            currentPage: currentPage,
+            currentPage,
             totalPages: 0,
-            completedTasks: completedTasks,
-            todoTasks: todoTasks,
-            inProgressTasks: inProgressTasks,
-            order: order,
+            completedTasks,
+            todoTasks,
+            inProgressTasks,
+            order,
             status: statusFilter,
             statusArray: [],
           },
-          links: {
-            first: null,
-            last: null,
-            currentPage: null,
-            next: null,
-            previous: null,
-          },
+          links: { first: null, last: null, currentPage: null, next: null, previous: null },
         },
       });
     }
 
-    // build query
-    const statusArray = statusFilter.split(",").map((status) => status.trim());
-    // handle missing status filter
-    if (statusFilter === undefined || statusFilter === null) {
-      statusFilter = "todo,inProgress";
-      statusArray = ["todo", "inProgress"];
-    }
-    const statusQuery = { status: { $in: statusArray } };
-
-    const filteredCount = await Task.countDocuments({
-      project: req.params.projectId,
-      ...statusQuery,
-    });
-
-    // calculate pagination
-    const totalPages = Math.ceil(filteredCount / limit);
-    const nextPage = currentPage < totalPages ? currentPage + 1 : currentPage;
-    const previousPage = currentPage > 1 ? currentPage - 1 : 1;
-
-    // const baseUrl = `${req.protocol}://${req.get("host")}${
-    //   req.originalUrl.split("?")[0]
-    // }`;
+    // 5. Pagination calculations
+    const statusQuery   = { status: { $in: statusArray } };
+    const totalPages    = Math.ceil(filteredCount / limit);
+    const nextPage      = currentPage < totalPages ? currentPage + 1 : currentPage;
+    const previousPage  = currentPage > 1 ? currentPage - 1 : 1;
     const pathWithoutQuery = req.originalUrl.split("?")[0];
 
-    console.log("Query params:", { limit, totalPages, order });
-    console.log("User ID:", req.user.sub);
-    console.log("Total tasks for project:", totalTasks);
-
-    const tasks = await Task.find({
-      project: req.params.projectId,
-      ...statusQuery,
-    })
+    // 6. Fetch the actual task documents
+    const t3 = Date.now();
+    const tasks = await Task.find({ project: req.params.projectId, ...statusQuery })
       .limit(limit)
       .skip((currentPage - 1) * limit)
       .sort({ createdAt: order === "asc" ? 1 : -1 })
-      .populate("createdBy", "firstName lastName email"); // populate createdBy with user details
+      .populate("createdBy", "firstName lastName email");
+    console.log(`⏱  [getTasks] find + populate:   ${Date.now() - t3}ms`);
+    console.log(`⏱  [getTasks] TOTAL:             ${Date.now() - t0}ms\n`);
 
-    let finalResponse = {
+    return res.status(StatusCodes.OK).json({
       data: tasks,
       pagination: {
         meta: {
           itemsPerPage: limit,
           totalItems: totalTasks,
           filteredItems: filteredCount,
-          currentPage: currentPage,
-          totalPages: totalPages,
-          completedTasks: completedTasks,
-          todoTasks: todoTasks,
-          inProgressTasks: inProgressTasks,
-          order: order,
+          currentPage,
+          totalPages,
+          completedTasks,
+          todoTasks,
+          inProgressTasks,
+          order,
           status: statusFilter,
-          statusArray: statusArray,
+          statusArray,
         },
         links: {
-          first: `${pathWithoutQuery}/?limit=${limit}&page=${1}&order=${order}&status=${statusFilter}`,
-          last: `${pathWithoutQuery}/?limit=${limit}&page=${totalPages}&order=${order}&status=${statusFilter}`,
+          first:       `${pathWithoutQuery}/?limit=${limit}&page=1&order=${order}&status=${statusFilter}`,
+          last:        `${pathWithoutQuery}/?limit=${limit}&page=${totalPages}&order=${order}&status=${statusFilter}`,
           currentPage: `${pathWithoutQuery}/?limit=${limit}&page=${currentPage}&order=${order}&status=${statusFilter}`,
-          next: `${pathWithoutQuery}/?limit=${limit}&page=${nextPage}&order=${order}&status=${statusFilter}`,
-          previous: `${pathWithoutQuery}/?limit=${limit}&page=${previousPage}&order=${order}&status=${statusFilter}`,
+          next:        `${pathWithoutQuery}/?limit=${limit}&page=${nextPage}&order=${order}&status=${statusFilter}`,
+          previous:    `${pathWithoutQuery}/?limit=${limit}&page=${previousPage}&order=${order}&status=${statusFilter}`,
         },
       },
-    };
-    return res.status(StatusCodes.OK).json(finalResponse);
+    });
   } catch (error) {
     errorLogger(`Error while fetching tasks: ${error.message}`, req, error);
     return res.status(StatusCodes.GATEWAY_TIMEOUT).json({
