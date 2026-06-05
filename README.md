@@ -135,6 +135,8 @@ The AI assistant is available on the tasks page via the **AI** button in the top
 - Clicking **Summarize this project** fires a dedicated summary endpoint with pre-computed stats (completion %, overdue count) and also enters the conversation history for follow-up
 
 **RAG strategy toggle:**
-A `chunked / single` toggle above the input lets you switch retrieval strategies:
+A toggle above the input lets you switch between four retrieval strategies:
 - `chunked` (default) — splits content into 150-word overlapping chunks; best for pinpointing specific facts
 - `single` — one embedding per full task; best for whole-task relevance
+- `hybrid` — combines chunked and single retrieval for broader coverage
+- `fullcontext` — sends all task content as full context without retrieval; best for small projects where everything fits in the LLM context window
