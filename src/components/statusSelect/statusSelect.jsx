@@ -38,17 +38,15 @@ export function StatusSelect() {
   };
 
   return (
-    <div className="space-y-6">
-      <div>
-        <label className="text-sm font-medium mb-2 block">Task Status</label>
-        <MultiSelect
-          options={taskStatus}
-          defaultValue={currentStatuses}
-          onValueChange={handleStatusChange}
-          placeholder="Choose task status..."
-          className="w-full"
-        />
-      </div>
+    <div className="flex flex-col">
+      <label className="text-sm font-medium mb-2 block">Task Status</label>
+      <MultiSelect
+        options={taskStatus}
+        defaultValue={currentStatuses}
+        onValueChange={handleStatusChange}
+        placeholder="Choose task status..."
+        className="w-full h-10"
+      />
     </div>
   );
 }
