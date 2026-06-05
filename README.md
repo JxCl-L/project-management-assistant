@@ -71,6 +71,55 @@ Log in with any of these accounts (password: `Password123#`):
 | Bob     | bob@example.com     |
 | Charlie | charlie@example.com |
 
+## Performance — Lazy Loading
+
+Heavy components are code-split and loaded on demand so the initial page load is as light as possible.
+
+| Chunk | Size | Loads when |
+|---|---|---|
+| `index.js` (app shell) | 289 KB | Always |
+| `taskContentEdit` (TipTap editor) | 383 KB | First visit to a task detail page |
+| `aiPanel` (react-markdown + AI chat) | 127 KB | First click of the AI button |
+| `tasks`, `task`, `login`, etc. | 1–64 KB each | When that route is navigated to |
+
+**The AI panel chunk is prefetched in the background after tasks data loads**, so by the time the user clicks the AI button the chunk is already cached and opens instantly.
+
+### Benchmark (Chrome DevTools, cache disabled, dev mode)
+
+| Metric | Before lazy loading | After lazy loading | Improvement |
+|---|---|---|---|
+| DOMContentLoaded | 354 ms | 192 ms | **45% faster** |
+| Load | 650 ms | 353 ms | **46% faster** |
+| JS transferred | 7.6 MB | 6.2 MB | **1.4 MB less** |
+
+> Tested by refreshing the tasks page with "Disable cache" enabled in Chrome DevTools Network tab.
+> Numbers are from dev mode — production (minified + compressed) would show greater improvement.
+
+### How it works
+
+Route-level lazy loading in `routes.jsx` — every page is its own chunk via `React.lazy()`:
+
+```js
+const Tasks = lazy(() => import("./pages/tasks/tasks.jsx"));
+const Task  = lazy(() => import("./pages/task/task.jsx"));
+```
+
+Heavy components inside pages follow the same pattern:
+
+```js
+// AI panel — split from tasks page
+const AiPanel = lazy(() =>
+  import("@/components/aiPanel/aiPanel.jsx").then(m => ({ default: m.AiPanel }))
+);
+
+// TipTap editor — split from task detail page
+const TaskContentEdit = lazy(() => import("@/components/taskContentEdit/taskContentEdit.jsx"));
+```
+
+`ReactQueryDevtools` is excluded from production builds entirely via a conditional dynamic import.
+
+---
+
 ## AI Chat Panel
 
 The AI assistant is available on the tasks page via the **AI** button in the top right. It is scoped to the current project and powered by RAG — answers are grounded in actual task content rather than general knowledge.
