@@ -12,20 +12,23 @@ A collaborative project & task management app with real-time editing and an AI a
 | Client State | URL params + cookies                |
 | Forms        | React Hook Form + Zod validation    |
 | UI           | Radix UI + Tailwind CSS (shadcn/ui) |
+| Theming      | CSS variables (Light / Dark / Solarized Light) |
 | HTTP         | Axios with interceptors             |
 | Auth         | JWT stored in cookies               |
 | AI rendering | ReactMarkdown                       |
 
 ## Features
 
-- **Authentication** — register, login, logout with JWT
-- **Projects** — create and manage projects with a collapsible sidebar (state persisted across sessions)
-- **Role-based access** — manager / editor / viewer permissions
-- **Tasks** — create tasks with title, description, priority, status, and due date
-- **Rich text editor** — task content powered by Tiptap
-- **Real-time collaboration** — live content updates via Socket.IO
+- **Authentication** — register, login, logout (with confirmation dialog) using JWT
+- **Projects** — create and manage projects with a collapsible sidebar (state persisted across sessions); project name and description are inline-editable directly from the tasks header
+- **Role-based access** — manager / editor / viewer permissions enforced on both UI and API
+- **Tasks** — create tasks with title, description, priority, status, and due date; all fields inline-editable on the task detail page
+- **Progress bar** — segmented bar showing todo / in-progress / completed counts and overall completion percentage
+- **Rich text editor** — task content powered by Tiptap with bold, italic, lists, and strikethrough
+- **Real-time collaboration** — live content updates and presence indicators via Socket.IO
 - **AI chat panel** — project-scoped assistant with RAG retrieval, markdown rendering, and multi-turn conversation
 - **Project summary** — one-click AI-generated project status with completion stats and recommended next steps
+- **Themes** — Light, Dark, and Solarized Light themes switchable from the sidebar footer; choice is persisted to `localStorage` and applied before first render to avoid flash
 
 ## Getting Started
 
