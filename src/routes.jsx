@@ -1,47 +1,46 @@
-import Login from "./pages/login/login.jsx";
-import Signup from "./pages/signup/signup.jsx";
-import Tasks from "./pages/tasks/tasks.jsx";
-import Task from "./pages/task/task.jsx";
-import Projects from "./pages/projects/projects.jsx";
-import Error404 from "./pages/404/404.jsx";
-
+import { lazy, Suspense } from "react";
 import { createBrowserRouter } from "react-router";
 import PrivateRoutes from "./components/privateRoutes/privateRoutes.jsx";
+
+const Login    = lazy(() => import("./pages/login/login.jsx"));
+const Signup   = lazy(() => import("./pages/signup/signup.jsx"));
+const Tasks    = lazy(() => import("./pages/tasks/tasks.jsx"));
+const Task     = lazy(() => import("./pages/task/task.jsx"));
+const Projects = lazy(() => import("./pages/projects/projects.jsx"));
+const Error404 = lazy(() => import("./pages/404/404.jsx"));
+
+function Lazy({ children }) {
+  return <Suspense fallback={null}>{children}</Suspense>;
+}
 
 export const router = createBrowserRouter([
   {
     element: <PrivateRoutes />,
     children: [
-      // {
-      //   path: "tasks",
-      //   element: <Tasks />,
-      // },
       {
         path: "projects/:projectId/tasks",
-        element: <Tasks />,
+        element: <Lazy><Tasks /></Lazy>,
       },
       {
         path: "projects",
-        element: <Projects />,
+        element: <Lazy><Projects /></Lazy>,
       },
       {
         path: "projects/:projectId/tasks/:taskId",
-        element: <Task />,
+        element: <Lazy><Task /></Lazy>,
       },
-
     ],
   },
   {
     path: "/",
-    element: <Login />,
+    element: <Lazy><Login /></Lazy>,
   },
   {
     path: "signup",
-    element: <Signup />,
+    element: <Lazy><Signup /></Lazy>,
   },
-
   {
     path: "*",
-    element: <Error404 />,
+    element: <Lazy><Error404 /></Lazy>,
   },
 ]);

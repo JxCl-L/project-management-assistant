@@ -8,8 +8,8 @@ export function FilterBar ({ paginationData }) {
         <>
             <nav className="flex flex-row flex-wrap items-end justify-between gap-4 mb-8 w-full min-w-96">
                 {/* <TaskPagination paginationData={paginationData} /> */}
-                <StatusSelect paginationData={paginationData} />
-                <OrderSelect paginationData={paginationData} />
+                <StatusSelect />
+                <OrderSelect />
             </nav>
         </>
     );

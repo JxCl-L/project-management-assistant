@@ -279,22 +279,21 @@ export function CreateTaskForm({ onSuccess }) {
               <p className="text-xs text-destructive">{generateError}</p>
             )}
 
-            {/* Generate button */}
+          </div>
+
+          {/* Submit row */}
+          <div className="py-2 mt-2 flex items-center justify-end gap-2">
             {!pendingGenerate && (
               <button
                 type="button"
                 onClick={handleGenerateClick}
                 disabled={isGenerating || !prompt.trim()}
-                className="self-end flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-violet-500/30 bg-violet-600/10 text-violet-300 text-sm hover:bg-violet-600/20 hover:border-violet-500/50 disabled:opacity-40 disabled:cursor-not-allowed transition-all duration-150"
+                className="flex items-center gap-1.5 px-4 h-10 rounded-md border border-[hsl(var(--ai-accent-border))] bg-[hsl(var(--ai-accent-bg))] text-[hsl(var(--ai-accent))] text-sm font-medium hover:bg-[hsl(var(--ai-accent-hover-bg))] hover:border-[hsl(var(--ai-accent-border))] disabled:opacity-40 disabled:cursor-not-allowed transition-all duration-150"
               >
                 <Sparkles className={cn("h-3.5 w-3.5", isGenerating && "animate-pulse")} />
                 {isGenerating ? "Generating…" : "✨ Generate"}
               </button>
             )}
-          </div>
-
-          {/* Submit */}
-          <div className="py-2 mt-2 flex justify-end">
             <Button type="submit" disabled={isPending}>
               {isPending ? "Creating…" : "Create Task"}
             </Button>

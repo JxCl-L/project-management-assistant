@@ -14,7 +14,8 @@ import { useFetchProject } from "@/hooks/useFetchProject.hook.js";
 import TaskPrioritySelection from "@/components/taskPrioritySelection/taskPrioritySelection.jsx";
 import TaskStatusSelection from "@/components/taskStatusSelection/taskStatusSelection.jsx";
 import TaskDescriptionEdit from "@/components/taskDescriptionEdit/taskDescriptionEdit.jsx";
-import TaskContentEdit from "@/components/taskContentEdit/taskContentEdit.jsx";
+import { lazy, Suspense } from "react";
+const TaskContentEdit = lazy(() => import("@/components/taskContentEdit/taskContentEdit.jsx"));
 import TaskTitleEdit from "@/components/taskTitleEdit/taskTitleEdit.jsx";
 import { useTaskPresence } from "@/hooks/useTaskPresence.js";
 import { PresenceAvatarStack } from "@/components/task/PresenceAvatarStack.jsx";
@@ -246,15 +247,17 @@ export default function Task() {
             onFieldBlur={emitFieldBlur}
           />
           {/* content */}
-          <TaskContentEdit
-            projectId={projectId}
-            taskId={_id}
-            role={projectData?.data?.currentUserRole}
-            fieldEditors={fieldEditors}
-            roomUsers={roomUsers}
-            onFieldFocus={emitFieldFocus}
-            onFieldBlur={emitFieldBlur}
-          />
+          <Suspense fallback={null}>
+            <TaskContentEdit
+              projectId={projectId}
+              taskId={_id}
+              role={projectData?.data?.currentUserRole}
+              fieldEditors={fieldEditors}
+              roomUsers={roomUsers}
+              onFieldFocus={emitFieldFocus}
+              onFieldBlur={emitFieldBlur}
+            />
+          </Suspense>
         </div>
 
         {/* } */}

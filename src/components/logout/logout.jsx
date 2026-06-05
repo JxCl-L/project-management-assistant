@@ -23,7 +23,7 @@ export function Logout() {
     return (
         <AlertDialog>
             <AlertDialogTrigger asChild>
-                <Button variant="outline" size="icon">
+                <Button variant="ghost" size="icon" className="h-8 w-8">
                     <LogOut className="h-4 w-4" />
                 </Button>
             </AlertDialogTrigger>

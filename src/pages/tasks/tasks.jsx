@@ -6,7 +6,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { TaskSidebar } from "@/components/taskSidebar/taskSidebar.jsx";
 import { useFetchTasks } from "@/hooks/useFetchTasks.hook.js";
 import { useFetchProjects } from "@/hooks/useFetchProjects.hook.js";
-import { useState } from "react";
+import { useState, lazy, Suspense, useEffect } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useSearchParams, useParams } from "react-router";
 import Cookies from "js-cookie";
@@ -14,7 +14,7 @@ import { ProjectSidebar } from "@/components/projectSidebar/projectSidebar.jsx";
 import { SidebarProvider, SidebarInset, SidebarTrigger, useSidebar } from "@/components/ui/sidebar";
 import { CreateTaskDialog } from "@/components/createTaskDialog/createTaskDialog.jsx";
 import { TaskPagination } from "@/components/taskPagination/taskPagination.jsx";
-import { AiPanel } from "@/components/aiPanel/aiPanel.jsx";
+const AiPanel = lazy(() => import("@/components/aiPanel/aiPanel.jsx").then(m => ({ default: m.AiPanel })));
 import { Sparkles } from "lucide-react";
 
 function DisplaySkeleton() {
@@ -69,6 +69,11 @@ export default function Tasks() {
     status: queryStatus,
   });
 
+  // Prefetch AI panel chunk once tasks have loaded so first click is instant
+  useEffect(() => {
+    if (data) import("@/components/aiPanel/aiPanel.jsx");
+  }, [!!data]);
+
   const defaultSidebarOpen = Cookies.get("sidebar_state") !== "false";
 
   return (
@@ -89,7 +94,7 @@ export default function Tasks() {
                     setIsAiPanelOpen((v) => !v);
                     setAiPanelEverOpened(true);
                   }}
-                  className={`flex items-center gap-1.5 px-3 h-10 rounded-lg border text-sm transition-all duration-150 ${
+                  className={`flex items-center gap-1.5 px-4 h-10 rounded-md border text-sm font-medium transition-all duration-150 ${
                     isAiPanelOpen
                       ? "border-[hsl(var(--ai-accent-border))] text-[hsl(var(--ai-accent))] bg-[hsl(var(--ai-accent-bg))]"
                       : "border-border text-foreground hover:bg-muted"
@@ -162,12 +167,14 @@ export default function Tasks() {
 
       <Toaster />
       {aiPanelEverOpened && (
-        <AiPanel
-          isOpen={isAiPanelOpen}
-          onClose={() => setIsAiPanelOpen(false)}
-          projectId={projectId}
-          projectName={project?.name}
-        />
+        <Suspense fallback={null}>
+          <AiPanel
+            isOpen={isAiPanelOpen}
+            onClose={() => setIsAiPanelOpen(false)}
+            projectId={projectId}
+            projectName={project?.name}
+          />
+        </Suspense>
       )}
     </SidebarProvider>
   );
