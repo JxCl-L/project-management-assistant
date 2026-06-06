@@ -176,11 +176,21 @@ function CalendarView({ onNavigate }) {
                       <button
                         key={t._id}
                         onClick={() => onNavigate(t.projectId, t._id)}
-                        className="flex flex-col gap-1 p-2 rounded-md text-left hover:opacity-80 transition-opacity w-full"
-                        style={{ backgroundColor: STATUS_BG[t.status] ?? STATUS_BG.todo }}
+                        className="flex flex-col gap-1 p-2 rounded-md text-left bg-muted/50 hover:bg-muted transition-colors w-full"
                       >
                         <p className="text-xs font-medium leading-snug">{t.title}</p>
-                        <p className="text-xs text-muted-foreground">{t.projectName}</p>
+                        <div className="flex items-center justify-between gap-2 mt-0.5">
+                          <p className="text-xs text-muted-foreground truncate min-w-0" title={t.projectName}>{t.projectName}</p>
+                          <span
+                            className="text-xs px-1.5 py-0.5 rounded-sm font-medium flex-shrink-0"
+                            style={{
+                              backgroundColor: STATUS_DOT[t.status] + "22",
+                              color: STATUS_DOT[t.status],
+                            }}
+                          >
+                            {t.status === "inProgress" ? "In Progress" : t.status === "todo" ? "Todo" : "Completed"}
+                          </span>
+                        </div>
                       </button>
                     ))}
                   </TooltipContent>
@@ -198,13 +208,15 @@ function MiniTaskCard({ task, onNavigate }) {
   return (
     <button
       onClick={() => onNavigate(task.projectId, task._id)}
-      className="group flex flex-col gap-1.5 p-3 rounded-lg border border-border bg-card hover:border-foreground/30 hover:shadow-sm transition-all duration-150 text-left w-full"
+      className="group flex items-center gap-3 px-3 py-2.5 rounded-lg bg-card hover:bg-muted transition-colors text-left w-full"
     >
-      <p className="text-sm font-medium leading-snug line-clamp-2">{task.title}</p>
-      <p className="text-xs text-muted-foreground truncate">{task.projectName}</p>
-      <div className="flex items-center gap-2 mt-0.5">
+      <div className="flex flex-col gap-0.5 min-w-0 flex-1">
+        <p className="text-sm font-medium leading-snug line-clamp-1">{task.title}</p>
+        <p className="text-xs text-muted-foreground truncate">{task.projectName}</p>
+      </div>
+      <div className="flex flex-col items-end gap-0.5 flex-shrink-0">
         <span
-          className="text-xs px-1.5 py-0.5 rounded-sm font-medium"
+          className="text-xs px-1.5 py-0.5 rounded-sm font-medium whitespace-nowrap"
           style={{
             backgroundColor: STATUS_DOT[task.status] + "22",
             color: STATUS_DOT[task.status],
@@ -212,12 +224,14 @@ function MiniTaskCard({ task, onNavigate }) {
         >
           {task.status === "inProgress" ? "In Progress" : task.status === "todo" ? "Todo" : "Completed"}
         </span>
-        <span className={`text-xs font-medium ${PRIORITY_COLORS[task.priority] ?? "text-muted-foreground"}`}>
-          {task.priority}
-        </span>
-        <span className="text-xs text-muted-foreground ml-auto">
-          {new Date(task.dueDate).toLocaleDateString("en-GB", { day: "numeric", month: "short" })}
-        </span>
+        <div className="flex items-center gap-2">
+          <span className={`text-xs font-medium ${PRIORITY_COLORS[task.priority] ?? "text-muted-foreground"}`}>
+            {task.priority}
+          </span>
+          <span className="text-xs text-muted-foreground">
+            {new Date(task.dueDate).toLocaleDateString("en-GB", { day: "numeric", month: "short" })}
+          </span>
+        </div>
       </div>
     </button>
   );
@@ -232,14 +246,10 @@ function TaskList({ title, tasks, onNavigate, maxHeight = 320 }) {
         {title}
         <span className="text-xs text-muted-foreground font-normal">({tasks.length})</span>
       </h2>
-      <div className="relative rounded-lg border border-border overflow-hidden" style={{ maxHeight }}>
+      <div className="relative overflow-hidden" style={{ maxHeight }}>
         <div
           className="overflow-y-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
-          style={{
-            maxHeight,
-            maskImage: "linear-gradient(to bottom, transparent 0%, black 40px, black calc(100% - 40px), transparent 100%)",
-            WebkitMaskImage: "linear-gradient(to bottom, transparent 0%, black 40px, black calc(100% - 40px), transparent 100%)",
-          }}
+          style={{ maxHeight }}
         >
           <div className="flex flex-col divide-y divide-border">
             {tasks.map((task) => (
@@ -380,9 +390,7 @@ export default function Projects() {
                         <span className="text-xs text-muted-foreground font-normal">({nextDueTasks.length})</span>
                       </h2>
                       <div className="relative flex-1 min-h-0">
-                        <div className="absolute inset-0 overflow-y-auto flex flex-col gap-2 pr-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden scroll-smooth"
-                          style={{ maskImage: "linear-gradient(to bottom, transparent 0%, black 48px, black calc(100% - 48px), transparent 100%)", WebkitMaskImage: "linear-gradient(to bottom, transparent 0%, black 48px, black calc(100% - 48px), transparent 100%)" }}
-                        >
+                        <div className="absolute inset-0 overflow-y-auto flex flex-col gap-2 pr-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden scroll-smooth">
                           <div className="h-3 flex-shrink-0" />
                           {nextDueTasks.map((task) => (
                             <MiniTaskCard
