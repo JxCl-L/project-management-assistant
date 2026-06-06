@@ -8,6 +8,7 @@ const getProjectValidator = require("./validators/getProject.validator.js");
 const updateProjectValidator = require("./validators/updateProject.validator.js");
 const deleteProjectValidator = require("./validators/deleteProject.validator.js");
 const generateProjectSummaryValidator = require("./validators/generateProjectSummary.validator.js");
+const getCalendarValidator = require("./validators/getCalendar.validator.js");
 const authenticateToken = require("../middleware/authenticateToken.middleware.js");
 const checkPermission = require("../middleware/checkPermission.middleware.js");
 
@@ -55,6 +56,26 @@ projectsRouter.get(
 
     if (result.isEmpty()) {
       return projectsController.handleGetProjects(req, res);
+    } else {
+      res.status(StatusCodes.BAD_REQUEST).json(result.array());
+    }
+  }
+);
+
+projectsRouter.get(
+  "/dashboard",
+  authenticateToken,
+  (req, res) => projectsController.handleGetDashboard(req, res)
+);
+
+projectsRouter.get(
+  "/calendar",
+  authenticateToken,
+  getCalendarValidator,
+  (req, res) => {
+    const result = validationResult(req);
+    if (result.isEmpty()) {
+      return projectsController.handleGetCalendar(req, res);
     } else {
       res.status(StatusCodes.BAD_REQUEST).json(result.array());
     }

@@ -4,6 +4,18 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2OGQ3ZDMzZ
 GET http://localhost:3001/projects
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2OGQ3ZDMzZGMwYTQ3NWEzYzIxODBmNmIiLCJlbWFpbCI6InRlc3R0QGV4YW1wbGUuY29tIiwiaWF0IjoxNzY2ODIyMjU5LCJleHAiOjE3NjY5MDg2NTl9.ctMnVCigNo8pbq2KNhz_TANVB0CquyqKMjPleydXHXc
 
+// get calendar tasks (all tasks with due dates, optional date range filter)
+GET http://localhost:3001/projects/calendar
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2YTFlYjk4NmFmOTRjYjdkODU4NjdjYTYiLCJlbWFpbCI6ImFsaWNlQGV4YW1wbGUuY29tIiwiaWF0IjoxNzgwNzQyMzg1LCJleHAiOjE3ODA4Mjg3ODV9.jPh1OwJqjCuQLKAoA87SOAUpvd1h_1Vz5pECWnI2-I4
+
+// get calendar tasks filtered by month (June 2026)
+GET http://localhost:3001/projects/calendar?from=2026-06-01&to=2026-06-30
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2YTFlYjk4NmFmOTRjYjdkODU4NjdjYTYiLCJlbWFpbCI6ImFsaWNlQGV4YW1wbGUuY29tIiwiaWF0IjoxNzgwNzQyMzg1LCJleHAiOjE3ODA4Mjg3ODV9.jPh1OwJqjCuQLKAoA87SOAUpvd1h_1Vz5pECWnI2-I4
+
+// get dashboard (task counts per project, overdue tasks, next 5 due tasks)
+GET http://localhost:3001/projects/dashboard
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2YTFlYjk4NmFmOTRjYjdkODU4NjdjYTYiLCJlbWFpbCI6ImFsaWNlQGV4YW1wbGUuY29tIiwiaWF0IjoxNzgwNzQyMzg1LCJleHAiOjE3ODA4Mjg3ODV9.jPh1OwJqjCuQLKAoA87SOAUpvd1h_1Vz5pECWnI2-I4
+
 // get a specific project by its ID
 GET http://localhost:3001/projects/68e8cbaa4d99c5f34c200f48
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2OGQ3ZDMzZGMwYTQ3NWEzYzIxODBmNmIiLCJlbWFpbCI6InRlc3R0QGV4YW1wbGUuY29tIiwiaWF0IjoxNzY3MzU5ODg1LCJleHAiOjE3Njc0NDYyODV9.YGQ-c-x7QQi9NGDJ0UowxJ4r8lL2vM5Y4c97vlqJm_w
