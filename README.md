@@ -79,7 +79,7 @@ A RESTful Express.js backend for a collaborative project & task management syste
    ```bash
    node scripts/seed-rag-test.js
    ```
-   This creates an isolated database (`fullstackTasks_rag_test`) with 1 project and 20 tasks with rich content — fully compatible with the current app schema including task content and embeddings.
+   This creates an isolated database (`fullstackTasks_rag_test`) with 11 projects and 71 tasks with rich content across varied themes (engineering, website design, user analysis, cooking, fitness, finance, travel, and more) — fully compatible with the current app schema including task content and embeddings.
 
 5. Generate embeddings for the seeded tasks
    ```bash
