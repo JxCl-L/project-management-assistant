@@ -7,7 +7,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { TooltipProvider, Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
 import { AlertCircle, Clock, ChevronLeft, ChevronRight } from "lucide-react";
 import Cookies from "js-cookie";
-import { useState, useMemo } from "react";
+import { useState, useMemo, useRef } from "react";
 
 const PRIORITY_COLORS = {
   high: "text-red-500",
@@ -34,6 +34,9 @@ function CalendarView({ onNavigate }) {
   const today = new Date();
   const [year, setYear]   = useState(today.getFullYear());
   const [month, setMonth] = useState(today.getMonth());
+  const [animKey, setAnimKey] = useState(0);
+  const [slideDir, setSlideDir] = useState(null); // "left" | "right"
+  const animating = useRef(false);
 
   const from    = `${year}-${String(month + 1).padStart(2, "0")}-01`;
   const lastDay = new Date(year, month + 1, 0).getDate();
@@ -45,7 +48,8 @@ function CalendarView({ onNavigate }) {
   const byDate = useMemo(() => {
     const map = {};
     tasks.forEach((t) => {
-      const key = t.dueDate.slice(0, 10);
+      const d = new Date(t.dueDate);
+      const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
       if (!map[key]) map[key] = [];
       map[key].push(t);
     });
@@ -68,21 +72,45 @@ function CalendarView({ onNavigate }) {
     return grid;
   }, [year, month, lastDay, byDate]);
 
-  const prevMonth = () => {
-    if (month === 0) { setMonth(11); setYear((y) => y - 1); }
-    else setMonth((m) => m - 1);
+  const navigate = (dir) => {
+    if (animating.current) return;
+    animating.current = true;
+    setSlideDir(dir);
+    setAnimKey((k) => k + 1);
+    if (dir === "left") {
+      setMonth((m) => { if (m === 0) { setYear((y) => y - 1); return 11; } return m - 1; });
+    } else {
+      setMonth((m) => { if (m === 11) { setYear((y) => y + 1); return 0; } return m + 1; });
+    }
+    setTimeout(() => { animating.current = false; }, 300);
   };
-  const nextMonth = () => {
-    if (month === 11) { setMonth(0); setYear((y) => y + 1); }
-    else setMonth((m) => m + 1);
+
+  const prevMonth = () => navigate("left");
+  const nextMonth = () => navigate("right");
+
+  const dragStart = useRef(null);
+
+  const onMouseDown = (e) => { dragStart.current = e.clientX; };
+  const onMouseUp = (e) => {
+    if (dragStart.current === null) return;
+    const delta = e.clientX - dragStart.current;
+    dragStart.current = null;
+    if (Math.abs(delta) < 40) return;
+    if (delta < 0) nextMonth(); else prevMonth();
   };
+  const onMouseLeave = () => { dragStart.current = null; };
 
   const monthLabel = new Date(year, month).toLocaleDateString("en-GB", { month: "long", year: "numeric" });
   const todayKey = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}`;
 
   return (
     <TooltipProvider delayDuration={100}>
-      <div>
+      <div
+        onMouseDown={onMouseDown}
+        onMouseUp={onMouseUp}
+        onMouseLeave={onMouseLeave}
+        className="select-none cursor-grab active:cursor-grabbing"
+      >
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-sm font-medium text-foreground">Calendar</h2>
           <div className="flex items-center gap-2">
@@ -102,12 +130,22 @@ function CalendarView({ onNavigate }) {
           ))}
         </div>
 
+        <style>{`
+          @keyframes slide-in-left { from { opacity: 0; transform: translateX(-24px); } to { opacity: 1; transform: translateX(0); } }
+          @keyframes slide-in-right { from { opacity: 0; transform: translateX(24px); } to { opacity: 1; transform: translateX(0); } }
+          .cal-slide-left { animation: slide-in-left 0.25s ease both; }
+          .cal-slide-right { animation: slide-in-right 0.25s ease both; }
+        `}</style>
+
         {isPending ? (
           <div className="grid grid-cols-7 gap-1">
             {[...Array(35)].map((_, i) => <Skeleton key={i} className="h-9 rounded-md" />)}
           </div>
         ) : (
-          <div className="grid grid-cols-7 gap-1">
+          <div
+            key={animKey}
+            className={`grid grid-cols-7 gap-1 ${slideDir === "left" ? "cal-slide-left" : slideDir === "right" ? "cal-slide-right" : ""}`}
+          >
             {cells.map((cell, i) => {
               if (!cell) return <div key={i} />;
               const isToday = cell.key === todayKey;
@@ -185,7 +223,7 @@ function MiniTaskCard({ task, onNavigate }) {
   );
 }
 
-function TaskList({ title, tasks, onNavigate }) {
+function TaskList({ title, tasks, onNavigate, maxHeight = 320 }) {
   if (!tasks || tasks.length === 0) return null;
 
   return (
@@ -194,27 +232,38 @@ function TaskList({ title, tasks, onNavigate }) {
         {title}
         <span className="text-xs text-muted-foreground font-normal">({tasks.length})</span>
       </h2>
-      <div className="flex flex-col divide-y divide-border rounded-lg border border-border overflow-hidden">
-        {tasks.map((task) => (
-          <button
-            key={task._id}
-            onClick={() => onNavigate(task.projectId, task._id)}
-            className="flex items-center justify-between px-4 py-3 text-left hover:bg-muted/50 transition-colors"
-          >
-            <div className="flex flex-col gap-0.5 min-w-0">
-              <p className="text-sm font-medium truncate">{task.title}</p>
-              <p className="text-xs text-muted-foreground">{task.projectName}</p>
-            </div>
-            <div className="flex items-center gap-3 flex-shrink-0 ml-4">
-              <span className={`text-xs font-medium ${PRIORITY_COLORS[task.priority] ?? "text-muted-foreground"}`}>
-                {task.priority}
-              </span>
-              <span className="text-xs text-muted-foreground">
-                {new Date(task.dueDate).toLocaleDateString("en-GB", { day: "numeric", month: "short" })}
-              </span>
-            </div>
-          </button>
-        ))}
+      <div className="relative rounded-lg border border-border overflow-hidden" style={{ maxHeight }}>
+        <div
+          className="overflow-y-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+          style={{
+            maxHeight,
+            maskImage: "linear-gradient(to bottom, transparent 0%, black 40px, black calc(100% - 40px), transparent 100%)",
+            WebkitMaskImage: "linear-gradient(to bottom, transparent 0%, black 40px, black calc(100% - 40px), transparent 100%)",
+          }}
+        >
+          <div className="flex flex-col divide-y divide-border">
+            {tasks.map((task) => (
+              <button
+                key={task._id}
+                onClick={() => onNavigate(task.projectId, task._id)}
+                className="flex items-center justify-between px-4 py-3 text-left hover:bg-muted/50 transition-colors"
+              >
+                <div className="flex flex-col gap-0.5 min-w-0">
+                  <p className="text-sm font-medium truncate">{task.title}</p>
+                  <p className="text-xs text-muted-foreground">{task.projectName}</p>
+                </div>
+                <div className="flex items-center gap-3 flex-shrink-0 ml-4">
+                  <span className={`text-xs font-medium ${PRIORITY_COLORS[task.priority] ?? "text-muted-foreground"}`}>
+                    {task.priority}
+                  </span>
+                  <span className="text-xs text-muted-foreground">
+                    {new Date(task.dueDate).toLocaleDateString("en-GB", { day: "numeric", month: "short" })}
+                  </span>
+                </div>
+              </button>
+            ))}
+          </div>
+        </div>
       </div>
     </div>
   );
@@ -317,29 +366,35 @@ export default function Projects() {
                 onNavigate={(projectId, status) => navigate(`/projects/${projectId}/tasks?status=${status}`)}
               />
               {/* Calendar + Coming Up side by side */}
-              <div className="flex gap-6 mb-8">
-                <div className="w-1/2">
+              <div className="flex gap-6 mb-8 items-stretch">
+                <div className="w-1/2 flex flex-col">
                   <CalendarView
                     onNavigate={(projectId, taskId) => navigate(`/projects/${projectId}/tasks/${taskId}`)}
                   />
                 </div>
-                <div className="w-1/2">
+                <div className="w-1/2 flex flex-col min-h-0">
                   {nextDueTasks.length > 0 && (
-                    <>
-                      <h2 className="text-sm font-medium text-foreground mb-3 flex items-center gap-2">
+                    <div className="flex flex-col h-full">
+                      <h2 className="text-sm font-medium text-foreground mb-3 flex items-center gap-2 flex-shrink-0">
                         Coming Up
                         <span className="text-xs text-muted-foreground font-normal">({nextDueTasks.length})</span>
                       </h2>
-                      <div className="flex flex-col gap-2">
-                        {nextDueTasks.map((task) => (
-                          <MiniTaskCard
-                            key={task._id}
-                            task={task}
-                            onNavigate={(projectId, taskId) => navigate(`/projects/${projectId}/tasks/${taskId}`)}
-                          />
-                        ))}
+                      <div className="relative flex-1 min-h-0">
+                        <div className="absolute inset-0 overflow-y-auto flex flex-col gap-2 pr-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden scroll-smooth"
+                          style={{ maskImage: "linear-gradient(to bottom, transparent 0%, black 48px, black calc(100% - 48px), transparent 100%)", WebkitMaskImage: "linear-gradient(to bottom, transparent 0%, black 48px, black calc(100% - 48px), transparent 100%)" }}
+                        >
+                          <div className="h-3 flex-shrink-0" />
+                          {nextDueTasks.map((task) => (
+                            <MiniTaskCard
+                              key={task._id}
+                              task={task}
+                              onNavigate={(projectId, taskId) => navigate(`/projects/${projectId}/tasks/${taskId}`)}
+                            />
+                          ))}
+                          <div className="h-3 flex-shrink-0" />
+                        </div>
                       </div>
-                    </>
+                    </div>
                   )}
                 </div>
               </div>

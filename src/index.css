@@ -35,9 +35,9 @@
     --priority-normal-text: 203 87% 27%;
     --priority-low-bg: 142 71% 85%;
     --priority-low-text: 142 71% 25%;
-    --status-todo: 0 84% 60%;
-    --status-in-progress: 38 92% 50%;
-    --status-completed: 68 100% 26%;
+    --status-todo: 221 83% 53%;
+    --status-in-progress: 32 95% 52%;
+    --status-completed: 142 71% 40%;
     --complete-action: 142 71% 40%;
     --complete-action-bg: 142 71% 40% / 0.1;
     --complete-action-border: 142 71% 40% / 0.4;
@@ -180,9 +180,9 @@
     --priority-normal-text: 203 100% 85%;
     --priority-low-bg: 142 71% 29%;
     --priority-low-text: 142 100% 85%;
-    --status-todo: 0 84% 60%;
-    --status-in-progress: 38 92% 50%;
-    --status-completed: 68 100% 26%;
+    --status-todo: 217 91% 65%;
+    --status-in-progress: 35 92% 60%;
+    --status-completed: 142 71% 50%;
     --complete-action: 142 71% 45%;
     --complete-action-bg: 142 71% 45% / 0.1;
     --complete-action-border: 142 71% 45% / 0.4;
