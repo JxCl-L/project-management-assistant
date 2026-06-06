@@ -37,7 +37,7 @@
     --priority-low-text: 142 71% 25%;
     --status-todo: 0 84% 60%;
     --status-in-progress: 38 92% 50%;
-    --status-completed: 142 71% 45%;
+    --status-completed: 68 100% 26%;
     --complete-action: 142 71% 40%;
     --complete-action-bg: 142 71% 40% / 0.1;
     --complete-action-border: 142 71% 40% / 0.4;
@@ -110,7 +110,7 @@
     --priority-low-text: 0 0% 98%;
     --status-todo: 1 71% 52%;
     --status-in-progress: 45 100% 35%;
-    --status-completed: 175 59% 40%;
+    --status-completed: 68 100% 26%;
     --complete-action: 205 69% 40%;
     --complete-action-bg: 205 69% 40% / 0.12;
     --complete-action-border: 205 69% 40% / 0.5;
@@ -182,7 +182,7 @@
     --priority-low-text: 142 100% 85%;
     --status-todo: 0 84% 60%;
     --status-in-progress: 38 92% 50%;
-    --status-completed: 142 71% 45%;
+    --status-completed: 68 100% 26%;
     --complete-action: 142 71% 45%;
     --complete-action-bg: 142 71% 45% / 0.1;
     --complete-action-border: 142 71% 45% / 0.4;
@@ -231,5 +231,20 @@
     @apply bg-background text-foreground;
     transition: background-color 0.3s ease, color 0.2s ease;
   }
+}
+
+@keyframes slideInFromRight {
+  from { opacity: 0; transform: translateX(40px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+@keyframes slideInFromLeft {
+  from { opacity: 0; transform: translateX(-40px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+.calendar-slide-right {
+  animation: slideInFromRight 0.22s ease-out;
+}
+.calendar-slide-left {
+  animation: slideInFromLeft 0.22s ease-out;
 }
 

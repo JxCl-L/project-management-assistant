@@ -118,7 +118,7 @@ export function ProjectHeaderEditable({ project }) {
           </button>
         )}
       </div>
-      <p className="text-muted-foreground text-sm mt-1">
+      <p className="text-muted-foreground text-sm mt-1 text-justify">
         {project?.description || "No description available"}
       </p>
     </div>

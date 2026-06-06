@@ -39,7 +39,7 @@ export function StatusSelect() {
 
   return (
     <div className="flex flex-col">
-      <label className="text-sm font-medium mb-2 block">Task Status</label>
+      <label className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-2 block">Task Status</label>
       <MultiSelect
         options={taskStatus}
         defaultValue={currentStatuses}

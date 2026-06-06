@@ -10,6 +10,14 @@ import { useState, lazy, Suspense, useEffect } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useSearchParams, useParams } from "react-router";
 import Cookies from "js-cookie";
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
 import { ProjectSidebar } from "@/components/projectSidebar/projectSidebar.jsx";
 import { SidebarProvider, SidebarInset, SidebarTrigger, useSidebar } from "@/components/ui/sidebar";
 import { CreateTaskDialog } from "@/components/createTaskDialog/createTaskDialog.jsx";
@@ -39,6 +47,7 @@ function todaysDate() {
   };
   return today.toLocaleDateString("en-GB", options);
 }
+
 
 function ClosedSidebarTrigger() {
   const { open, isMobile } = useSidebar();
@@ -85,9 +94,21 @@ export default function Tasks() {
         <main className="flex flex-col p-8 overflow-y-auto h-full">
           <div className="w-11/12 mx-auto">
 
-            {/* Project Header */}
-            <header className="mb-6 flex flex-row justify-between">
-              <ProjectHeaderEditable project={project} />
+            {/* Top bar */}
+            <div className="flex items-center justify-between mb-6">
+              <div className="flex items-center gap-3">
+                <Breadcrumb>
+                  <BreadcrumbList>
+                    <BreadcrumbItem>
+                      <BreadcrumbLink href="/projects">Projects</BreadcrumbLink>
+                    </BreadcrumbItem>
+                    <BreadcrumbSeparator />
+                    <BreadcrumbItem>
+                      <BreadcrumbPage>Tasks</BreadcrumbPage>
+                    </BreadcrumbItem>
+                  </BreadcrumbList>
+                </Breadcrumb>
+              </div>
               <div className="flex items-center gap-2">
                 <button
                   onClick={() => {
@@ -111,6 +132,11 @@ export default function Tasks() {
                   />
                 )}
               </div>
+            </div>
+
+            {/* Project Header */}
+            <header className="mb-6">
+              <ProjectHeaderEditable project={project} />
             </header>
 
             {/* Progress bar */}

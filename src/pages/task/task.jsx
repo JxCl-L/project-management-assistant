@@ -131,18 +131,14 @@ export default function Task() {
   return (
     <div className="flex flex-col basis-11/12 p-8">
       {/* breadcrumb */}
-      <Breadcrumb>
+      <Breadcrumb className="px-8 mb-2">
         <BreadcrumbList>
           <BreadcrumbItem>
-            <BreadcrumbLink
-              onClick={(e) => {
-                e.preventDefault();
-                navigate(-1); // Go back to the previous page
-              }}
-              href={`/projects/${projectId}/tasks`}
-            >
-              All Tasks
-            </BreadcrumbLink>
+            <BreadcrumbLink href="/projects">Projects</BreadcrumbLink>
+          </BreadcrumbItem>
+          <BreadcrumbSeparator />
+          <BreadcrumbItem>
+            <BreadcrumbLink href={`/projects/${projectId}/tasks`}>Tasks</BreadcrumbLink>
           </BreadcrumbItem>
           <BreadcrumbSeparator />
           <BreadcrumbItem>

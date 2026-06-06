@@ -28,7 +28,7 @@ export function OrderSelect() {
 
   return (
     <div className="flex flex-col">
-      <label className="text-sm font-medium mb-2 block">Sort</label>
+      <label className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-2 block">Sort</label>
       <Select value={currentOrder} onValueChange={handleOrderChange}>
         <SelectTrigger className="w-36 h-10">
           <SelectValue placeholder={currentOrder} />
