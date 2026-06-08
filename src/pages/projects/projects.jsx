@@ -1,12 +1,9 @@
-import { ProjectSidebar } from "@/components/projectSidebar/projectSidebar.jsx";
-import { SidebarProvider } from "@/components/ui/sidebar";
 import { useFetchDashboard } from "@/hooks/useFetchDashboard.hook.js";
 import { useFetchCalendar } from "@/hooks/useFetchCalendar.hook.js";
 import { useNavigate } from "react-router";
 import { Skeleton } from "@/components/ui/skeleton";
 import { TooltipProvider, Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
 import { AlertCircle, Clock, ChevronLeft, ChevronRight } from "lucide-react";
-import Cookies from "js-cookie";
 import { useState, useMemo, useRef } from "react";
 
 const PRIORITY_COLORS = {
@@ -150,11 +147,13 @@ function CalendarView({ onNavigate }) {
               if (!cell) return <div key={i} />;
               const isToday = cell.key === todayKey;
               const hasTasks = cell.tasks.length > 0;
+              const allComplete = hasTasks && cell.tasks.every((t) => t.status === "completed");
+              const hasIncomplete = hasTasks && !allComplete;
 
               const cellEl = (
                 <div
                   key={cell.key}
-                  className={`flex items-center justify-center h-9 rounded-md text-xs transition-colors
+                  className={`relative flex flex-col items-center justify-center h-9 rounded-md text-xs transition-colors
                     ${isToday ? "ring-1 ring-foreground/40" : ""}
                     ${hasTasks ? "cursor-pointer hover:opacity-75" : "text-muted-foreground"}
                   `}
@@ -163,6 +162,8 @@ function CalendarView({ onNavigate }) {
                   <span className={`font-medium ${hasTasks ? "text-foreground" : ""} ${isToday ? "underline underline-offset-2" : ""}`}>
                     {cell.dayNum}
                   </span>
+                  {allComplete && <span className="absolute bottom-1 text-green-500 text-[10px] leading-none font-black">✓</span>}
+                  {hasIncomplete && <span className="absolute bottom-1 w-1 h-1 rounded-full bg-foreground/50" />}
                 </div>
               );
 
@@ -237,44 +238,48 @@ function MiniTaskCard({ task, onNavigate }) {
   );
 }
 
-function TaskList({ title, tasks, onNavigate, maxHeight = 320 }) {
-  if (!tasks || tasks.length === 0) return null;
+function TaskList({ title, tasks, emptyMessage, onNavigate, maxHeight = 320 }) {
+  const isEmpty = !tasks || tasks.length === 0;
 
   return (
     <div className="mb-8">
       <h2 className="text-sm font-medium text-foreground mb-3 flex items-center gap-2">
         {title}
-        <span className="text-xs text-muted-foreground font-normal">({tasks.length})</span>
+        {!isEmpty && <span className="text-xs text-muted-foreground font-normal">({tasks.length})</span>}
       </h2>
-      <div className="relative overflow-hidden" style={{ maxHeight }}>
-        <div
-          className="overflow-y-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
-          style={{ maxHeight }}
-        >
-          <div className="flex flex-col divide-y divide-border">
-            {tasks.map((task) => (
-              <button
-                key={task._id}
-                onClick={() => onNavigate(task.projectId, task._id)}
-                className="flex items-center justify-between px-4 py-3 text-left hover:bg-muted/50 transition-colors"
-              >
-                <div className="flex flex-col gap-0.5 min-w-0">
-                  <p className="text-sm font-medium truncate">{task.title}</p>
-                  <p className="text-xs text-muted-foreground">{task.projectName}</p>
-                </div>
-                <div className="flex items-center gap-3 flex-shrink-0 ml-4">
-                  <span className={`text-xs font-medium ${PRIORITY_COLORS[task.priority] ?? "text-muted-foreground"}`}>
-                    {task.priority}
-                  </span>
-                  <span className="text-xs text-muted-foreground">
-                    {new Date(task.dueDate).toLocaleDateString("en-GB", { day: "numeric", month: "short" })}
-                  </span>
-                </div>
-              </button>
-            ))}
+      {isEmpty ? (
+        <p className="text-xs text-muted-foreground px-4 py-3">{emptyMessage}</p>
+      ) : (
+        <div className="relative overflow-hidden" style={{ maxHeight }}>
+          <div
+            className="overflow-y-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+            style={{ maxHeight }}
+          >
+            <div className="flex flex-col divide-y divide-border">
+              {tasks.map((task) => (
+                <button
+                  key={task._id}
+                  onClick={() => onNavigate(task.projectId, task._id)}
+                  className="flex items-center justify-between px-4 py-3 text-left hover:bg-muted/50 transition-colors"
+                >
+                  <div className="flex flex-col gap-0.5 min-w-0">
+                    <p className="text-sm font-medium truncate">{task.title}</p>
+                    <p className="text-xs text-muted-foreground">{task.projectName}</p>
+                  </div>
+                  <div className="flex items-center gap-3 flex-shrink-0 ml-4">
+                    <span className={`text-xs font-medium ${PRIORITY_COLORS[task.priority] ?? "text-muted-foreground"}`}>
+                      {task.priority}
+                    </span>
+                    <span className="text-xs text-muted-foreground">
+                      {new Date(task.dueDate).toLocaleDateString("en-GB", { day: "numeric", month: "short" })}
+                    </span>
+                  </div>
+                </button>
+              ))}
+            </div>
           </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }
@@ -348,7 +353,6 @@ function DashboardSkeleton() {
 
 export default function Projects() {
   const navigate = useNavigate();
-  const defaultSidebarOpen = Cookies.get("sidebar_state") !== "false";
   const { data: dashboardData, isPending } = useFetchDashboard();
 
   const taskCounts = dashboardData?.data?.taskCounts ?? {};
@@ -356,16 +360,7 @@ export default function Projects() {
   const nextDueTasks = dashboardData?.data?.nextDueTasks ?? [];
 
   return (
-    <SidebarProvider defaultOpen={defaultSidebarOpen}>
-      <section className="flex flex-row w-full h-screen overflow-hidden">
-
-        {/* Sidebar */}
-        <section className="flex h-full basis-1/4 flex-shrink-0">
-          <ProjectSidebar collapsible="none" />
-        </section>
-
-        {/* Main Content */}
-        <section className="flex flex-col p-8 basis-3/4 overflow-y-auto min-w-96">
+    <section className="flex flex-col p-8 overflow-y-auto h-full min-w-96">
 
           {isPending && <DashboardSkeleton />}
 
@@ -383,12 +378,14 @@ export default function Projects() {
                   />
                 </div>
                 <div className="w-1/2 flex flex-col min-h-0">
-                  {nextDueTasks.length > 0 && (
-                    <div className="flex flex-col h-full">
-                      <h2 className="text-sm font-medium text-foreground mb-3 flex items-center gap-2 flex-shrink-0">
-                        Coming Up
-                        <span className="text-xs text-muted-foreground font-normal">({nextDueTasks.length})</span>
-                      </h2>
+                  <div className="flex flex-col h-full">
+                    <h2 className="text-sm font-medium text-foreground mb-3 flex items-center gap-2 flex-shrink-0">
+                      Coming Up
+                      {nextDueTasks.length > 0 && <span className="text-xs text-muted-foreground font-normal">({nextDueTasks.length})</span>}
+                    </h2>
+                    {nextDueTasks.length === 0 ? (
+                      <p className="text-xs text-muted-foreground px-1">No upcoming tasks</p>
+                    ) : (
                       <div className="relative flex-1 min-h-0">
                         <div className="absolute inset-0 overflow-y-auto flex flex-col gap-2 pr-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden scroll-smooth">
                           <div className="h-3 flex-shrink-0" />
@@ -402,20 +399,19 @@ export default function Projects() {
                           <div className="h-3 flex-shrink-0" />
                         </div>
                       </div>
-                    </div>
-                  )}
+                    )}
+                  </div>
                 </div>
               </div>
               <TaskList
                 title="Overdue"
                 tasks={overdueTasks}
+                emptyMessage="No overdue tasks"
                 onNavigate={(projectId, taskId) => navigate(`/projects/${projectId}/tasks/${taskId}`)}
               />
             </>
           )}
 
-        </section>
-      </section>
-    </SidebarProvider>
+    </section>
   );
 }

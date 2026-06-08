@@ -74,14 +74,6 @@ export function useFetchProjects(params = {}) {
       return data;
     },
 
-    // Auto-refresh configuration
-    staleTime: 3 * 60 * 1000, // Data is fresh for 3 minutes
-    cacheTime: 5 * 60 * 1000, // Keep in cache for 5 minutes
-    refetchOnWindowFocus: true, // Refetch when user returns to tab
-    refetchOnReconnect: true, // Refetch when internet reconnects
-    refetchInterval: 5 * 60 * 1000, // Background refetch every 5 minutes
-    refetchIntervalInBackground: false, // Only refetch when tab is active
-    
     retry: (failureCount, error) => {
       // Don't retry on 4xx authentication errors
       if (error.status >= 400 && error.status < 500) {

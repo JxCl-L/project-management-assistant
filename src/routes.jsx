@@ -1,6 +1,7 @@
 import { lazy, Suspense } from "react";
 import { createBrowserRouter } from "react-router";
 import PrivateRoutes from "./components/privateRoutes/privateRoutes.jsx";
+import AppLayout from "./layouts/AppLayout.jsx";
 
 const Login    = lazy(() => import("./pages/login/login.jsx"));
 const Signup   = lazy(() => import("./pages/signup/signup.jsx"));
@@ -18,29 +19,16 @@ export const router = createBrowserRouter([
     element: <PrivateRoutes />,
     children: [
       {
-        path: "projects/:projectId/tasks",
-        element: <Lazy><Tasks /></Lazy>,
-      },
-      {
-        path: "projects",
-        element: <Lazy><Projects /></Lazy>,
-      },
-      {
-        path: "projects/:projectId/tasks/:taskId",
-        element: <Lazy><Task /></Lazy>,
+        element: <AppLayout />,
+        children: [
+          { path: "projects",                              element: <Lazy><Projects /></Lazy> },
+          { path: "projects/:projectId/tasks",             element: <Lazy><Tasks /></Lazy> },
+          { path: "projects/:projectId/tasks/:taskId",     element: <Lazy><Task /></Lazy> },
+        ],
       },
     ],
   },
-  {
-    path: "/",
-    element: <Lazy><Login /></Lazy>,
-  },
-  {
-    path: "signup",
-    element: <Lazy><Signup /></Lazy>,
-  },
-  {
-    path: "*",
-    element: <Lazy><Error404 /></Lazy>,
-  },
+  { path: "/",      element: <Lazy><Login /></Lazy> },
+  { path: "signup", element: <Lazy><Signup /></Lazy> },
+  { path: "*",      element: <Lazy><Error404 /></Lazy> },
 ]);

@@ -30,7 +30,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 
-export function CreateProjectDialog() {
+export function CreateProjectDialog({ trigger } = {}) {
   const [openDialog, setDialogOpen] = useState(false);
   const { mutate, isError, isSuccess, isPending, error } = useCreateProject();
   const { toast } = useToast();
@@ -66,7 +66,7 @@ export function CreateProjectDialog() {
   return (
     <Dialog open={openDialog} onOpenChange={setDialogOpen}>
       <DialogTrigger asChild>
-        <Button variant="outline">Create Project</Button>
+        {trigger ?? <Button variant="outline">Create Project</Button>}
       </DialogTrigger>
 
       <DialogContent className="sm:max-w-[425px]">

@@ -9,7 +9,6 @@ import { useFetchProjects } from "@/hooks/useFetchProjects.hook.js";
 import { useState, lazy, Suspense, useEffect } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useSearchParams, useParams } from "react-router";
-import Cookies from "js-cookie";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -18,8 +17,6 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-import { ProjectSidebar } from "@/components/projectSidebar/projectSidebar.jsx";
-import { SidebarProvider, SidebarInset, SidebarTrigger, useSidebar } from "@/components/ui/sidebar";
 import { CreateTaskDialog } from "@/components/createTaskDialog/createTaskDialog.jsx";
 import { TaskPagination } from "@/components/taskPagination/taskPagination.jsx";
 const AiPanel = lazy(() => import("@/components/aiPanel/aiPanel.jsx").then(m => ({ default: m.AiPanel })));
@@ -49,12 +46,6 @@ function todaysDate() {
 }
 
 
-function ClosedSidebarTrigger() {
-  const { open, isMobile } = useSidebar();
-  if (!isMobile && open) return null;
-  return <SidebarTrigger className="fixed top-4 left-4 z-30" />;
-}
-
 export default function Tasks() {
   const { projectId } = useParams();
   const [searchParams, setSearchParams] = useSearchParams();
@@ -83,15 +74,10 @@ export default function Tasks() {
     if (data) import("@/components/aiPanel/aiPanel.jsx");
   }, [!!data]);
 
-  const defaultSidebarOpen = Cookies.get("sidebar_state") !== "false";
-
   return (
-    <SidebarProvider defaultOpen={defaultSidebarOpen}>
-      <ProjectSidebar />
-      <SidebarInset>
-        <ClosedSidebarTrigger />
-        {/* Main Content */}
-        <main className="flex flex-col p-8 overflow-y-auto h-full">
+    <>
+      {/* Main Content */}
+      <main className="flex flex-col p-8 overflow-y-auto h-full">
           <div className="w-11/12 mx-auto">
 
             {/* Top bar */}
@@ -188,8 +174,7 @@ export default function Tasks() {
             )}
 
           </div>
-        </main>
-      </SidebarInset>
+      </main>
 
       <Toaster />
       {aiPanelEverOpened && (
@@ -202,6 +187,6 @@ export default function Tasks() {
           />
         </Suspense>
       )}
-    </SidebarProvider>
+    </>
   );
 }

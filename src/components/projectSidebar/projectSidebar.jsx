@@ -1,9 +1,9 @@
 import { useFetchProjects } from "@/hooks/useFetchProjects.hook.js";
+import { Skeleton } from "@/components/ui/skeleton";
 import { useNavigate, useParams } from "react-router";
 import { useState, useEffect } from "react";
 import Cookies from "js-cookie";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import {
   Sidebar,
   SidebarContent,
@@ -22,7 +22,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { MoreVertical, Pencil, Users, Trash2, Sun, Moon, Palette } from "lucide-react";
+import { MoreVertical, Pencil, Users, Trash2, Sun, Moon, Palette, Plus } from "lucide-react";
 import { EditProjectDialog } from "@/components/editProjectDialog/editProjectDialog.jsx";
 import { ManageMembersDialog } from "@/components/manageMembersDialog/manageMembersDialog.jsx";
 import { UserProfile } from "@/components/userProfile/userProfile.jsx";
@@ -92,18 +92,6 @@ export function ProjectSidebar({ collapsible = "offcanvas" }) {
     }
   };
 
-  if (isPending) {
-    return <div>Loading projects...</div>;
-  }
-
-  if (isError) {
-    return (
-      <div className="ml-2 my-2">
-        Error loading projects: {error.message}
-        <Button className="mt-2" onClick={() => window.location.reload()}>Retry</Button>
-      </div>
-    );
-  }
 
   return (
     <>
@@ -111,90 +99,109 @@ export function ProjectSidebar({ collapsible = "offcanvas" }) {
           collapsible={collapsible}
           className="flex flex-col h-full bg-sidebar-background text-sidebar-foreground border-r border-sidebar-border"
         >
-          <SidebarHeader className=" text-xl p-4 border-b border-sidebar-border flex-shrink-0">
+          <SidebarHeader className="p-4 border-b border-sidebar-border flex-shrink-0">
             <div className="flex items-center justify-between">
-              <h1 className="font-semibold">Projects</h1>
-              <SidebarTrigger />
+              <h1 className="font-semibold text-xl">Projects</h1>
+              <div className="flex items-center gap-1">
+                <CreateProjectDialog
+                  trigger={
+                    <Button variant="ghost" size="icon" className="h-7 w-7">
+                      <Plus className="h-4 w-4" />
+                      <span className="sr-only">New project</span>
+                    </Button>
+                  }
+                />
+                <SidebarTrigger />
+              </div>
             </div>
-            <p className="text-muted-foreground text-sm mb-2">
-              Manage your projects by selecting from the list
-            </p>
-            <CreateProjectDialog />
           </SidebarHeader>
 
-          <SidebarContent className="flex-1 overflow-y-auto  px-2 py-4 min-h-0">
-            {projects.length === 0 ? (
-              <p className="text-muted-foreground text-sm px-2">
-                No projects found.
-              </p>
+          <SidebarContent className="flex-1 overflow-y-auto px-2 py-2 min-h-0">
+            {isPending ? (
+              <div className="flex flex-col gap-2 px-3 py-2">
+                {[...Array(6)].map((_, i) => <Skeleton key={i} className="h-8 rounded-md" />)}
+              </div>
+            ) : isError ? (
+              <div className="px-3 py-2 flex flex-col gap-2">
+                <p className="text-xs text-muted-foreground">Failed to load projects.</p>
+                <Button size="sm" variant="outline" onClick={() => window.location.reload()}>Retry</Button>
+              </div>
+            ) : projects.length === 0 ? (
+              <p className="text-muted-foreground text-sm px-3 py-2">No projects found.</p>
             ) : (
               projects.map((project) => {
                 const permissions = project.permissions || {};
                 const userRole = project.userRole || "viewer";
+                const isActive = projectId === project._id;
+
                 return (
                   <div
                     key={project._id}
                     className={cn(
-                      "group relative flex w-full pl-4 pr-1 py-1 rounded-md transition-colors duration-150",
-                      projectId === project._id
-                        ? "bg-sidebar-accent text-sidebar-accent-foreground font-medium"
-                        : "bg-sidebar-background text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
+                      // Named group prevents hover leaking from any ancestor with class="group"
+                      "group/item relative flex items-center w-full pr-1 py-1.5 rounded-md cursor-pointer transition-colors duration-150",
+                      // Left accent bar space: pl-3 normally, content shifts right on active via the bar
+                      "pl-3",
+                      isActive
+                        ? "bg-sidebar-accent text-sidebar-accent-foreground"
+                        : "text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
                     )}
                   >
+                    {/* Active indicator bar — absolutely positioned, never shifts layout */}
+                    {isActive && (
+                      <span className="absolute left-0 top-1/2 -translate-y-1/2 w-0.5 h-5 rounded-full bg-foreground/60" />
+                    )}
+
+                    {/* Project name — gets full row width at rest; on hover the absolutely-positioned
+                        badge + button overlay the right edge so layout never shifts */}
                     <button
                       onClick={() => selectProject(project)}
-                      variant="ghost"
-                      className="flex-1 text-left"
+                      className="flex-1 text-left text-sm truncate min-w-0 pr-2"
+                      style={{ fontWeight: isActive ? 600 : 400 }}
                     >
-                      <p className="font-medium">{project.name}</p>
-                      <Badge
+                      {project.name}
+                    </button>
+
+                    {/* Role badge + actions — absolutely positioned on the right, only appear on hover.
+                        They overlay the title rather than squeezing it, so title width is always full. */}
+                    <div className="absolute right-1 top-1/2 -translate-y-1/2 flex items-center gap-1 opacity-0 group-hover/item:opacity-100 transition-opacity duration-150 bg-sidebar-accent rounded-md pl-2">
+                      <span
                         className={cn(
-                          "text-xs px-2 py-0.5 rounded-full",
+                          "text-xs px-2 py-0.5 rounded-full font-semibold whitespace-nowrap",
                           getRoleBadgeColor(userRole)
                         )}
-                        variant="secondary"
                       >
                         {userRole}
-                      </Badge>
-                    </button>
+                      </span>
 
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
                         <Button
                           variant="ghost"
                           size="icon"
-                          className={cn(
-                            "h-8 w-8 opacity-0 group-hover:opacity-100 transition-opacity",
-                            projectId === project._id && "opacity-100"
-                          )}
+                          className="h-7 w-7 flex-shrink-0"
                           onClick={(e) => e.stopPropagation()}
                         >
                           <MoreVertical className="h-4 w-4" />
-                          <span className="sr-only">Open menu</span>
+                          <span className="sr-only">Project actions</span>
                         </Button>
                       </DropdownMenuTrigger>
-
                       <DropdownMenuContent align="end" className="w-48">
                         {permissions.canEditProject && (
-                          <DropdownMenuItem
-                            onClick={(e) => handleEditProject(project, e)}
-                          >
+                          <DropdownMenuItem onClick={(e) => handleEditProject(project, e)}>
                             <Pencil className="mr-2 h-4 w-4" />
                             Edit Project
                           </DropdownMenuItem>
                         )}
                         {permissions.canViewMembers && (
-                          <DropdownMenuItem
-                            onClick={(e) => handleManageMembers(project, e)}
-                          >
+                          <DropdownMenuItem onClick={(e) => handleManageMembers(project, e)}>
                             <Users className="mr-2 h-4 w-4" />
-                            {permissions.canEditMembers
-                              ? "Manage Members"
-                              : "View Members"}
+                            {permissions.canEditMembers ? "Manage Members" : "View Members"}
                           </DropdownMenuItem>
                         )}
                       </DropdownMenuContent>
                     </DropdownMenu>
+                    </div>
                   </div>
                 );
               })

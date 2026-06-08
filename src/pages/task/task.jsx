@@ -122,14 +122,14 @@ export default function Task() {
 
   if (isTaskPending) {
     return (
-      <div className="flex flex-col basis-11/12 p-8">
-        <div className="text-center">Loading task...</div>
+      <div className="flex flex-col p-8 h-full">
+        <div className="text-center text-muted-foreground">Loading task...</div>
       </div>
     );
   }
 
   return (
-    <div className="flex flex-col basis-11/12 p-8">
+    <div className="flex flex-col p-8 overflow-y-auto h-full">
       {/* breadcrumb */}
       <Breadcrumb className="px-8 mb-2">
         <BreadcrumbList>
@@ -256,8 +256,7 @@ export default function Task() {
           </Suspense>
         </div>
 
-        {/* } */}
-      </section>
+        </section>
     </div>
   );
 }

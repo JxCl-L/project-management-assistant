@@ -76,14 +76,6 @@ export function useFetchTasks(params = {}) {
     // Only fetch if projectId exists
     enabled: !!stableParams.projectId,
 
-    // Auto-refresh configuration
-    staleTime: 2 * 60 * 1000, // Tasks are fresh for 2 minutes (shorter than projects since tasks change more frequently)
-    cacheTime: 5 * 60 * 1000, // Keep in cache for 5 minutes
-    refetchOnWindowFocus: true, // Refetch when user returns to tab
-    refetchOnReconnect: true, // Refetch when internet reconnects
-    refetchInterval: 3 * 60 * 1000, // Background refetch every 3 minutes (more frequent than projects)
-    refetchIntervalInBackground: false, // Only refetch when tab is active
-   
     retry: (failureCount, error) => {
       // Don't retry on authentication errors
       if (error.response?.status >= 400 || error.response?.status < 500) {
