@@ -223,8 +223,15 @@ $RECYCLE.BIN/
 # Local test result files (contain pasted RAG responses — not for repo)
 src/ai/chat/chat-rag-test-result.http
 src/ai/chat/rag-performance-report.md
-scripts/rag-eval-results*.json
-scripts/rag-eval-report*.md
+
+# RAG eval — ignore all test data and analysis files under scripts/ (any subdir).
+# Source .js scripts stay tracked. Generated HTML viewers also ignored (large).
+# Exception: rag-eval-cases.json is the curated gold-fact input — remove the
+# `!` line below if you want it ignored too.
+scripts/**/*.md
+scripts/**/*.json
+scripts/**/*.html
+!scripts/rag-eval-cases.json
 scripts/reruns/
 
 # End of custom rules
