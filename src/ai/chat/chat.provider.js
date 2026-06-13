@@ -1,4 +1,6 @@
 const { callAI, generateEmbedding } = require("../aiClient.js");
+const { classifyRetrievalClass } = require("../classifyRetrieval.js");
+const { getAnswerInstructions } = require("./answerPrompts.js");
 const Project = require("../../projects/project.schema.js");
 const Task = require("../../tasks/task.schema.js");
 const TaskContent = require("../../taskContent/taskContent.schema.js");
@@ -31,6 +33,7 @@ async function chatProvider(req, res) {
   try {
     const { projectId } = req.params;
     const { messages } = req.body; // [{ role: "user"|"assistant", content: string }]
+
     // ?strategy=chunked (default) uses TaskChunkEmbedding collection
     // ?strategy=single uses the one-vector-per-task embedding on TaskContent
     // ?strategy=fullcontext dumps all task plainText into the prompt — no retrieval, baseline comparison
@@ -39,6 +42,12 @@ async function chatProvider(req, res) {
       ? req.query.strategy
       : "chunked";
     const debug = req.query.debug === "true";
+    // ?promptMode=baseline (default) uses the legacy answer-instruction block.
+    // ?promptMode=routed picks one of three class-specific contracts
+    // (FACT/LIST/OPEN) based on classifyRetrievalClass's output.
+    // If the classifier returned null (failure), routed silently falls back
+    // to baseline so a routed request can never be worse than baseline.
+    const promptMode = req.query.promptMode === "routed" ? "routed" : "baseline";
 
     // CHUNK_RETRIEVAL_CONFIG=150:50 selects which stored chunk version to retrieve against
     // defaults to first entry in CHUNK_CONFIGS, or 300/50 if neither is set
@@ -67,6 +76,26 @@ async function chatProvider(req, res) {
       return res.status(StatusCodes.FORBIDDEN).json({ message: "You do not have permission to access this project." });
     }
 
+    // Retrieval-mode classifier — kicked off here, after project existence
+    // and membership are confirmed, so we never spend a classifier call on
+    // 404/403 paths (auth probes, expired sessions, deleted projects). The
+    // project+membership check is one round trip (~30-80ms); the classifier
+    // is much longer (~300-500ms), so it still runs in parallel with the
+    // members/tasks fetch, embedding, and retrieval below — wall-clock cost
+    // approaches zero by the time we await it before the answer LLM call.
+    // Stateless on purpose: only the latest user message, no history.
+    // Currently used only for telemetry/debug; prompt routing wires in next phase.
+    const lastUserMessage = Array.isArray(messages)
+      ? [...messages].reverse().find((m) => m.role === "user")
+      : null;
+    const classifyStart = lastUserMessage ? Date.now() : null;
+    const retrievalClassPromise = lastUserMessage
+      ? classifyRetrievalClass(lastUserMessage.content).catch((err) => {
+          errorLogger(`Retrieval-class classification failed: ${err.message}`, req, err);
+          return null;
+        })
+      : Promise.resolve(null);
+
     // fetch compact project context (always included)
     const [members, allTasks] = await Promise.all([
       Member.find({ project: projectId }).populate("user", "firstName lastName").lean(),
@@ -88,7 +117,7 @@ async function chatProvider(req, res) {
       .join("\n");
 
     // RAG: embed the latest user message and retrieve semantically relevant task contents
-    const lastUserMessage = [...messages].reverse().find((m) => m.role === "user");
+    // (lastUserMessage was identified above next to the classifier kickoff)
     let retrievedContext = "";
     let debugChunks = []; // only populated when ?debug=true
     let hybridStats = null; // {vectorCount, bm25Count, bm25Errored} — hybrid only, surfaces silent BM25 fallback
@@ -317,6 +346,14 @@ async function chatProvider(req, res) {
       }
     }
 
+    // Await classifier result (kicked off above, in parallel with retrieval)
+    // Must happen BEFORE building systemPrompt so the answer-instruction
+    // block can vary by class when ?promptMode=routed.
+    const retrievalClass = await retrievalClassPromise;
+    const classifyMs = classifyStart ? Date.now() - classifyStart : null;
+
+    const answerInstructions = getAnswerInstructions(promptMode, retrievalClass);
+
     const systemPrompt = `You are a project management assistant for the project "${project.name}".
 ${project.description ? `Project description: ${project.description}` : ""}
 
@@ -331,14 +368,26 @@ ${
     : ""
 }
 
-Answer the user's questions based on the context above. If the information is not available in the context, say so clearly. Be concise and helpful.`;
+${answerInstructions}`;
 
     const aiMessages = [{ role: "system", content: systemPrompt }, ...messages];
 
     const reply = await callAI(aiMessages, 1000);
 
     const response = { message: reply };
-    if (debug) response._debug = { strategy, chunkFilter, retrieved: debugChunks, ...(hybridStats ? { hybrid: hybridStats } : {}) };
+    if (debug) {
+      response._debug = {
+        strategy,
+        chunkFilter,
+        retrieved: debugChunks,
+        retrievalClass,
+        classifyMs,
+        promptMode,
+        // Resolved class actually used to pick the prompt (null + routed -> fell back to baseline)
+        promptClass: promptMode === "routed" && retrievalClass ? retrievalClass : "BASELINE",
+        ...(hybridStats ? { hybrid: hybridStats } : {}),
+      };
+    }
     return res.status(StatusCodes.OK).json(response);
   } catch (error) {
     errorLogger(`Error in AI chat: ${error.message}`, req, error);

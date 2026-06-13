@@ -10,7 +10,7 @@
  * 1. Embed BOTH chunk configs into the rag_test DB:
  *
  *      CHUNK_CONFIGS='[{"size":150,"overlap":50},{"size":150,"overlap":25}]' \
- *        node scripts/backfill-embeddings-rag-test.js --force
+ *        node scripts/rag-embed.js --force
  *
  * 2. Atlas indexes required:
  *
@@ -81,7 +81,7 @@ const BEHAVIOR_EMOJI = {
 // ── helpers ──────────────────────────────────────────────────────────────────
 
 function parseArgs(argv) {
-  const args = { only: null, variants: null, skipPreflight: false, reportOnly: false, out: null };
+  const args = { only: null, variants: null, skipPreflight: false, reportOnly: false, out: null, promptMode: "baseline" };
   for (let i = 0; i < argv.length; i++) {
     const a = argv[i];
     if (a === "--only")           args.only          = new Set(argv[++i].split(",").map((s) => s.trim()));
@@ -89,6 +89,10 @@ function parseArgs(argv) {
     if (a === "--skip-preflight") args.skipPreflight = true;
     if (a === "--report-only")    args.reportOnly    = true;
     if (a === "--out")            args.out           = argv[++i].trim();
+    // --prompt-mode routed sends ?promptMode=routed to the chat endpoint,
+    // which picks FACT/LIST/OPEN answer-style instructions based on the
+    // classifier. Default "baseline" reproduces the legacy behavior.
+    if (a === "--prompt-mode")    args.promptMode    = argv[++i].trim();
   }
   return args;
 }
@@ -150,9 +154,10 @@ async function findProjectId(token) {
   return proj._id;
 }
 
-async function runChat(token, projectId, query, variant) {
+async function runChat(token, projectId, query, variant, promptMode = "baseline") {
   const params = new URLSearchParams({ strategy: variant.strategy, debug: "true" });
   if (variant.chunkConfig) params.set("_chunkConfig", variant.chunkConfig);
+  if (promptMode === "routed") params.set("promptMode", "routed");
   const url = `${BASE_URL}/projects/${projectId}/chat?${params.toString()}`;
   const started = Date.now();
   try {
@@ -163,7 +168,7 @@ async function runChat(token, projectId, query, variant) {
     const ms = Date.now() - started;
     if (status !== 200) {
       const msg = json?.error?.message || json?.message || JSON.stringify(json);
-      return { ms, error: `HTTP ${status}: ${msg}`, answer: "", retrieved: [], hybrid: null };
+      return { ms, error: `HTTP ${status}: ${msg}`, answer: "", retrieved: [], hybrid: null, retrievalClass: null, classifyMs: null, promptClass: null };
     }
     const payload = json?.data || {};
     return {
@@ -172,9 +177,12 @@ async function runChat(token, projectId, query, variant) {
       answer: payload.message || "",
       retrieved: payload._debug?.retrieved || [],
       hybrid: payload._debug?.hybrid || null,
+      retrievalClass: payload._debug?.retrievalClass ?? null,
+      classifyMs:     payload._debug?.classifyMs ?? null,
+      promptClass:    payload._debug?.promptClass ?? null,
     };
   } catch (err) {
-    return { ms: Date.now() - started, error: err.message, answer: "", retrieved: [], hybrid: null };
+    return { ms: Date.now() - started, error: err.message, answer: "", retrieved: [], hybrid: null, retrievalClass: null, classifyMs: null, promptClass: null };
   }
 }
 
@@ -470,12 +478,19 @@ function printConsoleSummary(cases, variants, cells) {
 
 async function main() {
   const args = parseArgs(process.argv.slice(2));
+  const promptMode = args.promptMode === "routed" ? "routed" : "baseline";
 
-  // ── resolve output paths (default → scripts/ ; --out → scripts/reruns/) ──
+  // ── resolve output paths ───────────────────────────────────────────────
+  //   default (baseline)  → scripts/rag-eval-results.json
+  //   --prompt-mode routed → scripts/rag-eval-results-routedclass.json
+  //   --out X              → scripts/reruns/rag-eval-results-X.json
+  // If both --prompt-mode routed and --out are given, --out wins (explicit).
   const outDir      = args.out
     ? path.resolve(__dirname, "reruns")
     : __dirname;
-  const suffix      = args.out ? `-${args.out}` : "";
+  const suffix      = args.out
+    ? `-${args.out}`
+    : (promptMode === "routed" ? "-routedclass" : "");
   fs.mkdirSync(outDir, { recursive: true });
   const resultsPath = path.resolve(outDir, `rag-eval-results${suffix}.json`);
   const reportPath  = path.resolve(outDir, `rag-eval-report${suffix}.md`);
@@ -503,7 +518,7 @@ async function main() {
   }
 
   console.log(`RAG eval → ${BASE_URL}`);
-  console.log(`Cases: ${cases.length} | Variants: ${variants.map((v) => v.key).join(", ")}`);
+  console.log(`Cases: ${cases.length} | Variants: ${variants.map((v) => v.key).join(", ")} | Prompt mode: ${promptMode}`);
 
   const token = await login();
   const projectId = await findProjectId(token);
@@ -524,7 +539,7 @@ async function main() {
 
   let done = 0;
   const cells = await mapLimit(work, CONCURRENCY, async ({ c, v }) => {
-    const r = await runChat(token, projectId, c.query, v);
+    const r = await runChat(token, projectId, c.query, v, promptMode);
     done++;
     process.stdout.write(`\r  ${done}/${work.length} calls complete`);
     return {
@@ -535,11 +550,17 @@ async function main() {
       variantKey:  v.key,
       strategy:    v.strategy,
       chunkConfig: v.chunkConfig || null,
+      promptMode,
       ms:          r.ms,
       error:       r.error,
       answer:      r.answer,
       retrieved:   r.retrieved,
       hybrid:      r.hybrid,
+      // Class-routing telemetry (only meaningful when promptMode === "routed"
+      // but always recorded so downstream tooling has a uniform schema):
+      retrievalClass: r.retrievalClass,
+      classifyMs:     r.classifyMs,
+      promptClass:    r.promptClass,
     };
   });
   process.stdout.write("\n");

@@ -28,6 +28,7 @@ async function getProjectProvider(req, res) {
     const finalResponse = {
       ...project.toObject(),
       currentUserRole,
+      permissions: getPermissionsForRole(currentUserRole),
       creatorRecord,
     };
     // console.log("Fetched project:", finalResponse);
