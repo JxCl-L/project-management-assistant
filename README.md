@@ -79,18 +79,18 @@ A RESTful Express.js backend for a collaborative project & task management syste
 
 4. Seed the RAG test database
    ```bash
-   node scripts/rag-seed.js
+   node scripts/seed.js
    ```
    This creates an isolated database (`fullstackTasks_rag_test`) with 11 projects and 71 tasks with rich content across varied themes (engineering, website design, user analysis, cooking, fitness, finance, travel, and more) — fully compatible with the current app schema including task content and embeddings.
 
 5. Generate embeddings for the seeded tasks
    ```bash
-   node scripts/rag-embed.js
+   node scripts/analyzers/rag-embed.js
    ```
    Add `--force` to wipe all existing chunk embeddings and re-generate from scratch (required when `CHUNK_CONFIGS` changes):
    ```bash
    CHUNK_CONFIGS='[{"size":150,"overlap":50},{"size":150,"overlap":25}]' \
-     node scripts/rag-embed.js --force
+     node scripts/analyzers/rag-embed.js --force
    ```
 
 6. Create the Atlas Search indexes on your cluster in the Atlas UI (Atlas Search tab):
@@ -236,30 +236,39 @@ src/
 │   └── taskChunkEmbedding.schema.js  # Stores per-chunk embeddings for vector search
 └── settings/
 scripts/
-├── rag-seed.js                  # Seeds fullstackTasks_rag_test (11 projects, 71 tasks)
-├── rag-embed.js                 # Generates embeddings for RAG test dataset (--force to rebuild)
-├── rag-eval.js                  # RAG strategy comparison runner (--prompt-mode routed for class-routed prompts)
-├── rag-eval-cases.json          # Eval test cases with curated goldFacts (char offsets + chunk indices per config)
-├── rag-facts-build.js           # Builds/refreshes goldFacts in rag-eval-cases.json from rag-seed.js source
-├── rag-quality-lib.js           # Pure functions: retrievalSignals() + classifyMiss()
-├── rag-quality-build.js         # Combines eval results + curated correctness matrix → rag-quality-<tag>.json
-├── rag-quality-html.js          # Renders rag-quality-<tag>.json as an interactive matrix viewer
-├── rag-quality-compare-html.js  # Side-by-side viewer comparing two runs (e.g. baseline vs routed)
-└── seed.js                      # Legacy seed (outdated schema — do not use)
+├── seed.js                          # Seeds fullstackTasks_rag_test (11 projects, 71 tasks)
+├── rag-eval-cases.json              # Eval test cases with curated goldFacts (char offsets + chunk indices per config)
+│
+├── analyzers/                       # All RAG pipeline scripts
+│   ├── rag-embed.js                 #   Generates embeddings for RAG test dataset (--force to rebuild)
+│   ├── rag-eval.js                  #   RAG strategy comparison runner (--prompt-mode routed for class-routed prompts)
+│   ├── rag-facts-build.js           #   Builds/refreshes goldFacts in rag-eval-cases.json from seed.js source
+│   ├── rag-quality-lib.js           #   Pure functions: retrievalSignals() + classifyMiss()
+│   ├── rag-root-causes.js           #   Root-cause taxonomy + per-cell mapping
+│   ├── rag-quality-build.js         #   Combines eval results + curated correctness matrix → rag-quality-<tag>.json
+│   ├── rag-quality-html.js          #   Renders rag-quality-<tag>.json as an interactive matrix viewer
+│   ├── rag-quality-compare-html.js  #   Side-by-side viewer comparing two runs (e.g. baseline vs routed)
+│   ├── rag-retrieval-roadmap-html.js #  Standalone retrieval-optimization roadmap doc
+│   └── retrieval-classification/
+│       └── rag-test-classifier.js   #   Standalone classifier validation
+│
+├── results/                         # gitignored — eval outputs JSON + classifier results + reruns
+├── reports/                         # gitignored — curated MD reports (manual analysis notes tracked via exception)
+└── viewers/                         # gitignored — generated HTML viewers
 ```
 
 ### RAG quality evaluation pipeline
 
-The `rag-*` scripts form a 6-stage pipeline for measuring retrieval and answer quality across strategies. See [scripts/rag-eval-cases.json](scripts/rag-eval-cases.json) for the input schema with `goldFacts` (each fact tagged with source span, anchor type, and which chunk index contains it at each `chunkSize/Overlap` config).
+The `analyzers/rag-*` scripts form a 6-stage pipeline for measuring retrieval and answer quality across strategies. See [scripts/rag-eval-cases.json](scripts/rag-eval-cases.json) for the input schema with `goldFacts` (each fact tagged with source span, anchor type, and which chunk index contains it at each `chunkSize/Overlap` config).
 
 ```
-rag-seed.js              → seeds the test DB
-rag-embed.js             → embeds chunks (both 150/50 and 150/25 configs)
-rag-eval.js              → runs the eval over all 6 variants × 26 cases
-rag-facts-build.js       → (re)computes goldFacts offsets + chunk membership
-rag-quality-build.js     → joins eval results with curated correctness → quality JSON
-rag-quality-html.js      → matrix viewer per run
-rag-quality-compare-html.js → side-by-side viewer comparing two runs
+seed.js                          → seeds the test DB
+analyzers/rag-embed.js           → embeds chunks (both 150/50 and 150/25 configs)
+analyzers/rag-eval.js            → runs the eval over all 6 variants × 26 cases
+analyzers/rag-facts-build.js     → (re)computes goldFacts offsets + chunk membership
+analyzers/rag-quality-build.js   → joins eval results with curated correctness → quality JSON
+analyzers/rag-quality-html.js    → matrix viewer per run
+analyzers/rag-quality-compare-html.js  → side-by-side viewer comparing two runs
 ```
 
 Diagnoses produced: `success`, `boundary_split` (Type 2), `generation_miss/partial` (Type 1/5), `retrieval_miss_task` (Type 3), `metadata_hallucination` (Type 4), `metadata_only`, `open_ended`, `unanswerable`. Output files are gitignored — regenerable from the scripts.

@@ -18,16 +18,26 @@
         "end": 371,
         "startText": "10:12 AM — first PagerDuty",
         "endText": "first PagerDuty alert fired",
+        "alsoIn": [
+          {
+            "startText": "Total user-visible downtime: 2 hours 40 minutes (10:12 AM",
+            "endText": "12:52 PM)",
+            "start": 1745,
+            "end": 1814
+          }
+        ],
         "chunks": {
           "150/50": {
             "full": [
-              0
+              0,
+              2
             ],
             "partial": []
           },
           "150/25": {
             "full": [
-              0
+              0,
+              2
             ],
             "partial": []
           }
@@ -41,16 +51,26 @@
         "end": 77,
         "startText": "unavailable for 2 hours and 40 minutes",
         "endText": "2 hours and 40 minutes",
+        "alsoIn": [
+          {
+            "startText": "Total user-visible downtime: 2 hours 40 minutes",
+            "endText": "2 hours 40 minutes",
+            "start": 1745,
+            "end": 1792
+          }
+        ],
         "chunks": {
           "150/50": {
             "full": [
-              0
+              0,
+              2
             ],
             "partial": []
           },
           "150/25": {
             "full": [
-              0
+              0,
+              2
             ],
             "partial": []
           }
@@ -1530,16 +1550,26 @@
         "end": 77,
         "startText": "unavailable for 2 hours and 40 minutes",
         "endText": "2 hours and 40 minutes",
+        "alsoIn": [
+          {
+            "startText": "Total user-visible downtime: 2 hours 40 minutes",
+            "endText": "2 hours 40 minutes",
+            "start": 1745,
+            "end": 1792
+          }
+        ],
         "chunks": {
           "150/50": {
             "full": [
-              0
+              0,
+              2
             ],
             "partial": []
           },
           "150/25": {
             "full": [
-              0
+              0,
+              2
             ],
             "partial": []
           }
