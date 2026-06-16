@@ -29,6 +29,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { CreateTaskSchema } from "@/schema/createTask.schema.js";
+import { TaskGeneratePromptSchema } from "@/schema/aiPrompt.schema.js";
 import { useCreateTask } from "@/hooks/useCreateTask.hook.js";
 import { useGenerateTask } from "@/hooks/useGenerateTask.hook.js";
 import { useToast } from "@/hooks/use-toast.js";
@@ -70,11 +71,15 @@ export function CreateTaskForm({ onSuccess }) {
   };
 
   const runGenerate = () => {
-    if (!prompt.trim()) return;
+    const parsed = TaskGeneratePromptSchema.safeParse({ prompt });
+    if (!parsed.success) {
+      setGenerateError(parsed.error.issues[0]?.message ?? "Invalid prompt");
+      return;
+    }
     setGenerateError(null);
     setPendingGenerate(false);
 
-    generate({ projectId, prompt }, {
+    generate({ projectId, prompt: parsed.data.prompt }, {
       onSuccess: (data) => {
         const d = data.data;
         if (d.title)       form.setValue("title", d.title,             { shouldValidate: true });

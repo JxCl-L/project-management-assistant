@@ -3,6 +3,7 @@ import { X, Sparkles, Send, Bot, AlertCircle } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import { useProjectSummary } from "@/hooks/useProjectSummary.hook.js";
 import { useSendChatMessage } from "@/hooks/useSendChatMessage.hook.js";
+import { ChatMessageSchema } from "@/schema/aiPrompt.schema.js";
 
 const markdownComponents = {
   h1: ({ children }) => <h1 className="text-base font-bold mt-3 mb-1 first:mt-0">{children}</h1>,
@@ -113,8 +114,21 @@ export function AiPanel({ isOpen, onClose, projectId, projectName }) {
   }, [isOpen]);
 
   const handleSend = () => {
-    const text = inputValue.trim();
-    if (!text || isPending) return;
+    if (isPending) return;
+    const parsed = ChatMessageSchema.safeParse({ content: inputValue });
+    if (!parsed.success) {
+      setMessages((prev) => [
+        ...prev,
+        {
+          id: Date.now().toString(),
+          role: "ai",
+          content: parsed.error.issues[0]?.message ?? "Invalid message",
+          isError: true,
+        },
+      ]);
+      return;
+    }
+    const text = parsed.data.content;
 
     const userDisplayMsg = { id: Date.now().toString(), role: "user", content: text };
     const updatedHistory = [...apiHistory, { role: "user", content: text }];

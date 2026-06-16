@@ -30,6 +30,7 @@ export default function TaskTitleEdit({ projectId, taskId, initialTitle, role })
       setIsEditing(false);
       return;
     }
+    if (trimmed.length > 100) return;
     mutate(
       { projectId, taskData: { _id: taskId, title: trimmed } },
       {
@@ -60,6 +61,7 @@ export default function TaskTitleEdit({ projectId, taskId, initialTitle, role })
           onChange={(e) => setEditingTitle(e.target.value)}
           onKeyDown={handleKeyDown}
           disabled={isPending}
+          maxLength={100}
           className="text-2xl font-semibold leading-none tracking-tight bg-transparent border-0 border-b-2 border-primary outline-none w-full pb-0.5 caret-primary disabled:opacity-50"
         />
         <button
