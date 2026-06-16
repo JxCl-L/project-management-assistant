@@ -30,7 +30,6 @@ import {
 } from "@/components/ui/tooltip";
 import { useEffect, useState } from "react";
 import { useToast } from "@/hooks/use-toast.js";
-import { Toaster } from "@/components/ui/toaster";
 import { Trash2 } from "lucide-react";
 import { useUpdateMember } from "@/hooks/useUpdateMember.hook.js";
 import { useFetchMembers } from "@/hooks/useFetchMembers.hook.js";
@@ -229,7 +228,6 @@ export function ManageMembersDialog({
         project={project}
       />
 
-      <Toaster />
     </TooltipProvider>
   );
 }

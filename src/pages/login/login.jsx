@@ -24,7 +24,6 @@ import {
 import { useLogin } from "@/hooks/useLogin.hook.js";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
-import { Toaster } from "@/components/ui/toaster";
 import { useToast } from "@/hooks/use-toast.js";
 import { Loader2 } from "lucide-react";
 
@@ -39,9 +38,9 @@ export default function Login() {
   });
 
   function onSubmit(values) {
-    console.log("Submitting login form with values:", values);
-    mutate(values);
-    form.reset();
+    mutate(values, {
+      onSuccess: () => form.reset(),
+    });
   }
 
   useEffect(() => {
@@ -136,7 +135,6 @@ export default function Login() {
           </Form>
         </Card>
       </div>
-      <Toaster />
     </section>
   );
 }

@@ -33,7 +33,6 @@ import { TaskGeneratePromptSchema } from "@/schema/aiPrompt.schema.js";
 import { useCreateTask } from "@/hooks/useCreateTask.hook.js";
 import { useGenerateTask } from "@/hooks/useGenerateTask.hook.js";
 import { useToast } from "@/hooks/use-toast.js";
-import { Toaster } from "@/components/ui/toaster";
 import { useParams } from "react-router";
 
 export function CreateTaskForm({ onSuccess }) {
@@ -52,9 +51,15 @@ export function CreateTaskForm({ onSuccess }) {
 
   function onSubmit(values) {
     const dueDate = values.dueDate.toISOString();
-    mutate({ ...values, dueDate });
-    form.reset();
-    if (onSuccess) onSuccess();
+    mutate(
+      { ...values, dueDate },
+      {
+        onSuccess: () => {
+          form.reset();
+          if (onSuccess) onSuccess();
+        },
+      }
+    );
   }
 
   useEffect(() => {
@@ -306,7 +311,6 @@ export function CreateTaskForm({ onSuccess }) {
 
         </form>
       </Form>
-      <Toaster />
     </div>
   );
 }

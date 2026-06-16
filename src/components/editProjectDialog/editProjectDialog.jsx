@@ -34,7 +34,6 @@ import { useEffect, useState } from "react";
 import { useUpdateProject } from "@/hooks/useUpdateProject.hook.js";
 import { useDeleteProject } from "@/hooks/useDeleteProject.hook.js";
 import { useToast } from "@/hooks/use-toast.js";
-import { Toaster } from "@/components/ui/toaster";
 import { Trash2 } from "lucide-react";
 
 export function EditProjectDialog({ open, onOpenChange, project }) {
@@ -186,8 +185,6 @@ export function EditProjectDialog({ open, onOpenChange, project }) {
             </form>
           </Form>
         </DialogContent>
-
-        <Toaster />
       </Dialog>
 
       <AlertDialog open={showDeleteAlert} onOpenChange={setShowDeleteAlert}>

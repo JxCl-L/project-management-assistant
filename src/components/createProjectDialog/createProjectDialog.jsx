@@ -17,7 +17,6 @@ import { useForm } from "react-hook-form";
 import { CreateProjectSchema } from "@/schema/createProject.schema.js";
 import { useEffect, useState } from "react";
 import { useToast } from "@/hooks/use-toast.js";
-import { Toaster } from "@/components/ui/toaster";
 import { useQueryClient } from "@tanstack/react-query";
 import { set } from "date-fns";
 import { Textarea } from "@/components/ui/textarea";
@@ -153,7 +152,6 @@ export function CreateProjectDialog({ trigger } = {}) {
         </Form>
       </DialogContent>
 
-      <Toaster />
     </Dialog>
   );
 }

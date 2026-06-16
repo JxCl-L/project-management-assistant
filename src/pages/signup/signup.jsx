@@ -23,7 +23,6 @@ import {
 } from "@/components/ui/form";
 import { useSignup } from "@/hooks/useSignup.hook.js";
 import { useEffect } from "react";
-import { Toaster } from "@/components/ui/toaster";
 import { useToast } from "@/hooks/use-toast.js";
 
 
@@ -44,8 +43,9 @@ export default function Signup() {
   });
 
   function onSubmit(values) {
-    mutate(values);
-    form.reset();
+    mutate(values, {
+      onSuccess: () => form.reset(),
+    });
   }
 
   useEffect(() => {
@@ -166,7 +166,6 @@ export default function Signup() {
           </Form>
         </Card>
       </div>
-      <Toaster />
     </section>
   );
 }

@@ -2,7 +2,6 @@ import { FilterBar } from "@/components/filterBar/filterBar.jsx";
 import { TaskCard } from "@/components/taskCard/taskCard.jsx";
 import { TasksProgressBar } from "@/components/tasksCounter/tasksCounter.jsx";
 import { ProjectHeaderEditable } from "@/components/projectHeaderEditable/projectHeaderEditable.jsx";
-import { Toaster } from "@/components/ui/toaster";
 import { useFetchTasks } from "@/hooks/useFetchTasks.hook.js";
 import { useState, lazy, Suspense, useEffect } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -175,7 +174,6 @@ export default function Tasks() {
           </div>
       </main>
 
-      <Toaster />
       {aiPanelEverOpened && (
         <Suspense fallback={null}>
           <AiPanel
