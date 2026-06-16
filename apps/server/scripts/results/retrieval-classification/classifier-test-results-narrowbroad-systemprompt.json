@@ -1,0 +1,236 @@
+[
+  {
+    "id": "A1",
+    "query": "What time did the January 15 outage start and how long did it last?",
+    "expected": "FACT",
+    "predicted": "FACT",
+    "correct": true,
+    "elapsedMs": 3285,
+    "error": null
+  },
+  {
+    "id": "A2",
+    "query": "When was the API rate limiting design review meeting held?",
+    "expected": "FACT",
+    "predicted": "FACT",
+    "correct": true,
+    "elapsedMs": 1102,
+    "error": null
+  },
+  {
+    "id": "A3",
+    "query": "What date did the Stripe integration go live in production?",
+    "expected": "FACT",
+    "predicted": "FACT",
+    "correct": true,
+    "elapsedMs": 1331,
+    "error": null
+  },
+  {
+    "id": "A4",
+    "query": "When did Marcus Chen's first PR get merged?",
+    "expected": "FACT",
+    "predicted": "FACT",
+    "correct": true,
+    "elapsedMs": 1138,
+    "error": null
+  },
+  {
+    "id": "B1",
+    "query": "What was the P95 search latency before and after the fix in January?",
+    "expected": "FACT",
+    "predicted": "NARROW",
+    "correct": false,
+    "elapsedMs": 1303,
+    "error": null
+  },
+  {
+    "id": "B2",
+    "query": "How much did the Jenkins to GitHub Actions migration save per year?",
+    "expected": "FACT",
+    "predicted": "FACT",
+    "correct": true,
+    "elapsedMs": 1293,
+    "error": null
+  },
+  {
+    "id": "B3",
+    "query": "What were the load test results at 500 concurrent users?",
+    "expected": "NARROW",
+    "predicted": "FACT",
+    "correct": false,
+    "elapsedMs": 1383,
+    "error": null
+  },
+  {
+    "id": "B4",
+    "query": "How many subscriptions were created on the first day Stripe launched?",
+    "expected": "FACT",
+    "predicted": "FACT",
+    "correct": true,
+    "elapsedMs": 1200,
+    "error": null
+  },
+  {
+    "id": "C1",
+    "query": "Who ran the load testing in February and what tool did they use?",
+    "expected": "FACT",
+    "predicted": "BROAD",
+    "correct": false,
+    "elapsedMs": 1157,
+    "error": null
+  },
+  {
+    "id": "C2",
+    "query": "Who identified the root cause of the auth token expiry bug and when?",
+    "expected": "FACT",
+    "predicted": "FACT",
+    "correct": true,
+    "elapsedMs": 1022,
+    "error": null
+  },
+  {
+    "id": "C3",
+    "query": "What was the root cause of the auth token expiry bug?",
+    "expected": "FACT",
+    "predicted": "FACT",
+    "correct": true,
+    "elapsedMs": 1331,
+    "error": null
+  },
+  {
+    "id": "D1",
+    "query": "Walk me through the full timeline of the January 15 outage from alert to full recovery.",
+    "expected": "NARROW",
+    "predicted": "NARROW",
+    "correct": true,
+    "elapsedMs": 1208,
+    "error": null
+  },
+  {
+    "id": "D2",
+    "query": "What action items came out of the January 15 outage post-mortem?",
+    "expected": "NARROW",
+    "predicted": "NARROW",
+    "correct": true,
+    "elapsedMs": 1188,
+    "error": null
+  },
+  {
+    "id": "D3",
+    "query": "What was Marcus Chen's schedule on his first day and what issue did he run into with Docker?",
+    "expected": "NARROW",
+    "predicted": "FACT",
+    "correct": false,
+    "elapsedMs": 1223,
+    "error": null
+  },
+  {
+    "id": "D4",
+    "query": "What were the load test results and what bottlenecks were found?",
+    "expected": "NARROW",
+    "predicted": "BROAD",
+    "correct": false,
+    "elapsedMs": 1163,
+    "error": null
+  },
+  {
+    "id": "F1",
+    "query": "Which tasks are currently in progress?",
+    "expected": "BROAD",
+    "predicted": "BROAD",
+    "correct": true,
+    "elapsedMs": 1256,
+    "error": null
+  },
+  {
+    "id": "F2",
+    "query": "What is the team's Figma file URL?",
+    "expected": "FACT",
+    "predicted": "FACT",
+    "correct": true,
+    "elapsedMs": 1125,
+    "error": null
+  },
+  {
+    "id": "F3",
+    "query": "Tell me about the project.",
+    "expected": "BROAD",
+    "predicted": "BROAD",
+    "correct": true,
+    "elapsedMs": 1177,
+    "error": null
+  },
+  {
+    "id": "F4",
+    "query": "How long was the January 15 outage?",
+    "expected": "FACT",
+    "predicted": "FACT",
+    "correct": true,
+    "elapsedMs": 1179,
+    "error": null
+  },
+  {
+    "id": "G1",
+    "query": "What performance improvements were made this quarter?",
+    "expected": "BROAD",
+    "predicted": "BROAD",
+    "correct": true,
+    "elapsedMs": 1310,
+    "error": null
+  },
+  {
+    "id": "G2",
+    "query": "What did Bob Chen work on in February?",
+    "expected": "BROAD",
+    "predicted": "BROAD",
+    "correct": true,
+    "elapsedMs": 1175,
+    "error": null
+  },
+  {
+    "id": "H1",
+    "query": "When was the Atlas Core service registry kickoff meeting and who attended?",
+    "expected": "FACT",
+    "predicted": "FACT",
+    "correct": true,
+    "elapsedMs": 1082,
+    "error": null
+  },
+  {
+    "id": "H2",
+    "query": "What is the Redis cache TTL and what is the maximum number of services that can be registered?",
+    "expected": "FACT",
+    "predicted": "FACT",
+    "correct": true,
+    "elapsedMs": 1125,
+    "error": null
+  },
+  {
+    "id": "H3",
+    "query": "What is the estimated monthly cost of the service registry and who approved it?",
+    "expected": "FACT",
+    "predicted": "FACT",
+    "correct": true,
+    "elapsedMs": 1618,
+    "error": null
+  },
+  {
+    "id": "H4",
+    "query": "What technologies were evaluated and rejected for the service registry, and why?",
+    "expected": "NARROW",
+    "predicted": "NARROW",
+    "correct": true,
+    "elapsedMs": 1183,
+    "error": null
+  },
+  {
+    "id": "H5",
+    "query": "What are the three migration waves for onboarding existing services, and what are their dates?",
+    "expected": "NARROW",
+    "predicted": "NARROW",
+    "correct": true,
+    "elapsedMs": 1310,
+    "error": null
+  }
+]

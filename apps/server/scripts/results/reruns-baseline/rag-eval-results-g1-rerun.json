@@ -1,0 +1,395 @@
+{
+  "generatedAt": "2026-06-03T15:39:30.007Z",
+  "projectId": "6a1eb986af94cb7d85867caa",
+  "cells": [
+    {
+      "caseId": "G1",
+      "category": "Cross-task synthesis",
+      "behavior": "multi_task_synthesis",
+      "query": "What performance improvements were made this quarter?",
+      "variantKey": "fullcontext",
+      "strategy": "fullcontext",
+      "chunkConfig": null,
+      "ms": 4696,
+      "error": null,
+      "answer": "Based on the provided context, the following performance improvements were made this quarter:\n\n1. **Search Index Performance Optimization** — The P95 search latency was reduced from **850ms to 115ms** by recreating a failed GIN index and later adding a Redis query cache for frequent search terms.\n2. **GitHub Actions CI/CD Pipeline Upgrade** — Pipeline startup time was reduced from **4 minutes to 45 seconds**, and average CI pipeline duration went from **11 minutes to 4 minutes 10 seconds** (down from Jenkins).\n3. **PostgreSQL Schema Migration (v2.3)** — The migration itself ran efficiently (8 min 42 sec), and a timezone bug in session expiration was fixed as part of the improvement.\n4. **Load Testing-based Optimizations** — Following the February 2026 load tests, the team raised minimum app server count from 2 to 3 (to handle spikes faster), increased the RDS connection pool from 100 to 150, and enabled ElastiCache for session storage to reduce database reads.\n5. **Cache warming** — Although not a deliberate improvement, the January 15 outage post-mortem led to clearer rollback procedures that reduce future recovery time.\n\nThe most impactful single improvement was the search latency fix (850ms → 115ms P95).",
+      "retrieved": [
+        {
+          "task": "Q1 Sprint Planning & Roadmap Review",
+          "words": 320
+        },
+        {
+          "task": "API Rate Limiting — Design & Implementation",
+          "words": 294
+        },
+        {
+          "task": "PostgreSQL Schema Migration — v2.3",
+          "words": 279
+        },
+        {
+          "task": "Auth Token Expiry Bug — Investigation & Fix",
+          "words": 317
+        },
+        {
+          "task": "Search Index Performance Optimization",
+          "words": 313
+        },
+        {
+          "task": "Code Review Standards & Team Guidelines",
+          "words": 304
+        },
+        {
+          "task": "GitHub Actions CI/CD Pipeline Upgrade",
+          "words": 296
+        },
+        {
+          "task": "Frontend Design System — Initial Setup",
+          "words": 304
+        },
+        {
+          "task": "Q1 Security Audit — External Review",
+          "words": 301
+        },
+        {
+          "task": "OpenAPI Documentation Rewrite",
+          "words": 292
+        },
+        {
+          "task": "Stripe Payment Integration — Developer Portal",
+          "words": 277
+        },
+        {
+          "task": "Load Testing Report — February 2026",
+          "words": 337
+        },
+        {
+          "task": "New Engineer Onboarding — Marcus Chen",
+          "words": 322
+        },
+        {
+          "task": "Q2 Stakeholder Demo Preparation",
+          "words": 356
+        },
+        {
+          "task": "Bug Triage Session — March 3, 2026",
+          "words": 338
+        },
+        {
+          "task": "Mobile Responsive Redesign — Dashboard",
+          "words": 326
+        },
+        {
+          "task": "Analytics Dashboard v2 — Design & Build",
+          "words": 333
+        },
+        {
+          "task": "Sentry Error Monitoring — Configuration & Alerting",
+          "words": 379
+        },
+        {
+          "task": "Production Deployment Runbook — Update",
+          "words": 375
+        },
+        {
+          "task": "Post-mortem: January 15, 2026 Production Outage",
+          "words": 447
+        },
+        {
+          "task": "Atlas Core Service Registry — Technical Design",
+          "words": 1428
+        }
+      ],
+      "hybrid": null
+    },
+    {
+      "caseId": "G1",
+      "category": "Cross-task synthesis",
+      "behavior": "multi_task_synthesis",
+      "query": "What performance improvements were made this quarter?",
+      "variantKey": "single",
+      "strategy": "single",
+      "chunkConfig": null,
+      "ms": 5339,
+      "error": null,
+      "answer": "Based on the project context, here are the key performance improvements made this quarter:\n\n1. **Search Index Performance Optimization** (Charlie Li)\n   - Fixed a GIN index on `content_tsv` that was invalid after a failed concurrent creation during the January 15 migration. Recreated the index on January 24, reducing P95 search latency from **870ms → 115ms**.\n   - Added a Redis query result cache (60-second TTL) for the top-20 frequent search terms on February 3, reducing P50 to **12ms** for cached queries and lowering average database load by **31%**.\n\n2. **CI/CD Pipeline Upgrade** (completed February 28)\n   - Migrated from Jenkins to GitHub Actions, reducing **CI pipeline startup time from 4 minutes to 45 seconds**.\n\n3. **Post-deploy Automation**\n   - Added automated index validity checks to the post-deploy smoke test suite to prevent future index regressions.\n   - Added a Grafana alert for P95 search latency > 300ms.\n\nThese are the documented performance improvements; no other tasks in the context mention specific performance metrics changes.",
+      "retrieved": [
+        {
+          "task": "Q1 Sprint Planning & Roadmap Review",
+          "score": 0.7163837552070618,
+          "preview": "The Q1 sprint planning session was held on January 6, 2026, and ran for three hours starting at 10:00 AM..."
+        },
+        {
+          "task": "Search Index Performance Optimization",
+          "score": 0.7161440849304199,
+          "preview": "A search latency regression was detected on January 17, 2026 via the Grafana dashboard. The P95 response time for the..."
+        },
+        {
+          "task": "Q2 Stakeholder Demo Preparation",
+          "score": 0.6987511515617371,
+          "preview": "The Q2 stakeholder demo is scheduled for April 8, 2026 at 2:00 PM PST. Attendees will include the VP of..."
+        }
+      ],
+      "hybrid": null
+    },
+    {
+      "caseId": "G1",
+      "category": "Cross-task synthesis",
+      "behavior": "multi_task_synthesis",
+      "query": "What performance improvements were made this quarter?",
+      "variantKey": "chunked@150/50",
+      "strategy": "chunked",
+      "chunkConfig": "150:50",
+      "ms": 5970,
+      "error": null,
+      "answer": "Based on the project data, the following performance improvements were made this quarter:\n\n1. **Search Index Performance Optimization** (completed, high priority)\n   - Fixed an invalid GIN index on the `documents` table (recreated it, reducing search P95 from 850ms to 115ms)\n   - Added a Redis query result cache (60-second TTL) for the top-20 most frequent search terms, reducing P50 to 12ms for cached queries and cutting database load by 31%\n   - Added automated index validity checks to post-deploy smoke tests and a Grafana alert for P95 > 300ms\n\n2. **Load Testing & Infrastructure Scaling** (February 2026 load test recommendations implemented)\n   - Raised minimum app server count from 2 to 3 (done February 25)\n   - Increased RDS connection pool from 100 to 150 (done February 22)\n   - Scheduled ElastiCache for session storage (March 5) to reduce database reads\n   - Auto-scaling group response time improved (from 45s to faster scaling)\n\n3. **CI/CD Pipeline Upgrade** (GitHub Actions migration completed February 28)\n   - CI pipeline startup time reduced from 4 minutes to 45 seconds (highlighted in Q2 demo metrics)\n\nKey metric results: Search P95 latency reduced from 850ms → 115ms, CI startup time reduced from 4 min → 45 seconds, and 99.97% API uptime achieved in Q1.",
+      "retrieved": [
+        {
+          "task": "Q1 Sprint Planning & Roadmap Review",
+          "chunkIndex": 2,
+          "score": 0.720146894454956,
+          "preview": "1 task list and share it in Slack by end of day January 7. Velocity targets were set based on..."
+        },
+        {
+          "task": "Q2 Stakeholder Demo Preparation",
+          "chunkIndex": 2,
+          "score": 0.7185866832733154,
+          "preview": "on the same version as production and must not share any production data. Slide deck structure (draft): (1) Q1 recap..."
+        },
+        {
+          "task": "Search Index Performance Optimization",
+          "chunkIndex": 2,
+          "score": 0.7172468900680542,
+          "preview": "= 88ms, P95 = 115ms, P99 = 178ms — back within baseline range. The Grafana alert was cleared at 7:15..."
+        },
+        {
+          "task": "Search Index Performance Optimization",
+          "chunkIndex": 0,
+          "score": 0.7078463435173035,
+          "preview": "A search latency regression was detected on January 17, 2026 via the Grafana dashboard. The P95 response time for the..."
+        },
+        {
+          "task": "Search Index Performance Optimization",
+          "chunkIndex": 1,
+          "score": 0.7059707641601562,
+          "preview": "query showed a full table scan on the `documents` table (1.2M rows) despite an index on `content_tsv`. (2) The index..."
+        },
+        {
+          "task": "Q1 Sprint Planning & Roadmap Review",
+          "chunkIndex": 0,
+          "score": 0.7055624723434448,
+          "preview": "The Q1 sprint planning session was held on January 6, 2026, and ran for three hours starting at 10:00 AM..."
+        },
+        {
+          "task": "Load Testing Report — February 2026",
+          "chunkIndex": 2,
+          "score": 0.703742504119873,
+          "preview": "auto-scaling group launched a third app server and metrics stabilized. P99 returned to 820ms at steady state. Bottlenecks identified: (1)..."
+        },
+        {
+          "task": "Load Testing Report — February 2026",
+          "chunkIndex": 1,
+          "score": 0.7033635377883911,
+          "preview": "rate: 0.02%. CPU on app servers: avg 34%, peak 51%. RDS CPU: avg 18%, peak 27%. All metrics within acceptable..."
+        }
+      ],
+      "hybrid": null
+    },
+    {
+      "caseId": "G1",
+      "category": "Cross-task synthesis",
+      "behavior": "multi_task_synthesis",
+      "query": "What performance improvements were made this quarter?",
+      "variantKey": "chunked@150/25",
+      "strategy": "chunked",
+      "chunkConfig": "150:25",
+      "ms": 3153,
+      "error": null,
+      "answer": "Based on the provided context, two key performance improvements were made this quarter:\n\n1. **Search Index Performance (Search Index Performance Optimization)**: P95 search response time was reduced from 850ms back to 115ms by fixing an invalid index and adding a Redis query cache. This brought the P50 down to 12ms for cached queries and reduced average database load by 31%.\n\n2. **CI Pipeline Startup Time (Q2 Stakeholder Demo Preparation)**: CI pipeline startup time was reduced from 4 minutes to 45 seconds (this is listed as a key metric to highlight in the Q2 demo).",
+      "retrieved": [
+        {
+          "task": "Search Index Performance Optimization",
+          "chunkIndex": 2,
+          "score": 0.7286566495895386,
+          "preview": "to 12ms for cached queries and brought average database load down by 31%. Action items from the fix: (1) add..."
+        },
+        {
+          "task": "Q2 Stakeholder Demo Preparation",
+          "chunkIndex": 2,
+          "score": 0.7238692045211792,
+          "preview": "— 4 minutes; (6) Q2 roadmap — 8 minutes; (7) Questions — 20 minutes. Key metrics to highlight in the..."
+        },
+        {
+          "task": "Q1 Sprint Planning & Roadmap Review",
+          "chunkIndex": 2,
+          "score": 0.717848539352417,
+          "preview": "new tooling is in place. Three high-priority carryovers from Q4 2025 were reviewed: the auth token expiry bug (critical, assigned..."
+        },
+        {
+          "task": "Q1 Sprint Planning & Roadmap Review",
+          "chunkIndex": 1,
+          "score": 0.7124931812286377,
+          "preview": "Thursday at 2:00 PM PST. Key risks identified: the service registry depends on the PostgreSQL schema migration being completed first,..."
+        },
+        {
+          "task": "Q2 Stakeholder Demo Preparation",
+          "chunkIndex": 1,
+          "score": 0.7101730108261108,
+          "preview": "deck (Alice); March 28 — first internal rehearsal with Bob and Charlie (1 hour); April 1 — incorporate feedback and..."
+        },
+        {
+          "task": "Search Index Performance Optimization",
+          "chunkIndex": 0,
+          "score": 0.7078583240509033,
+          "preview": "A search latency regression was detected on January 17, 2026 via the Grafana dashboard. The P95 response time for the..."
+        },
+        {
+          "task": "Q1 Sprint Planning & Roadmap Review",
+          "chunkIndex": 0,
+          "score": 0.7055624723434448,
+          "preview": "The Q1 sprint planning session was held on January 6, 2026, and ran for three hours starting at 10:00 AM..."
+        },
+        {
+          "task": "Search Index Performance Optimization",
+          "chunkIndex": 1,
+          "score": 0.7025033235549927,
+          "preview": "— it had been created concurrently during the January 15 migration and failed partway through due to a lock timeout...."
+        }
+      ],
+      "hybrid": null
+    },
+    {
+      "caseId": "G1",
+      "category": "Cross-task synthesis",
+      "behavior": "multi_task_synthesis",
+      "query": "What performance improvements were made this quarter?",
+      "variantKey": "hybrid@150/50",
+      "strategy": "hybrid",
+      "chunkConfig": "150:50",
+      "ms": 2974,
+      "error": null,
+      "answer": "Based on the provided documents, here are the performance improvements made this quarter (Q1 2026):\n\n1. **Search Index Performance** (Completed Feb 10, 2026)\n   - Fixed a search latency regression caused by a missing index after a schema migration.\n   - P95 search response time restored from 850ms back to 115ms (baseline).\n   - Added a Redis query result cache (60-second TTL) for the top-20 frequent search terms, reducing P50 to 12ms for cached queries and overall database load by 31%.\n\n2. **Load Testing & Infrastructure** (February 2026)\n   - Raised the minimum app server count from 2 to 3 to reduce auto-scaling response time.\n   - Increased RDS connection pool from 100 to 150 to prevent exhaustion during spikes.\n   - ElastiCache for session storage scheduled for March 5 to reduce database reads.\n   - Next load test planned for April 15, 2026.",
+      "retrieved": [
+        {
+          "task": "Q1 Sprint Planning & Roadmap Review",
+          "chunkIndex": 2,
+          "rrfScore": 0.0325,
+          "preview": "1 task list and share it in Slack by end of day January 7. Velocity targets were set based on..."
+        },
+        {
+          "task": "Search Index Performance Optimization",
+          "chunkIndex": 2,
+          "rrfScore": 0.0289,
+          "preview": "= 88ms, P95 = 115ms, P99 = 178ms — back within baseline range. The Grafana alert was cleared at 7:15..."
+        },
+        {
+          "task": "Load Testing Report — February 2026",
+          "chunkIndex": 2,
+          "rrfScore": 0.0277,
+          "preview": "auto-scaling group launched a third app server and metrics stabilized. P99 returned to 820ms at steady state. Bottlenecks identified: (1)..."
+        },
+        {
+          "task": "Bug Triage Session — March 3, 2026",
+          "chunkIndex": 0,
+          "rrfScore": 0.0267,
+          "preview": "The weekly bug triage session was held on March 3, 2026 at 10:00 AM PST. Attendees: Charlie Li (facilitator), Alice..."
+        },
+        {
+          "task": "Bug Triage Session — March 3, 2026",
+          "chunkIndex": 1,
+          "rrfScore": 0.0265,
+          "preview": "tester). Assigned to Marcus Chen, target fix March 7. (2) Issue #222 — the Stripe webhook handler fails silently when..."
+        },
+        {
+          "task": "Bug Triage Session — March 3, 2026",
+          "chunkIndex": 2,
+          "rrfScore": 0.0252,
+          "preview": "as won't fix. Issue #201 (request to support XML response format) was closed — the team confirmed the Atlas API..."
+        },
+        {
+          "task": "Atlas Core Service Registry — Technical Design",
+          "chunkIndex": 0,
+          "rrfScore": 0.0164,
+          "preview": "The Atlas Core service registry is the foundational component of the Atlas internal developer platform. A design kickoff meeting was..."
+        },
+        {
+          "task": "Q2 Stakeholder Demo Preparation",
+          "chunkIndex": 2,
+          "rrfScore": 0.0161,
+          "preview": "on the same version as production and must not share any production data. Slide deck structure (draft): (1) Q1 recap..."
+        }
+      ],
+      "hybrid": {
+        "vectorCount": 20,
+        "bm25Count": 20,
+        "bm25Errored": false
+      }
+    },
+    {
+      "caseId": "G1",
+      "category": "Cross-task synthesis",
+      "behavior": "multi_task_synthesis",
+      "query": "What performance improvements were made this quarter?",
+      "variantKey": "hybrid@150/25",
+      "strategy": "hybrid",
+      "chunkConfig": "150:25",
+      "ms": 2283,
+      "error": null,
+      "answer": "Based on the provided context, the key performance improvements made this quarter were for the **Search Index**:\n\n1. **GIN Index Fix:** A broken GIN index on `content_tsv` was identified as the root cause of search latency regression. It was dropped and recreated using `CREATE INDEX CONCURRENTLY` on January 24, 2026, bringing P95 back to baseline (<200ms).\n2. **Redis Query Cache:** On February 3, 2026, a Redis query result cache (60-second TTL) was added for the top 20 most frequent search terms. This reduced P50 latency to 12ms for cached queries and decreased average database load by 31%.",
+      "retrieved": [
+        {
+          "task": "Q1 Sprint Planning & Roadmap Review",
+          "chunkIndex": 2,
+          "rrfScore": 0.0323,
+          "preview": "new tooling is in place. Three high-priority carryovers from Q4 2025 were reviewed: the auth token expiry bug (critical, assigned..."
+        },
+        {
+          "task": "Q1 Sprint Planning & Roadmap Review",
+          "chunkIndex": 1,
+          "rrfScore": 0.0315,
+          "preview": "Thursday at 2:00 PM PST. Key risks identified: the service registry depends on the PostgreSQL schema migration being completed first,..."
+        },
+        {
+          "task": "Post-mortem: January 15, 2026 Production Outage",
+          "chunkIndex": 1,
+          "rrfScore": 0.0284,
+          "preview": "refactor in PR #178, the file `src/config/database.js` was renamed to `src/config/db.js`. The import in `src/app.js` was updated, but the import..."
+        },
+        {
+          "task": "Bug Triage Session — March 3, 2026",
+          "chunkIndex": 1,
+          "rrfScore": 0.0276,
+          "preview": "type instead of returning 200 (reported March 2). Assigned to Bob Chen, target fix March 5. Normal priority issues: 11..."
+        },
+        {
+          "task": "Search Index Performance Optimization",
+          "chunkIndex": 1,
+          "rrfScore": 0.0275,
+          "preview": "— it had been created concurrently during the January 15 migration and failed partway through due to a lock timeout...."
+        },
+        {
+          "task": "Load Testing Report — February 2026",
+          "chunkIndex": 1,
+          "rrfScore": 0.0272,
+          "preview": "P50 = 88ms, P95 = 410ms, P99 = 780ms. Throughput: 2,890 requests/second. Error rate: 0.08%. App server CPU peaked at..."
+        },
+        {
+          "task": "Bug Triage Session — March 3, 2026",
+          "chunkIndex": 0,
+          "rrfScore": 0.027,
+          "preview": "The weekly bug triage session was held on March 3, 2026 at 10:00 AM PST. Attendees: Charlie Li (facilitator), Alice..."
+        },
+        {
+          "task": "Search Index Performance Optimization",
+          "chunkIndex": 2,
+          "rrfScore": 0.0164,
+          "preview": "to 12ms for cached queries and brought average database load down by 31%. Action items from the fix: (1) add..."
+        }
+      ],
+      "hybrid": {
+        "vectorCount": 20,
+        "bm25Count": 20,
+        "bm25Errored": false
+      }
+    }
+  ]
+}
