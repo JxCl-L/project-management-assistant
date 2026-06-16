@@ -23,7 +23,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { CreateMemberByEmailSchema } from "@/schema/createMemberByEmail.schema.js";
+import { CreateMemberByEmailSchema } from "@pm/schemas";
 import { useForm } from "react-hook-form";
 import { useToast } from "@/hooks/use-toast.js";
 import { useCreateMemberByEmail } from "@/hooks/useCreateMemberByEmail.hook.js";

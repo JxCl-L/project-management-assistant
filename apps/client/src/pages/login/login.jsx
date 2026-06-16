@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/card";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { LoginSchema } from "@/schema/login.schema.js";
+import { LoginSchema } from "@pm/schemas";
 import {
   Form,
   FormControl,

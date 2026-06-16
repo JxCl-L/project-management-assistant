@@ -11,7 +11,7 @@ import { Button } from "@/components/ui/button";
 import { Link } from "react-router";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { SignupSchema } from "@/schema/signup.schema.js";
+import { SignupSchema } from "@pm/schemas";
 import {
   Form,
   FormControl,

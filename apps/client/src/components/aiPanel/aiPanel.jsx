@@ -3,7 +3,7 @@ import { X, Sparkles, Send, Bot, AlertCircle } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import { useProjectSummary } from "@/hooks/useProjectSummary.hook.js";
 import { useSendChatMessage } from "@/hooks/useSendChatMessage.hook.js";
-import { ChatMessageSchema } from "@/schema/aiPrompt.schema.js";
+import { ChatMessageSchema } from "@pm/schemas";
 
 const markdownComponents = {
   h1: ({ children }) => <h1 className="text-base font-bold mt-3 mb-1 first:mt-0">{children}</h1>,

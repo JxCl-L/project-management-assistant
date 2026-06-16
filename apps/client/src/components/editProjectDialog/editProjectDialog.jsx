@@ -28,7 +28,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { UpdateProjectSchema } from "@/schema/updateProject.schema.js";
+import { UpdateProjectSchema } from "@pm/schemas";
 import { useForm } from "react-hook-form";
 import { useEffect, useState } from "react";
 import { useUpdateProject } from "@/hooks/useUpdateProject.hook.js";

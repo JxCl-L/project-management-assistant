@@ -28,8 +28,8 @@ import {
   FormItem,
   FormMessage,
 } from "@/components/ui/form";
-import { CreateTaskSchema } from "@/schema/createTask.schema.js";
-import { TaskGeneratePromptSchema } from "@/schema/aiPrompt.schema.js";
+import { CreateTaskSchema } from "@pm/schemas";
+import { TaskGeneratePromptSchema } from "@pm/schemas";
 import { useCreateTask } from "@/hooks/useCreateTask.hook.js";
 import { useGenerateTask } from "@/hooks/useGenerateTask.hook.js";
 import { useToast } from "@/hooks/use-toast.js";

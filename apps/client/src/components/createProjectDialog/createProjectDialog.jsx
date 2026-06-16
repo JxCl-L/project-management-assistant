@@ -14,7 +14,7 @@ import { Label } from "@/components/ui/label";
 import { useCreateProject } from "@/hooks/useCreateProject.hook.js";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { CreateProjectSchema } from "@/schema/createProject.schema.js";
+import { CreateProjectSchema } from "@pm/schemas";
 import { useEffect, useState } from "react";
 import { useToast } from "@/hooks/use-toast.js";
 import { useQueryClient } from "@tanstack/react-query";
