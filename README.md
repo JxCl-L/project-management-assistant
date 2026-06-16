@@ -24,6 +24,22 @@ npm install
 # workspaces wire @pm/schemas into both apps automatically
 ```
 
+## Running from the root
+
+You don't need to `cd` into `apps/server` or `apps/client` for the common dev flows:
+
+```bash
+npm run dev:server          # apps/server with the rag-test database
+npm run dev:server:prod-db  # apps/server with the default database
+npm run dev:client          # apps/client (Vite)
+npm run build:client        # production build of the client
+npm run lint:client
+npm run seed:server         # reset and seed the database
+npm run eval:rag            # run the RAG evaluation pipeline
+```
+
+To run server + client side by side, open two terminals and run `npm run dev:server` in one, `npm run dev:client` in the other.
+
 ## History
 
 This repo is a monorepo migration of two previously independent repos. Full pre-migration history is preserved via `git subtree` imports and remains visible in `git log`. The originals (archived, read-only) live at:
