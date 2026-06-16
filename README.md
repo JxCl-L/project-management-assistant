@@ -29,14 +29,15 @@ npm install
 You don't need to `cd` into `apps/server` or `apps/client` for the common dev flows:
 
 ```bash
-npm run dev:server          # apps/server with the rag-test database
-npm run dev:server:prod-db  # apps/server with the default database
-npm run dev:client          # apps/client (Vite)
-npm run build:client        # production build of the client
+npm run dev:server   # apps/server (uses fullstackTasks_rag_test database)
+npm run dev:client   # apps/client (Vite)
+npm run build:client # production build of the client
 npm run lint:client
-npm run seed:server         # reset and seed the database
-npm run eval:rag            # run the RAG evaluation pipeline
+npm run seed:server  # reset and seed fullstackTasks_rag_test
+npm run eval:rag     # run the RAG evaluation pipeline
 ```
+
+> Both `dev:server` and `seed:server` target the `fullstackTasks_rag_test` database. The schema changes in the AI/RAG branch are incompatible with the older `fullstackTasks` data, so the rag-test database is the only supported dev/seed target on this branch.
 
 To run server + client side by side, open two terminals and run `npm run dev:server` in one, `npm run dev:client` in the other.
 

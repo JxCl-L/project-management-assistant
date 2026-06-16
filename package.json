@@ -8,7 +8,6 @@
   ],
   "scripts": {
     "dev:server": "npm run dev:rag-test --workspace=apps/server",
-    "dev:server:prod-db": "npm run dev --workspace=apps/server",
     "dev:client": "npm run dev --workspace=apps/client",
     "build:client": "npm run build --workspace=apps/client",
     "lint:client": "npm run lint --workspace=apps/client",
