@@ -5,3 +5,15 @@ node_modules/
 .env.local
 .vscode/
 .idea/
+
+# Claude Code local settings
+.claude/
+
+# Per-app .env variants live in apps/*/.gitignore but pin the common ones
+# at the root too so a stray .env at the workspace root can't leak in.
+.env.development
+.env.development.local
+.env.production
+.env.production.local
+.env.staging
+.env.test.local

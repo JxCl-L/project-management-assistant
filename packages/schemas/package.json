@@ -4,7 +4,10 @@
   "private": true,
   "main": "src/index.js",
   "exports": {
-    ".": "./src/index.js"
+    ".": {
+      "import": "./src/index.mjs",
+      "require": "./src/index.js"
+    }
   },
   "dependencies": {
     "zod": "^3.25.76"
