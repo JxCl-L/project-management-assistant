@@ -1,8 +1,8 @@
 const express = require("express");
 const authController = require("./auth.controller.js")
 const {StatusCodes} = require("http-status-codes");
-const { validationResult } = require("express-validator");
-const loginValidator = require("./validators/login.validator.js");
+const { validateBody } = require("../middleware/validateBody.js");
+const { LoginSchema } = require("@pm/schemas");
 
 const authRouter = express.Router();
 
@@ -35,15 +35,8 @@ const authRouter = express.Router();
  */
 
 
-authRouter.post("/login", loginValidator, (req, res)=>{
-    const result = validationResult(req);
-    
-    if (result.isEmpty()) {
-        return authController.handleLogin(req, res);
-    } else {
-        return res.status(StatusCodes.BAD_REQUEST).json({ errors: result.array() });
-    }
-
+authRouter.post("/login", validateBody(LoginSchema), (req, res) => {
+    return authController.handleLogin(req, res);
 });
 
 module.exports = authRouter;

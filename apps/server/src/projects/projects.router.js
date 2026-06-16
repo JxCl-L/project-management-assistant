@@ -2,11 +2,11 @@ const express = require("express");
 const { body, validationResult } = require("express-validator");
 const projectsController = require("./projects.controller.js");
 const { StatusCodes } = require("http-status-codes");
-const createProjectValidator = require("./validators/createProject.validator.js");
 const getProjectsValidator = require("./validators/getProjects.validator.js");
 const getProjectValidator = require("./validators/getProject.validator.js");
-const updateProjectValidator = require("./validators/updateProject.validator.js");
 const deleteProjectValidator = require("./validators/deleteProject.validator.js");
+const { validateBody } = require("../middleware/validateBody.js");
+const { CreateProjectSchema, UpdateProjectSchema } = require("@pm/schemas");
 const generateProjectSummaryValidator = require("./validators/generateProjectSummary.validator.js");
 const getCalendarValidator = require("./validators/getCalendar.validator.js");
 const authenticateToken = require("../middleware/authenticateToken.middleware.js");
@@ -18,15 +18,9 @@ projectsRouter.post(
   "/",
   authenticateToken,
 //   checkPermission("projects", "POST"), // anyone can create project
-  createProjectValidator,
+  validateBody(CreateProjectSchema),
   (req, res) => {
-    const result = validationResult(req);
-
-    if (result.isEmpty()) {
-      projectsController.handlePostProjects(req, res);
-    } else {
-      res.status(StatusCodes.BAD_REQUEST).json(result.array());
-    }
+    return projectsController.handlePostProjects(req, res);
   }
 );
 
@@ -34,15 +28,9 @@ projectsRouter.patch(
   "/",
   authenticateToken,
   checkPermission("projects", "PATCH"),
-  updateProjectValidator,
+  validateBody(UpdateProjectSchema),
   (req, res) => {
-    const result = validationResult(req);
-
-    if (result.isEmpty()) {
-      return projectsController.handlePatchProjects(req, res);
-    } else {
-      res.status(StatusCodes.BAD_REQUEST).json(result.array());
-    }
+    return projectsController.handlePatchProjects(req, res);
   }
 );
 

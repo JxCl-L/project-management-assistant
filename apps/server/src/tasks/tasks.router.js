@@ -2,7 +2,8 @@ const express = require("express");
 const { body, validationResult } = require("express-validator");
 const tasksController = require("./tasks.controller.js");
 const { StatusCodes } = require("http-status-codes");
-const createTaskValidator = require("./validators/createTask.validator.js");
+const { validateBody } = require("../middleware/validateBody.js");
+const { CreateTaskSchema } = require("@pm/schemas");
 const getTasksValidator = require("./validators/getTasks.validator.js");
 const getTaskValidator = require("./validators/getTask.validator.js");
 const updateTaskValidator = require("./validators/updateTask.validator.js");
@@ -188,16 +189,9 @@ tasksRouter.post(
   "/",
   authenticateToken,
   checkPermission("tasks", "POST"),
-  createTaskValidator,
+  validateBody(CreateTaskSchema),
   (req, res) => {
-    const result = validationResult(req);
-    // console.log(result);
-
-    if (result.isEmpty()) {
-      tasksController.handlePostTasks(req, res);
-    } else {
-      res.status(StatusCodes.BAD_REQUEST).json(result.array());
-    }
+    return tasksController.handlePostTasks(req, res);
   }
 );
 

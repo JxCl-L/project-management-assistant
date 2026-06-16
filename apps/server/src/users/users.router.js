@@ -1,8 +1,8 @@
 const express = require("express");
 const usersController = require("./users.controller.js");
-const createUserValidator = require("./validators/createUser.validator.js");
 const { StatusCodes } = require("http-status-codes");
-const { validationResult } = require("express-validator");
+const { validateBody } = require("../middleware/validateBody.js");
+const { SignupSchema } = require("@pm/schemas");
 
 const usersRouter = express.Router();
 
@@ -59,14 +59,8 @@ const usersRouter = express.Router();
  */
 
 
-usersRouter.post("/create", createUserValidator, (req, res) => {
-    const result = validationResult(req);
-
-    if (result.isEmpty()) {
-        return usersController.handleCreateUser(req, res);
-    } else {
-        res.status(StatusCodes.BAD_REQUEST).json(result.array());
-    }
+usersRouter.post("/create", validateBody(SignupSchema), (req, res) => {
+    return usersController.handleCreateUser(req, res);
 });
 
 module.exports = usersRouter; 

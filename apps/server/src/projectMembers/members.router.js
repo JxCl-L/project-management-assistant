@@ -6,7 +6,8 @@ const createMemberValidator = require("./validators/createMember.validator.js");
 const getMembersValidator = require("./validators/getMembers.validator.js");
 const updateMemberValidator = require("./validators/updateMember.validator.js");
 const deleteMemberValidator = require("./validators/deleteMember.validator.js");
-const createMemberByEmailValidator = require("./validators/createMemberByEmail.validator.js");
+const { validateBody } = require("../middleware/validateBody.js");
+const { CreateMemberByEmailSchema } = require("@pm/schemas");
 const authenticateToken = require("../middleware/authenticateToken.middleware.js");
 const checkPermission = require("../middleware/checkPermission.middleware.js");
 
@@ -80,15 +81,9 @@ membersRouter.post(
   "/email",
   authenticateToken,
   checkPermission("members", "POST"),
-  createMemberByEmailValidator,
+  validateBody(CreateMemberByEmailSchema),
   (req, res) => {
-    const result = validationResult(req);
-
-    if (result.isEmpty()) {
-      return membersController.handlePostMembersByEmail(req, res);
-    } else {
-      res.status(StatusCodes.BAD_REQUEST).json(result.array());
-    }
+    return membersController.handlePostMembersByEmail(req, res);
   }
 );
 
