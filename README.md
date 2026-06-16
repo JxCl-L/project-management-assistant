@@ -17,6 +17,21 @@ packages/
 - `main` — active development of both apps.
 - `eval-archive` — full RAG evaluation state for `apps/server`: analyzer scripts (`scripts/analyzers/`), eval results (`scripts/results/`), curated reports (`scripts/reports/`), and HTML viewers (`scripts/viewers/`). Kept off `main` to avoid bloating the working tree. Check out this branch when restoring or iterating on the analyzers.
 
+### Restoring the eval-archive dirs into your `main` working tree
+
+If you want the analyzer scripts and eval results visible locally on `main` (still gitignored, so they can't be accidentally committed), run from the repo root:
+
+```bash
+git checkout eval-archive -- \
+  apps/server/scripts/analyzers \
+  apps/server/scripts/results \
+  apps/server/scripts/reports \
+  apps/server/scripts/viewers
+git reset HEAD apps/server/scripts/{analyzers,results,reports,viewers}
+```
+
+`apps/server/.gitignore` already lists those four paths, so after the `git reset` they live on disk but are invisible to git.
+
 ## Getting started
 
 ```bash
