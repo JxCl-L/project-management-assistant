@@ -1,13 +1,12 @@
 const Member = require("../member.schema.js");
 const User = require("../../users/user.schema.js");
-const { matchedData } = require("express-validator");
 const { StatusCodes } = require("http-status-codes");
 const errorLogger = require("../../helpers/errorLogger.helper.js");
 
 async function createMemberByEmailProvider(req, res) {
   console.log("Creating task with data:", req.body); // incoming data may contain extra fields
 
-  const validatedResult = matchedData(req);
+  const validatedResult = req.body;
   console.log("Validated data:", validatedResult);
   console.log("Project ID from params:", req.params.projectId);
 

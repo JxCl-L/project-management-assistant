@@ -1,4 +1,3 @@
-const { matchedData } = require("express-validator");
 const { StatusCodes } = require("http-status-codes");
 const errorLogger = require("../../helpers/errorLogger.helper.js");
 const getUserByEmail = require("../../users/providers/getUserByEmail.provider.js");
@@ -6,7 +5,7 @@ const bcrypt = require("bcrypt");
 const generateTokenProvider = require("./generateTokenProvider.js");
 
 async function loginProvider(req, res) {
-  const validatedData = matchedData(req);
+  const validatedData = req.body;
 
   // console.log("Login attempt:", {
   //     email: validatedData.email,

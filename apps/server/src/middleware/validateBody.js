@@ -10,6 +10,13 @@ function validateBody(schema) {
         path: issue.path.join("."),
         message: issue.message,
       }));
+      // Diagnostic: log rejection so the cause is visible in the server
+      // terminal without having to expand the wrapped response in the
+      // browser. Safe to keep — does not leak request body contents.
+      console.warn(
+        `[validateBody] ${req.method} ${req.originalUrl} rejected:`,
+        JSON.stringify(errors)
+      );
       return res.status(400).json({ errors });
     }
     req.body = result.data;

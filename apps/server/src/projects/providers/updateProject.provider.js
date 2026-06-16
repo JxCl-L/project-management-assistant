@@ -1,11 +1,10 @@
 const Project = require("../project.schema.js");
 const Member = require("../../projectMembers/member.schema.js");
-const { matchedData } = require("express-validator");
 const { StatusCodes } = require("http-status-codes");
 const errorLogger = require("../../helpers/errorLogger.helper.js");
 
 async function updateProjectProvider(req, res) {
-  const validatedData = matchedData(req);
+  const validatedData = req.body;
 
   try {
     // access authorization

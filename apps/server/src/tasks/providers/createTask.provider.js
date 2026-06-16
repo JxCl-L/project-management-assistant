@@ -1,7 +1,6 @@
 const Task = require("../task.schema.js");
 const TaskContent = require("../../taskContent/taskContent.schema.js");
 const Member = require("../../projectMembers/member.schema.js");
-const { matchedData } = require("express-validator");
 const { StatusCodes } = require("http-status-codes");
 const errorLogger = require("../../helpers/errorLogger.helper.js");
 
@@ -23,7 +22,7 @@ async function createTaskProvider(req, res) {
 
   // console.log("Creating task with data:", req.body); // incoming data may contain extra fields
 
-  const validatedResult = matchedData(req); // this will filter out any extra fields not defined in the validator
+  const validatedResult = req.body; // this will filter out any extra fields not defined in the validator
   // console.log("Validated data:", validatedResult);
   // console.log("Req", req.params);
   // console.log("Project ID:", req.params.projectId);
