@@ -3,11 +3,10 @@ import { TaskCard } from "@/components/taskCard/taskCard.jsx";
 import { TasksProgressBar } from "@/components/tasksCounter/tasksCounter.jsx";
 import { ProjectHeaderEditable } from "@/components/projectHeaderEditable/projectHeaderEditable.jsx";
 import { Toaster } from "@/components/ui/toaster";
-import { TaskSidebar } from "@/components/taskSidebar/taskSidebar.jsx";
 import { useFetchTasks } from "@/hooks/useFetchTasks.hook.js";
-import { useFetchProjects } from "@/hooks/useFetchProjects.hook.js";
 import { useState, lazy, Suspense, useEffect } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useFetchProject } from "@/hooks/useFetchProject.hook.js";
 import { useSearchParams, useParams } from "react-router";
 import {
   Breadcrumb,
@@ -58,8 +57,8 @@ export default function Tasks() {
   let queryOrder = searchParams.get("order") ?? "asc";
   let queryStatus = searchParams.get("status") ?? "todo,inProgress";
 
-  const { data: projectsData } = useFetchProjects({ sortBy: "createdAt", order: "asc" });
-  const project = projectsData?.data?.data?.find((p) => p._id === projectId);
+  const { data: projectData } = useFetchProject(projectId);
+  const project = projectData?.data;
 
   const { data, isError, isSuccess, isPending, error } = useFetchTasks({
     projectId: projectId,
