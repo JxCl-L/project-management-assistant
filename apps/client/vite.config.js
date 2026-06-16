@@ -5,6 +5,15 @@ import path from 'path'
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [react()],
+  // Pinned to 5174 (Vite's default is 5173). The old fullstack-react clone
+  // also uses 5173; sharing a port means the browser caches collide and
+  // throws "Outdated Optimize Dep" 504s whenever you switch between the
+  // two apps. A distinct port makes the browser treat them as separate
+  // origins and the cache problem goes away.
+  server: {
+    port: 5174,
+    strictPort: true,
+  },
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
