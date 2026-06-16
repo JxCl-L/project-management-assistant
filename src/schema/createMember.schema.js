@@ -1,5 +1,7 @@
 import { z } from "zod";
 
+// Not wired up: the UI invites members by email via CreateMemberByEmailSchema
+// in addMemberDialog. Kept as a reference of the by-id BE contract.
 export const CreateMemberSchema = z.object({
   user: z
     .string()
