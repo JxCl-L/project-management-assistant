@@ -1,0 +1,250 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 0 0% 3.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 3.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 3.9%;
+    --primary: 0 0% 9%;
+    --primary-foreground: 0 0% 98%;
+    --secondary: 0 0% 96.1%;
+    --secondary-foreground: 0 0% 9%;
+    --muted: 0 0% 96.1%;
+    --muted-foreground: 0 0% 45.1%;
+    --accent: 0 0% 96.1%;
+    --accent-foreground: 0 0% 9%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 0 0% 89.8%;
+    --input: 0 0% 89.8%;
+    --ring: 0 0% 3.9%;
+    --chart-1: 12 76% 61%;
+    --chart-2: 173 58% 39%;
+    --chart-3: 197 37% 24%;
+    --chart-4: 43 74% 66%;
+    --chart-5: 27 87% 67%;
+    --radius: 0.5rem;
+    --priority-high-bg: 0 72% 90%;
+    --priority-high-text: 0 72% 35%;
+    --priority-normal-bg: 203 87% 88%;
+    --priority-normal-text: 203 87% 27%;
+    --priority-low-bg: 142 71% 85%;
+    --priority-low-text: 142 71% 25%;
+    --status-todo: 221 83% 53%;
+    --status-in-progress: 32 95% 52%;
+    --status-completed: 142 71% 40%;
+    --complete-action: 142 71% 40%;
+    --complete-action-bg: 142 71% 40% / 0.1;
+    --complete-action-border: 142 71% 40% / 0.4;
+    --role-manager-bg: 217 91% 60% / 0.15;
+    --role-manager-text: 217 91% 40%;
+    --role-editor-bg: 142 71% 45% / 0.15;
+    --role-editor-text: 142 71% 30%;
+    --role-viewer-bg: 0 0% 50% / 0.15;
+    --role-viewer-text: 0 0% 35%;
+    --ai-accent: 270 60% 40%;
+    --ai-accent-bg: 270 60% 40% / 0.08;
+    --ai-accent-border: 270 60% 40% / 0.25;
+    --ai-accent-hover-bg: 270 60% 40% / 0.15;
+    --avatar-0: #e05c3a;
+    --avatar-1: #3a8fe4;
+    --avatar-2: #3ab87a;
+    --avatar-3: #d4a017;
+    --avatar-4: #9b3ae4;
+    --avatar-5: #e43a8f;
+    --avatar-6: #3ab8c5;
+    --avatar-7: #e47a3a;
+    --sidebar-background: 0 0% 98%;
+    --sidebar-foreground: 240 5.3% 26.1%;
+    --sidebar-primary: 240 5.9% 10%;
+    --sidebar-primary-foreground: 0 0% 98%;
+    --sidebar-accent: 240 4.8% 95.9%;
+    --sidebar-accent-foreground: 240 5.9% 10%;
+    --sidebar-border: 220 13% 91%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+    --success: 142 71% 45%;
+    --success-foreground: 0 0% 98%;
+    --success-muted: 142 71% 45% / 0.1;
+    --success-border: 142 71% 45% / 0.3;
+    --warning: 38 92% 50%;
+    --warning-foreground: 0 0% 98%;
+    --status-inactive-track: 0 0% 82%;
+    --status-active-track: 142 71% 45%;
+  }
+  .solarized-light {
+    --background: 44 87% 94%;        /* base3  #fdf6e3 */
+    --foreground: 192 81% 14%;       /* base00 #657b83 → darker for readability */
+    --card: 44 55% 91%;              /* base2  #eee8d5 */
+    --card-foreground: 192 81% 14%;
+    --popover: 44 87% 94%;
+    --popover-foreground: 192 81% 14%;
+    --primary: 205 69% 49%;          /* blue   #268bd2 */
+    --primary-foreground: 44 87% 94%;
+    --secondary: 44 55% 91%;
+    --secondary-foreground: 192 81% 14%;
+    --muted: 44 55% 88%;
+    --muted-foreground: 194 14% 50%; /* base1  #93a1a1 */
+    --accent: 175 59% 40%;           /* cyan   #2aa198 */
+    --accent-foreground: 44 87% 94%;
+    --destructive: 1 71% 52%;        /* red    #dc322f */
+    --destructive-foreground: 44 87% 94%;
+    --border: 44 24% 82%;
+    --input: 44 24% 82%;
+    --ring: 205 69% 49%;
+    --chart-1: 205 69% 49%;
+    --chart-2: 175 59% 40%;
+    --chart-3: 68 100% 30%;          /* green  #859900 */
+    --chart-4: 45 100% 35%;          /* yellow #b58900 */
+    --chart-5: 1 71% 52%;
+    --radius: 0.5rem;
+    --priority-high-bg: 1 71% 52%;
+    --priority-high-text: 0 0% 98%;
+    --priority-normal-bg: 205 69% 49%;
+    --priority-normal-text: 0 0% 98%;
+    --priority-low-bg: 68 100% 30%;
+    --priority-low-text: 0 0% 98%;
+    --status-todo: 1 71% 52%;
+    --status-in-progress: 45 100% 35%;
+    --status-completed: 68 100% 26%;
+    --complete-action: 205 69% 40%;
+    --complete-action-bg: 205 69% 40% / 0.12;
+    --complete-action-border: 205 69% 40% / 0.5;
+    --role-manager-bg: 205 69% 49% / 0.2;
+    --role-manager-text: 205 69% 25%;
+    --role-editor-bg: 68 100% 30% / 0.15;
+    --role-editor-text: 68 100% 20%;
+    --role-viewer-bg: 194 14% 50% / 0.2;
+    --role-viewer-text: 194 14% 25%;
+    --ai-accent: 205 69% 35%;
+    --ai-accent-bg: 205 69% 49% / 0.1;
+    --ai-accent-border: 205 69% 49% / 0.3;
+    --ai-accent-hover-bg: 205 69% 49% / 0.18;
+    --avatar-0: #dc322f;
+    --avatar-1: #268bd2;
+    --avatar-2: #859900;
+    --avatar-3: #b58900;
+    --avatar-4: #6c71c4;
+    --avatar-5: #d33682;
+    --avatar-6: #2aa198;
+    --avatar-7: #cb4b16;
+    --sidebar-background: 44 55% 91%;
+    --sidebar-foreground: 192 81% 14%;
+    --sidebar-primary: 45 100% 35%;
+    --sidebar-primary-foreground: 44 87% 94%;
+    --sidebar-accent: 44 45% 86%;
+    --sidebar-accent-foreground: 192 81% 14%;
+    --sidebar-border: 44 24% 82%;
+    --sidebar-ring: 205 69% 49%;
+    --success: 175 59% 40%;
+    --success-foreground: 44 87% 94%;
+    --success-muted: 175 59% 40% / 0.12;
+    --success-border: 175 59% 40% / 0.35;
+    --warning: 45 100% 35%;
+    --warning-foreground: 44 87% 94%;
+    --status-inactive-track: 44 24% 76%;
+    --status-active-track: 175 59% 40%;
+  }
+  .dark {
+    --background: 0 0% 3.9%;
+    --foreground: 0 0% 98%;
+    --card: 0 0% 3.9%;
+    --card-foreground: 0 0% 98%;
+    --popover: 0 0% 3.9%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 0 0% 98%;
+    --primary-foreground: 0 0% 9%;
+    --secondary: 0 0% 14.9%;
+    --secondary-foreground: 0 0% 98%;
+    --muted: 0 0% 14.9%;
+    --muted-foreground: 0 0% 63.9%;
+    --accent: 0 0% 14.9%;
+    --accent-foreground: 0 0% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 0 0% 14.9%;
+    --input: 0 0% 14.9%;
+    --ring: 0 0% 83.1%;
+    --chart-1: 220 70% 50%;
+    --chart-2: 160 60% 45%;
+    --chart-3: 30 80% 55%;
+    --chart-4: 280 65% 60%;
+    --chart-5: 340 75% 55%;
+    --priority-high-bg: 0 72% 31%;
+    --priority-high-text: 0 100% 85%;
+    --priority-normal-bg: 203 87% 27%;
+    --priority-normal-text: 203 100% 85%;
+    --priority-low-bg: 142 71% 29%;
+    --priority-low-text: 142 100% 85%;
+    --status-todo: 217 91% 65%;
+    --status-in-progress: 35 92% 60%;
+    --status-completed: 142 71% 50%;
+    --complete-action: 142 71% 45%;
+    --complete-action-bg: 142 71% 45% / 0.1;
+    --complete-action-border: 142 71% 45% / 0.4;
+    --role-manager-bg: 217 91% 60% / 0.2;
+    --role-manager-text: 217 91% 70%;
+    --role-editor-bg: 142 71% 45% / 0.2;
+    --role-editor-text: 142 71% 65%;
+    --role-viewer-bg: 0 0% 50% / 0.2;
+    --role-viewer-text: 0 0% 70%;
+    --ai-accent: 270 60% 70%;
+    --ai-accent-bg: 270 60% 60% / 0.12;
+    --ai-accent-border: 270 60% 60% / 0.3;
+    --ai-accent-hover-bg: 270 60% 60% / 0.2;
+    --avatar-0: #E45C3A;
+    --avatar-1: #3A8FE4;
+    --avatar-2: #3AE48F;
+    --avatar-3: #E4C53A;
+    --avatar-4: #A03AE4;
+    --avatar-5: #E43A8F;
+    --avatar-6: #3AE4C5;
+    --avatar-7: #E4703A;
+    --sidebar-background: 240 5.9% 10%;
+    --sidebar-foreground: 240 4.8% 95.9%;
+    --sidebar-primary: 224.3 76.3% 48%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 240 3.7% 15.9%;
+    --sidebar-accent-foreground: 240 4.8% 95.9%;
+    --sidebar-border: 240 3.7% 15.9%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+    --success: 142 71% 45%;
+    --success-foreground: 0 0% 98%;
+    --success-muted: 142 71% 45% / 0.12;
+    --success-border: 142 71% 45% / 0.3;
+    --warning: 38 92% 50%;
+    --warning-foreground: 0 0% 98%;
+    --status-inactive-track: 0 0% 20%;
+    --status-active-track: 142 71% 45%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+    transition: background-color 0.3s ease, color 0.2s ease;
+  }
+}
+
+@keyframes slideInFromRight {
+  from { opacity: 0; transform: translateX(40px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+@keyframes slideInFromLeft {
+  from { opacity: 0; transform: translateX(-40px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+.calendar-slide-right {
+  animation: slideInFromRight 0.22s ease-out;
+}
+.calendar-slide-left {
+  animation: slideInFromLeft 0.22s ease-out;
+}
+
