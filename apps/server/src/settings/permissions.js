@@ -1,34 +1,8 @@
-const permissions = {
-  projects: {
-    PATCH: ["manager"],
-    DELETE: ["manager"],
-  },
-  project: {
-    GET: ["viewer", "editor", "manager"],
-  },
-  tasks: {
-    POST: ["editor", "manager"],
-    PATCH: ["editor", "manager"],
-    DELETE: ["manager"],
-  },
-  task: {
-    GET: ["viewer", "editor", "manager"],
-  },
-  members: {
-    GET: ["viewer", "editor", "manager"],
-    POST: ["manager"],
-    PATCH: ["manager"],
-    DELETE: ["manager"],
-  },
-  taskContent: {
-    GET: ["viewer", "editor", "manager"],
-    POST: ["editor", "manager"],
-    PATCH: ["editor", "manager"],
-    DELETE: ["manager"],
-  },
-  projectChat: {
-    POST: ["viewer", "editor", "manager"],
-  },
-};
+// Permissions are owned by the shared @pm/schemas package so client and
+// server can't drift. This file is kept as a re-export only — if anything
+// in the server still does `require("../settings/permissions")` it now
+// transparently gets the canonical table instead of a stale local copy.
 
-module.exports = permissions;
+const { PERMISSIONS } = require("@pm/schemas");
+
+module.exports = PERMISSIONS;

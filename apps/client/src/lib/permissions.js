@@ -1,22 +1,6 @@
-export const PERMISSIONS = {
-  projects: {
-    patch: ["manager"],
-    delete: ["manager"],
-  },
-  tasks: {
-    post: ["editor", "manager"],
-    patch: ["editor", "manager"],
-    delete: ["manager"],
-  },
-  members: {
-    get: ["viewer", "editor", "manager"],
-    post: ["manager"],
-    patch: ["manager"],
-    delete: ["manager"],
-  },
-};
+// Permissions are owned by the shared @pm/schemas package so client and
+// server validate against the same table. Keeping this thin re-export so
+// FE callers can keep importing from `@/lib/permissions` (the familiar
+// per-app path) while the source of truth lives once in packages/schemas.
 
-export const canPerformAction = (roleInProject, resource, action) => {
-  if (!roleInProject) return false;
-  return PERMISSIONS[resource]?.[action]?.includes(roleInProject) || false;
-};
+export { PERMISSIONS, canPerformAction } from "@pm/schemas";

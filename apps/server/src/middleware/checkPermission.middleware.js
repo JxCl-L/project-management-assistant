@@ -1,6 +1,6 @@
 // middleware/checkPermission.js
 const { StatusCodes } = require("http-status-codes");
-const permissions = require("../settings/permissions.js");
+const { canPerformAction } = require("@pm/schemas");
 const Member = require("../projectMembers/member.schema.js");
 
 /**
@@ -45,8 +45,8 @@ const checkPermission = (resource, action) => {
 
       const userRole = membership.role;
 
-      // Check if role has permission
-      const hasPermission = permissions[resource]?.[action]?.includes(userRole);
+      // Check if role has permission (shared with the client via @pm/schemas)
+      const hasPermission = canPerformAction(userRole, resource, action);
 
       if (!hasPermission) {
         return res.status(StatusCodes.FORBIDDEN).json({
