@@ -1,0 +1,2465 @@
+[
+  {
+    "id": "A1",
+    "category": "Specific time and duration facts",
+    "expectedBehavior": "answerable",
+    "expectedRetrievalClass": "FACT",
+    "expectedTasks": [
+      "Post-mortem: January 15, 2026 Production Outage"
+    ],
+    "query": "What time did the January 15 outage start and how long did it last?",
+    "groundTruth": "The outage started at 10:12 AM PST on January 15, 2026 (when the first PagerDuty alert fired) and lasted 2 hours and 40 minutes, ending at 12:52 PM PST.",
+    "goldFacts": [
+      {
+        "taskTitle": "Post-mortem: January 15, 2026 Production Outage",
+        "label": "outage start 10:12 AM (first PagerDuty alert)",
+        "anchor": "content",
+        "start": 333,
+        "end": 371,
+        "startText": "10:12 AM — first PagerDuty",
+        "endText": "first PagerDuty alert fired",
+        "alsoIn": [
+          {
+            "startText": "Total user-visible downtime: 2 hours 40 minutes (10:12 AM",
+            "endText": "12:52 PM)",
+            "start": 1745,
+            "end": 1814
+          }
+        ],
+        "chunks": {
+          "150/50": {
+            "full": [
+              0,
+              2
+            ],
+            "partial": []
+          },
+          "150/25": {
+            "full": [
+              0,
+              2
+            ],
+            "partial": []
+          }
+        }
+      },
+      {
+        "taskTitle": "Post-mortem: January 15, 2026 Production Outage",
+        "label": "duration 2 hours 40 minutes",
+        "anchor": "content",
+        "start": 39,
+        "end": 77,
+        "startText": "unavailable for 2 hours and 40 minutes",
+        "endText": "2 hours and 40 minutes",
+        "alsoIn": [
+          {
+            "startText": "Total user-visible downtime: 2 hours 40 minutes",
+            "endText": "2 hours 40 minutes",
+            "start": 1745,
+            "end": 1792
+          }
+        ],
+        "chunks": {
+          "150/50": {
+            "full": [
+              0,
+              2
+            ],
+            "partial": []
+          },
+          "150/25": {
+            "full": [
+              0,
+              2
+            ],
+            "partial": []
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "A2",
+    "category": "Specific date facts",
+    "expectedBehavior": "answerable",
+    "expectedRetrievalClass": "FACT",
+    "expectedTasks": [
+      "API Rate Limiting — Design & Implementation"
+    ],
+    "query": "When was the API rate limiting design review meeting held?",
+    "groundTruth": "The API rate limiting design review was held on February 3, 2026 at 11:00 AM PST. It lasted 90 minutes; attendees were Bob Chen (lead), Alice Wang (architecture review), and Marcus Chen (implementation).",
+    "goldFacts": [
+      {
+        "taskTitle": "API Rate Limiting — Design & Implementation",
+        "label": "design review Feb 3, 2026 at 11:00 AM PST",
+        "anchor": "content",
+        "start": 50,
+        "end": 94,
+        "startText": "was held on February 3, 2026",
+        "endText": "at 11:00 AM PST",
+        "chunks": {
+          "150/50": {
+            "full": [
+              0
+            ],
+            "partial": []
+          },
+          "150/25": {
+            "full": [
+              0
+            ],
+            "partial": []
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "A3",
+    "category": "Specific date facts",
+    "expectedBehavior": "answerable",
+    "expectedRetrievalClass": "FACT",
+    "expectedTasks": [
+      "Stripe Payment Integration — Developer Portal"
+    ],
+    "query": "What date did the Stripe integration go live in production?",
+    "groundTruth": "The Stripe integration went live in production on March 15, 2026 at 10:00 AM PST.",
+    "goldFacts": [
+      {
+        "taskTitle": "Stripe Payment Integration — Developer Portal",
+        "label": "Stripe go-live March 15, 2026 at 10:00 AM PST",
+        "anchor": "content",
+        "start": 1468,
+        "end": 1521,
+        "startText": "Production go-live was March 15",
+        "endText": "at 10:00 AM PST",
+        "chunks": {
+          "150/50": {
+            "full": [
+              1
+            ],
+            "partial": []
+          },
+          "150/25": {
+            "full": [
+              1
+            ],
+            "partial": []
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "A4",
+    "category": "Specific date facts",
+    "expectedBehavior": "answerable",
+    "expectedRetrievalClass": "FACT",
+    "expectedTasks": [
+      "New Engineer Onboarding — Marcus Chen"
+    ],
+    "query": "When did Marcus Chen's first PR get merged?",
+    "groundTruth": "Marcus Chen's first PR (PR #207) was merged on February 6, 2026 and was reviewed by Charlie.",
+    "goldFacts": [
+      {
+        "taskTitle": "New Engineer Onboarding — Marcus Chen",
+        "label": "Marcus first PR #207 merged Feb 6, 2026",
+        "anchor": "content",
+        "start": 1455,
+        "end": 1501,
+        "startText": "PR #207 merged February 6",
+        "endText": "reviewed by Charlie",
+        "chunks": {
+          "150/50": {
+            "full": [
+              1,
+              2
+            ],
+            "partial": []
+          },
+          "150/25": {
+            "full": [
+              1
+            ],
+            "partial": []
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "B1",
+    "category": "Specific numbers and metrics",
+    "expectedBehavior": "answerable",
+    "expectedRetrievalClass": "FACT",
+    "expectedTasks": [
+      "Search Index Performance Optimization"
+    ],
+    "query": "What was the P95 search latency before and after the fix in January?",
+    "groundTruth": "Required: before the fix the P95 had regressed to roughly 850ms (January 22 benchmark measured 870ms); after the fix the January 24 benchmark showed P95 = 115ms. Good-to-have: the pre-regression baseline was 120ms.",
+    "goldFacts": [
+      {
+        "taskTitle": "Search Index Performance Optimization",
+        "label": "before-fix P95 regressed to 850ms",
+        "anchor": "content",
+        "start": 155,
+        "end": 181,
+        "startText": "baseline of 120ms to 850ms",
+        "endText": "to 850ms",
+        "chunks": {
+          "150/50": {
+            "full": [
+              0
+            ],
+            "partial": []
+          },
+          "150/25": {
+            "full": [
+              0
+            ],
+            "partial": []
+          }
+        }
+      },
+      {
+        "taskTitle": "Search Index Performance Optimization",
+        "label": "after-fix P95 = 115ms (Jan 24 benchmark)",
+        "anchor": "content",
+        "start": 1157,
+        "end": 1192,
+        "startText": "P50 = 52ms, P75 = 88ms, P95 = 115ms",
+        "endText": "P95 = 115ms",
+        "chunks": {
+          "150/50": {
+            "full": [
+              1
+            ],
+            "partial": [
+              2
+            ]
+          },
+          "150/25": {
+            "full": [
+              1
+            ],
+            "partial": []
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "B2",
+    "category": "Specific numbers and metrics",
+    "expectedBehavior": "answerable",
+    "expectedRetrievalClass": "FACT",
+    "expectedTasks": [
+      "GitHub Actions CI/CD Pipeline Upgrade"
+    ],
+    "query": "How much did the Jenkins to GitHub Actions migration save per year?",
+    "groundTruth": "Approximately $9,600 per year in EC2 costs (the decommissioned Jenkins EC2 instance had cost about $800/month).",
+    "goldFacts": [
+      {
+        "taskTitle": "GitHub Actions CI/CD Pipeline Upgrade",
+        "label": "annual savings approximately $9,600",
+        "anchor": "content",
+        "start": 1686,
+        "end": 1735,
+        "startText": "Annual savings: approximately $9,600",
+        "endText": "$9,600 in EC2 costs",
+        "chunks": {
+          "150/50": {
+            "full": [
+              2
+            ],
+            "partial": [
+              1
+            ]
+          },
+          "150/25": {
+            "full": [
+              1
+            ],
+            "partial": [
+              2
+            ]
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "B3",
+    "category": "Specific numbers and metrics",
+    "expectedBehavior": "answerable",
+    "expectedRetrievalClass": "LIST",
+    "expectedTasks": [
+      "Load Testing Report — February 2026"
+    ],
+    "query": "What were the load test results at 500 concurrent users?",
+    "groundTruth": "At 500 concurrent users (the ramp-up scenario): P50 = 88ms, P95 = 410ms, P99 = 780ms; throughput 2,890 requests/second; error rate 0.08%; app-server CPU peaked at 78% and RDS CPU peaked at 52%. The /api/search endpoint degraded first, with P95 reaching 1,100ms at peak load.",
+    "goldFacts": [
+      {
+        "taskTitle": "Load Testing Report — February 2026",
+        "label": "500 users P50 = 88ms",
+        "anchor": "content",
+        "start": 781,
+        "end": 791,
+        "startText": "P50 = 88ms",
+        "endText": "P50 = 88ms",
+        "chunks": {
+          "150/50": {
+            "full": [
+              0,
+              1
+            ],
+            "partial": []
+          },
+          "150/25": {
+            "full": [
+              0,
+              1
+            ],
+            "partial": []
+          }
+        }
+      },
+      {
+        "taskTitle": "Load Testing Report — February 2026",
+        "label": "500 users P95 = 410ms",
+        "anchor": "content",
+        "start": 793,
+        "end": 804,
+        "startText": "P95 = 410ms",
+        "endText": "P95 = 410ms",
+        "chunks": {
+          "150/50": {
+            "full": [
+              0,
+              1
+            ],
+            "partial": []
+          },
+          "150/25": {
+            "full": [
+              0,
+              1
+            ],
+            "partial": []
+          }
+        }
+      },
+      {
+        "taskTitle": "Load Testing Report — February 2026",
+        "label": "500 users P99 = 780ms",
+        "anchor": "content",
+        "start": 806,
+        "end": 817,
+        "startText": "P99 = 780ms",
+        "endText": "P99 = 780ms",
+        "chunks": {
+          "150/50": {
+            "full": [
+              0,
+              1
+            ],
+            "partial": []
+          },
+          "150/25": {
+            "full": [
+              0,
+              1
+            ],
+            "partial": []
+          }
+        }
+      },
+      {
+        "taskTitle": "Load Testing Report — February 2026",
+        "label": "500 users throughput 2,890 req/s",
+        "anchor": "content",
+        "start": 819,
+        "end": 852,
+        "startText": "Throughput: 2,890 requests/second",
+        "endText": "2,890 requests/second",
+        "chunks": {
+          "150/50": {
+            "full": [
+              0,
+              1
+            ],
+            "partial": []
+          },
+          "150/25": {
+            "full": [
+              0,
+              1
+            ],
+            "partial": []
+          }
+        }
+      },
+      {
+        "taskTitle": "Load Testing Report — February 2026",
+        "label": "500 users error rate 0.08%",
+        "anchor": "content",
+        "start": 854,
+        "end": 871,
+        "startText": "Error rate: 0.08%",
+        "endText": "Error rate: 0.08%",
+        "chunks": {
+          "150/50": {
+            "full": [
+              0,
+              1
+            ],
+            "partial": []
+          },
+          "150/25": {
+            "full": [
+              0,
+              1
+            ],
+            "partial": []
+          }
+        }
+      },
+      {
+        "taskTitle": "Load Testing Report — February 2026",
+        "label": "500 users app-server CPU peaked at 78%",
+        "anchor": "content",
+        "start": 873,
+        "end": 901,
+        "startText": "App server CPU peaked at 78%",
+        "endText": "peaked at 78%",
+        "chunks": {
+          "150/50": {
+            "full": [
+              0,
+              1
+            ],
+            "partial": []
+          },
+          "150/25": {
+            "full": [
+              0,
+              1
+            ],
+            "partial": []
+          }
+        }
+      },
+      {
+        "taskTitle": "Load Testing Report — February 2026",
+        "label": "500 users RDS CPU peaked at 52%",
+        "anchor": "content",
+        "start": 925,
+        "end": 946,
+        "startText": "RDS CPU peaked at 52%",
+        "endText": "peaked at 52%",
+        "chunks": {
+          "150/50": {
+            "full": [
+              1
+            ],
+            "partial": []
+          },
+          "150/25": {
+            "full": [
+              1
+            ],
+            "partial": []
+          }
+        }
+      },
+      {
+        "taskTitle": "Load Testing Report — February 2026",
+        "label": "/api/search degraded first, P95 1,100ms at peak load",
+        "anchor": "content",
+        "start": 952,
+        "end": 1029,
+        "startText": "`/api/search` endpoint degraded first",
+        "endText": "1,100ms at peak load",
+        "chunks": {
+          "150/50": {
+            "full": [
+              1
+            ],
+            "partial": []
+          },
+          "150/25": {
+            "full": [
+              1
+            ],
+            "partial": []
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "B4",
+    "category": "Specific numbers and metrics",
+    "expectedBehavior": "answerable",
+    "expectedRetrievalClass": "FACT",
+    "expectedTasks": [
+      "Stripe Payment Integration — Developer Portal"
+    ],
+    "query": "How many subscriptions were created on the first day Stripe launched?",
+    "groundTruth": "12 subscriptions were created on day one (March 15, 2026): 8 Standard monthly, 2 Standard annual, and 2 Pro monthly.",
+    "goldFacts": [
+      {
+        "taskTitle": "Stripe Payment Integration — Developer Portal",
+        "label": "12 subscriptions on day one",
+        "anchor": "content",
+        "start": 1632,
+        "end": 1665,
+        "startText": "12 subscriptions had been created",
+        "endText": "12 subscriptions had been created",
+        "chunks": {
+          "150/50": {
+            "full": [
+              1,
+              2
+            ],
+            "partial": []
+          },
+          "150/25": {
+            "full": [
+              1
+            ],
+            "partial": []
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "C1",
+    "category": "Person attribution",
+    "expectedBehavior": "answerable",
+    "expectedRetrievalClass": "FACT",
+    "expectedTasks": [
+      "Load Testing Report — February 2026"
+    ],
+    "query": "Who ran the load testing in February and what tool did they use?",
+    "groundTruth": "Charlie Li ran the load testing (conducted February 12, 2026 against the staging environment), using k6 v0.50.",
+    "goldFacts": [
+      {
+        "taskTitle": "Load Testing Report — February 2026",
+        "label": "Charlie Li ran load test using k6 v0.50",
+        "anchor": "content",
+        "start": 241,
+        "end": 282,
+        "startText": "test was run by Charlie Li",
+        "endText": "using k6 v0.50",
+        "chunks": {
+          "150/50": {
+            "full": [
+              0
+            ],
+            "partial": []
+          },
+          "150/25": {
+            "full": [
+              0
+            ],
+            "partial": []
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "C2",
+    "category": "Person attribution",
+    "expectedBehavior": "unanswerable",
+    "expectedRetrievalClass": "FACT",
+    "expectedTasks": [
+      "Auth Token Expiry Bug — Investigation & Fix"
+    ],
+    "query": "Who identified the root cause of the auth token expiry bug and when?",
+    "groundTruth": "The root cause was identified on January 19, 2026. Bob Chen was assigned as the primary investigator on January 16, 2026. The seed does not explicitly state who identified the root cause — only that Bob was the lead investigator.",
+    "goldFacts": [
+      {
+        "taskTitle": "Auth Token Expiry Bug — Investigation & Fix",
+        "label": "root cause identified January 19, 2026",
+        "anchor": "content",
+        "start": 590,
+        "end": 631,
+        "startText": "Root cause identified on January 19, 2026",
+        "endText": "January 19, 2026",
+        "chunks": {
+          "150/50": {
+            "full": [
+              0,
+              1
+            ],
+            "partial": []
+          },
+          "150/25": {
+            "full": [
+              0
+            ],
+            "partial": []
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "C3",
+    "category": "Technical root cause",
+    "expectedBehavior": "answerable",
+    "expectedRetrievalClass": "FACT",
+    "expectedTasks": [
+      "Auth Token Expiry Bug — Investigation & Fix"
+    ],
+    "query": "What was the root cause of the auth token expiry bug?",
+    "groundTruth": "During the v2.1 deployment on December 14, 2025, an environment-variable rename broke the token TTL config: JWT_ACCESS_TTL_SECONDS was renamed to JWT_ACCESS_EXPIRATION_TTL in the codebase, but the production environment was not updated. The token-generation code then fell back to a hardcoded default of 300 seconds (5 minutes) with no warning log, so access tokens expired after 5 minutes instead of the configured 4 hours (14400 seconds).",
+    "goldFacts": [
+      {
+        "taskTitle": "Auth Token Expiry Bug — Investigation & Fix",
+        "label": "env var renamed JWT_ACCESS_TTL_SECONDS → JWT_ACCESS_EXPIRATION_TTL",
+        "anchor": "content",
+        "start": 741,
+        "end": 808,
+        "startText": "`JWT_ACCESS_TTL_SECONDS` was renamed",
+        "endText": "`JWT_ACCESS_EXPIRATION_TTL`",
+        "chunks": {
+          "150/50": {
+            "full": [
+              0,
+              1
+            ],
+            "partial": []
+          },
+          "150/25": {
+            "full": [
+              0,
+              1
+            ],
+            "partial": []
+          }
+        }
+      },
+      {
+        "taskTitle": "Auth Token Expiry Bug — Investigation & Fix",
+        "label": "production environment not updated",
+        "anchor": "content",
+        "start": 833,
+        "end": 871,
+        "startText": "production environment was not updated",
+        "endText": "was not updated",
+        "chunks": {
+          "150/50": {
+            "full": [
+              0,
+              1
+            ],
+            "partial": []
+          },
+          "150/25": {
+            "full": [
+              0,
+              1
+            ],
+            "partial": []
+          }
+        }
+      },
+      {
+        "taskTitle": "Auth Token Expiry Bug — Investigation & Fix",
+        "label": "fallback hardcoded 300 seconds default",
+        "anchor": "content",
+        "start": 921,
+        "end": 965,
+        "startText": "hardcoded default of 300 seconds",
+        "endText": "(5 minutes)",
+        "chunks": {
+          "150/50": {
+            "full": [
+              1
+            ],
+            "partial": []
+          },
+          "150/25": {
+            "full": [
+              1
+            ],
+            "partial": []
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "D1",
+    "category": "Multi-chunk within one task",
+    "expectedBehavior": "summary",
+    "expectedRetrievalClass": "LIST",
+    "expectedTasks": [
+      "Post-mortem: January 15, 2026 Production Outage"
+    ],
+    "query": "Walk me through the full timeline of the January 15 outage from alert to full recovery.",
+    "groundTruth": "Timeline (all times PST, January 15, 2026): 10:05 AM — the triggering deploy was released. 10:12 AM — the first PagerDuty alert fired (Sentry fatal error spike); start of the outage. 10:15 AM — Alice Wang acknowledged the alert and began investigating. 10:20 AM — Alice confirmed the API pods were crashlooping in Kubernetes (logs showed 'Error: Cannot find module ../config/db'). 10:25 AM — Alice identified that the 10:05 AM deploy included a file rename not reflected in an import path. 10:30 AM — Alice reverted the deploy via the rollback workflow. 10:38 AM — rollback completed, but the API did not recover because Kubernetes readiness probes were still failing for old pods. 10:40 AM — Bob joined and identified the stuck pods. 11:15 AM — manual pod restart was performed. 11:22 AM — the API recovered but with degraded performance (P95 = 1,200ms) due to cache warming. 12:52 PM — full recovery; P95 returned to baseline (< 200ms) as caches warmed. Total user-visible downtime was 2 hours 40 minutes (10:12 AM – 12:52 PM); cache degradation lasted an additional 90 minutes. The metrics-collector fix (PR #181) was merged and deployed at 2:30 PM with no incident.",
+    "goldFacts": [
+      {
+        "taskTitle": "Post-mortem: January 15, 2026 Production Outage",
+        "label": "10:05 AM triggering deploy released",
+        "anchor": "content",
+        "start": 636,
+        "end": 676,
+        "startText": "January 15 deploy (released at 10:05 AM",
+        "endText": "10:05 AM)",
+        "chunks": {
+          "150/50": {
+            "full": [
+              0,
+              1
+            ],
+            "partial": []
+          },
+          "150/25": {
+            "full": [
+              0
+            ],
+            "partial": []
+          }
+        }
+      },
+      {
+        "taskTitle": "Post-mortem: January 15, 2026 Production Outage",
+        "label": "10:12 AM first PagerDuty alert",
+        "anchor": "content",
+        "start": 333,
+        "end": 371,
+        "startText": "10:12 AM — first PagerDuty",
+        "endText": "first PagerDuty alert fired",
+        "chunks": {
+          "150/50": {
+            "full": [
+              0
+            ],
+            "partial": []
+          },
+          "150/25": {
+            "full": [
+              0
+            ],
+            "partial": []
+          }
+        }
+      },
+      {
+        "taskTitle": "Post-mortem: January 15, 2026 Production Outage",
+        "label": "10:15 AM Alice acknowledged",
+        "anchor": "content",
+        "start": 400,
+        "end": 468,
+        "startText": "10:15 AM — Alice Wang acknowledged",
+        "endText": "began investigation",
+        "chunks": {
+          "150/50": {
+            "full": [
+              0
+            ],
+            "partial": []
+          },
+          "150/25": {
+            "full": [
+              0
+            ],
+            "partial": []
+          }
+        }
+      },
+      {
+        "taskTitle": "Post-mortem: January 15, 2026 Production Outage",
+        "label": "10:20 AM crashloop confirmed",
+        "anchor": "content",
+        "start": 470,
+        "end": 541,
+        "startText": "10:20 AM — Alice confirmed",
+        "endText": "crashlooping in Kubernetes",
+        "chunks": {
+          "150/50": {
+            "full": [
+              0
+            ],
+            "partial": []
+          },
+          "150/25": {
+            "full": [
+              0
+            ],
+            "partial": []
+          }
+        }
+      },
+      {
+        "taskTitle": "Post-mortem: January 15, 2026 Production Outage",
+        "label": "10:25 AM root cause identified (file rename)",
+        "anchor": "content",
+        "start": 599,
+        "end": 741,
+        "startText": "10:25 AM — Alice identified",
+        "endText": "import path",
+        "chunks": {
+          "150/50": {
+            "full": [
+              0
+            ],
+            "partial": [
+              1
+            ]
+          },
+          "150/25": {
+            "full": [
+              0
+            ],
+            "partial": []
+          }
+        }
+      },
+      {
+        "taskTitle": "Post-mortem: January 15, 2026 Production Outage",
+        "label": "10:30 AM rollback triggered",
+        "anchor": "content",
+        "start": 1159,
+        "end": 1190,
+        "startText": "reverted the deploy at 10:30 AM",
+        "endText": "10:30 AM",
+        "chunks": {
+          "150/50": {
+            "full": [
+              1
+            ],
+            "partial": []
+          },
+          "150/25": {
+            "full": [
+              1
+            ],
+            "partial": []
+          }
+        }
+      },
+      {
+        "taskTitle": "Post-mortem: January 15, 2026 Production Outage",
+        "label": "10:38 AM rollback completed",
+        "anchor": "content",
+        "start": 1232,
+        "end": 1262,
+        "startText": "rollback completed at 10:38 AM",
+        "endText": "10:38 AM",
+        "chunks": {
+          "150/50": {
+            "full": [
+              1
+            ],
+            "partial": []
+          },
+          "150/25": {
+            "full": [
+              1
+            ],
+            "partial": []
+          }
+        }
+      },
+      {
+        "taskTitle": "Post-mortem: January 15, 2026 Production Outage",
+        "label": "10:40 AM Bob joined",
+        "anchor": "content",
+        "start": 1364,
+        "end": 1386,
+        "startText": "Bob joined at 10:40 AM",
+        "endText": "10:40 AM",
+        "chunks": {
+          "150/50": {
+            "full": [
+              1,
+              2
+            ],
+            "partial": []
+          },
+          "150/25": {
+            "full": [
+              1
+            ],
+            "partial": []
+          }
+        }
+      },
+      {
+        "taskTitle": "Post-mortem: January 15, 2026 Production Outage",
+        "label": "11:15 AM manual pod restart",
+        "anchor": "content",
+        "start": 1418,
+        "end": 1462,
+        "startText": "Manual pod restart was performed at 11:15 AM",
+        "endText": "11:15 AM",
+        "chunks": {
+          "150/50": {
+            "full": [
+              1,
+              2
+            ],
+            "partial": []
+          },
+          "150/25": {
+            "full": [
+              1
+            ],
+            "partial": []
+          }
+        }
+      },
+      {
+        "taskTitle": "Post-mortem: January 15, 2026 Production Outage",
+        "label": "11:22 AM API recovered (degraded)",
+        "anchor": "content",
+        "start": 1464,
+        "end": 1489,
+        "startText": "API recovered at 11:22 AM",
+        "endText": "11:22 AM",
+        "chunks": {
+          "150/50": {
+            "full": [
+              1,
+              2
+            ],
+            "partial": []
+          },
+          "150/25": {
+            "full": [
+              1
+            ],
+            "partial": []
+          }
+        }
+      },
+      {
+        "taskTitle": "Post-mortem: January 15, 2026 Production Outage",
+        "label": "12:52 PM full recovery (P95 back to baseline)",
+        "anchor": "content",
+        "start": 1574,
+        "end": 1623,
+        "startText": "at 12:52 PM PST, P95 latency",
+        "endText": "returned to baseline",
+        "chunks": {
+          "150/50": {
+            "full": [
+              2
+            ],
+            "partial": [
+              1
+            ]
+          },
+          "150/25": {
+            "full": [
+              1
+            ],
+            "partial": [
+              2
+            ]
+          }
+        }
+      },
+      {
+        "taskTitle": "Post-mortem: January 15, 2026 Production Outage",
+        "label": "2:30 PM metrics-collector fix deployed (PR #181)",
+        "anchor": "content",
+        "start": 1679,
+        "end": 1743,
+        "startText": "PR #181) was merged and deployed at 2:30 PM",
+        "endText": "2:30 PM PST with no incident",
+        "chunks": {
+          "150/50": {
+            "full": [
+              2
+            ],
+            "partial": []
+          },
+          "150/25": {
+            "full": [
+              2
+            ],
+            "partial": [
+              1
+            ]
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "D2",
+    "category": "Multi-chunk within one task",
+    "expectedBehavior": "summary",
+    "expectedRetrievalClass": "LIST",
+    "expectedTasks": [
+      "Post-mortem: January 15, 2026 Production Outage"
+    ],
+    "query": "What action items came out of the January 15 outage post-mortem?",
+    "groundTruth": "All action items were assigned and completed by January 23, 2026: (1) Alice — add 'node --check' to the CI pipeline for all entry-point files (done January 16, PR #182); (2) Bob — add the metrics collector to the integration-test startup (done January 18, PR #184); (3) Alice — update the rollback runbook with explicit pod-restart steps (done January 20); (4) Charlie — add a Grafana alert for crashlooping pods (done January 17); (5) all — retrospective meeting held January 20 at 2:00 PM PST, with notes published to Confluence.",
+    "goldFacts": [
+      {
+        "taskTitle": "Post-mortem: January 15, 2026 Production Outage",
+        "label": "AI 1: Alice — node --check in CI (PR #182)",
+        "anchor": "content",
+        "start": 2292,
+        "end": 2385,
+        "startText": "Alice — add `node --check` to CI",
+        "endText": "PR #182",
+        "chunks": {
+          "150/50": {
+            "full": [
+              3
+            ],
+            "partial": []
+          },
+          "150/25": {
+            "full": [
+              2
+            ],
+            "partial": [
+              3
+            ]
+          }
+        }
+      },
+      {
+        "taskTitle": "Post-mortem: January 15, 2026 Production Outage",
+        "label": "AI 2: Bob — metrics collector in integration tests (PR #184)",
+        "anchor": "content",
+        "start": 2392,
+        "end": 2481,
+        "startText": "Bob — add the metrics collector",
+        "endText": "PR #184",
+        "chunks": {
+          "150/50": {
+            "full": [
+              3
+            ],
+            "partial": []
+          },
+          "150/25": {
+            "full": [
+              3
+            ],
+            "partial": [
+              2
+            ]
+          }
+        }
+      },
+      {
+        "taskTitle": "Post-mortem: January 15, 2026 Production Outage",
+        "label": "AI 3: Alice — update rollback runbook",
+        "anchor": "content",
+        "start": 2488,
+        "end": 2555,
+        "startText": "Alice — update the rollback runbook",
+        "endText": "explicit pod restart steps",
+        "chunks": {
+          "150/50": {
+            "full": [
+              3
+            ],
+            "partial": []
+          },
+          "150/25": {
+            "full": [
+              3
+            ],
+            "partial": []
+          }
+        }
+      },
+      {
+        "taskTitle": "Post-mortem: January 15, 2026 Production Outage",
+        "label": "AI 4: Charlie — Grafana alert for crashlooping pods",
+        "anchor": "content",
+        "start": 2579,
+        "end": 2630,
+        "startText": "Charlie — add a Grafana alert",
+        "endText": "crashlooping pods",
+        "chunks": {
+          "150/50": {
+            "full": [
+              3
+            ],
+            "partial": []
+          },
+          "150/25": {
+            "full": [
+              3
+            ],
+            "partial": []
+          }
+        }
+      },
+      {
+        "taskTitle": "Post-mortem: January 15, 2026 Production Outage",
+        "label": "AI 5: retrospective meeting held Jan 20 2:00 PM PST",
+        "anchor": "content",
+        "start": 2654,
+        "end": 2712,
+        "startText": "all — retrospective meeting held",
+        "endText": "January 20 at 2:00 PM PST",
+        "chunks": {
+          "150/50": {
+            "full": [
+              3
+            ],
+            "partial": []
+          },
+          "150/25": {
+            "full": [
+              3
+            ],
+            "partial": []
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "D3",
+    "category": "Multi-chunk within one task",
+    "expectedBehavior": "summary",
+    "expectedRetrievalClass": "LIST",
+    "expectedTasks": [
+      "New Engineer Onboarding — Marcus Chen"
+    ],
+    "query": "What was Marcus Chen's schedule on his first day and what issue did he run into with Docker?",
+    "groundTruth": "Marcus's Day 1 schedule (February 1, 2026): 9:00 AM — welcome call with Alice and Bob; 10:00 AM — HR orientation (30 min); 11:00 AM — dev-environment setup session with Bob (estimated 2 hours); 2:00 PM — codebase walkthrough with Charlie; 4:00 PM — end-of-day check-in with Alice. Docker issue: the local Docker Compose setup for the test database required Docker Desktop 4.28+, but his laptop shipped with 4.26; Bob then updated CONTRIBUTING.md to add the minimum Docker Desktop version requirement. (Dev-environment setup was completed by 1:15 PM.)",
+    "goldFacts": [
+      {
+        "taskTitle": "New Engineer Onboarding — Marcus Chen",
+        "label": "9:00 AM welcome call with Alice and Bob",
+        "anchor": "content",
+        "start": 579,
+        "end": 620,
+        "startText": "9:00 AM — welcome call",
+        "endText": "with Alice and Bob",
+        "chunks": {
+          "150/50": {
+            "full": [
+              0
+            ],
+            "partial": []
+          },
+          "150/25": {
+            "full": [
+              0
+            ],
+            "partial": []
+          }
+        }
+      },
+      {
+        "taskTitle": "New Engineer Onboarding — Marcus Chen",
+        "label": "10:00 AM HR orientation",
+        "anchor": "content",
+        "start": 622,
+        "end": 656,
+        "startText": "10:00 AM — HR orientation",
+        "endText": "(30 min)",
+        "chunks": {
+          "150/50": {
+            "full": [
+              0
+            ],
+            "partial": []
+          },
+          "150/25": {
+            "full": [
+              0
+            ],
+            "partial": []
+          }
+        }
+      },
+      {
+        "taskTitle": "New Engineer Onboarding — Marcus Chen",
+        "label": "11:00 AM dev environment setup with Bob",
+        "anchor": "content",
+        "start": 658,
+        "end": 707,
+        "startText": "11:00 AM — dev environment setup",
+        "endText": "session with Bob",
+        "chunks": {
+          "150/50": {
+            "full": [
+              0,
+              1
+            ],
+            "partial": []
+          },
+          "150/25": {
+            "full": [
+              0
+            ],
+            "partial": []
+          }
+        }
+      },
+      {
+        "taskTitle": "New Engineer Onboarding — Marcus Chen",
+        "label": "2:00 PM codebase walkthrough with Charlie",
+        "anchor": "content",
+        "start": 729,
+        "end": 772,
+        "startText": "2:00 PM — codebase walkthrough",
+        "endText": "with Charlie",
+        "chunks": {
+          "150/50": {
+            "full": [
+              0,
+              1
+            ],
+            "partial": []
+          },
+          "150/25": {
+            "full": [
+              0
+            ],
+            "partial": []
+          }
+        }
+      },
+      {
+        "taskTitle": "New Engineer Onboarding — Marcus Chen",
+        "label": "4:00 PM end-of-day check-in with Alice",
+        "anchor": "content",
+        "start": 774,
+        "end": 814,
+        "startText": "4:00 PM — end-of-day check-in",
+        "endText": "with Alice",
+        "chunks": {
+          "150/50": {
+            "full": [
+              0,
+              1
+            ],
+            "partial": []
+          },
+          "150/25": {
+            "full": [
+              0
+            ],
+            "partial": [
+              1
+            ]
+          }
+        }
+      },
+      {
+        "taskTitle": "New Engineer Onboarding — Marcus Chen",
+        "label": "Docker Desktop 4.28+ required, laptop had 4.26",
+        "anchor": "content",
+        "start": 959,
+        "end": 1021,
+        "startText": "required Docker Desktop 4.28+",
+        "endText": "shipped with 4.26",
+        "chunks": {
+          "150/50": {
+            "full": [
+              1
+            ],
+            "partial": []
+          },
+          "150/25": {
+            "full": [
+              1
+            ],
+            "partial": []
+          }
+        }
+      },
+      {
+        "taskTitle": "New Engineer Onboarding — Marcus Chen",
+        "label": "Bob updated CONTRIBUTING.md with min Docker version",
+        "anchor": "content",
+        "start": 1023,
+        "end": 1110,
+        "startText": "Bob updated the `CONTRIBUTING.md`",
+        "endText": "version requirement",
+        "chunks": {
+          "150/50": {
+            "full": [
+              1
+            ],
+            "partial": []
+          },
+          "150/25": {
+            "full": [
+              1
+            ],
+            "partial": []
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "D4",
+    "category": "Multi-chunk within one task",
+    "expectedBehavior": "summary",
+    "expectedRetrievalClass": "LIST",
+    "expectedTasks": [
+      "Load Testing Report — February 2026"
+    ],
+    "query": "What were the load test results and what bottlenecks were found?",
+    "groundTruth": "Load test results (k6 v0.50, February 12, 2026, against staging): Steady load (200 users) — P50 = 45ms, P95 = 180ms, P99 = 320ms; throughput 1,240 req/s; error rate 0.02%. Ramp-up (500 users) — P50 = 88ms, P95 = 410ms, P99 = 780ms; throughput 2,890 req/s; error rate 0.08%; /api/search degraded first (P95 1,100ms). Spike (800 users) — P99 reached 4,200ms and error rate hit 2.3% (HTTP 503) in first 30s; after 45s auto-scaling launched a third server and P99 returned to 820ms. Bottlenecks: (1) search endpoint degrades first (partially addressed by Redis query cache, Feb 3); (2) auto-scaling took 45s to respond (minimum instance count raised from 2 to 3); (3) RDS connection pool exhausted during spike (max_connections=100, peak 97; pool size increased to 150). CPU metrics are supporting detail, not required.",
+    "goldFacts": [
+      {
+        "taskTitle": "Load Testing Report — February 2026",
+        "label": "Steady load (200 users) metrics",
+        "anchor": "content",
+        "start": 522,
+        "end": 645,
+        "startText": "Steady load results (200 users)",
+        "endText": "Error rate: 0.02%",
+        "chunks": {
+          "150/50": {
+            "full": [
+              0
+            ],
+            "partial": [
+              1
+            ]
+          },
+          "150/25": {
+            "full": [
+              0
+            ],
+            "partial": []
+          }
+        }
+      },
+      {
+        "taskTitle": "Load Testing Report — February 2026",
+        "label": "Ramp-up (500 users) metrics + /api/search degradation",
+        "anchor": "content",
+        "start": 752,
+        "end": 1029,
+        "startText": "Ramp-up results (500 users)",
+        "endText": "1,100ms at peak load",
+        "chunks": {
+          "150/50": {
+            "full": [
+              1
+            ],
+            "partial": [
+              0
+            ]
+          },
+          "150/25": {
+            "full": [],
+            "partial": [
+              0,
+              1
+            ]
+          }
+        }
+      },
+      {
+        "taskTitle": "Load Testing Report — February 2026",
+        "label": "Spike (800 users) metrics + recovery",
+        "anchor": "content",
+        "start": 1032,
+        "end": 1324,
+        "startText": "Spike test results (800 users)",
+        "endText": "at steady state",
+        "chunks": {
+          "150/50": {
+            "full": [
+              1
+            ],
+            "partial": [
+              2
+            ]
+          },
+          "150/25": {
+            "full": [
+              1
+            ],
+            "partial": []
+          }
+        }
+      },
+      {
+        "taskTitle": "Load Testing Report — February 2026",
+        "label": "bottleneck 1: search endpoint degrades first",
+        "anchor": "content",
+        "start": 1359,
+        "end": 1440,
+        "startText": "search endpoint is the first to degrade",
+        "endText": "Redis query cache",
+        "chunks": {
+          "150/50": {
+            "full": [
+              1,
+              2
+            ],
+            "partial": []
+          },
+          "150/25": {
+            "full": [
+              1
+            ],
+            "partial": []
+          }
+        }
+      },
+      {
+        "taskTitle": "Load Testing Report — February 2026",
+        "label": "bottleneck 2: auto-scaling 45s response, min raised 2→3",
+        "anchor": "content",
+        "start": 1489,
+        "end": 1617,
+        "startText": "auto-scaling group took 45 seconds",
+        "endText": "from 2 to 3 effective March 1",
+        "chunks": {
+          "150/50": {
+            "full": [
+              2
+            ],
+            "partial": [
+              1
+            ]
+          },
+          "150/25": {
+            "full": [
+              1
+            ],
+            "partial": [
+              2
+            ]
+          }
+        }
+      },
+      {
+        "taskTitle": "Load Testing Report — February 2026",
+        "label": "bottleneck 3: RDS pool exhausted, raised 100→150",
+        "anchor": "content",
+        "start": 1623,
+        "end": 1749,
+        "startText": "RDS connection pool was exhausted",
+        "endText": "pool size will be increased to 150",
+        "chunks": {
+          "150/50": {
+            "full": [
+              2
+            ],
+            "partial": []
+          },
+          "150/25": {
+            "full": [
+              2
+            ],
+            "partial": [
+              1
+            ]
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "F1",
+    "category": "Edge case — no content needed",
+    "expectedBehavior": "answerable",
+    "expectedRetrievalClass": "LIST",
+    "expectedTasks": [],
+    "query": "Which tasks are currently in progress?",
+    "groundTruth": "Six tasks have status 'inProgress': API Rate Limiting — Design & Implementation; Frontend Design System — Initial Setup; OpenAPI Documentation Rewrite; Mobile Responsive Redesign — Dashboard; Analytics Dashboard v2 — Design & Build; and Atlas Core Service Registry — Technical Design.",
+    "goldFacts": [
+      {
+        "taskTitle": "API Rate Limiting — Design & Implementation",
+        "label": "status: inProgress",
+        "anchor": "status"
+      },
+      {
+        "taskTitle": "Frontend Design System — Initial Setup",
+        "label": "status: inProgress",
+        "anchor": "status"
+      },
+      {
+        "taskTitle": "OpenAPI Documentation Rewrite",
+        "label": "status: inProgress",
+        "anchor": "status"
+      },
+      {
+        "taskTitle": "Mobile Responsive Redesign — Dashboard",
+        "label": "status: inProgress",
+        "anchor": "status"
+      },
+      {
+        "taskTitle": "Analytics Dashboard v2 — Design & Build",
+        "label": "status: inProgress",
+        "anchor": "status"
+      },
+      {
+        "taskTitle": "Atlas Core Service Registry — Technical Design",
+        "label": "status: inProgress",
+        "anchor": "status"
+      }
+    ]
+  },
+  {
+    "id": "F2",
+    "category": "Edge case — unanswerable",
+    "expectedBehavior": "unanswerable",
+    "expectedRetrievalClass": "FACT",
+    "expectedTasks": [],
+    "query": "What is the team's Figma file URL?",
+    "groundTruth": "Not answerable from the seed data. Figma is referenced (Priya Sharma delivered Figma mockups/specs for the design system and the mobile redesign), but no Figma file URL appears anywhere in the seed.",
+    "goldFacts": []
+  },
+  {
+    "id": "F3",
+    "category": "Edge case — vague query",
+    "expectedBehavior": "summary",
+    "expectedRetrievalClass": "OPEN",
+    "expectedTasks": [],
+    "query": "Tell me about the project.",
+    "groundTruth": "The project is 'Project Atlas', described as an 'Internal developer platform to streamline engineering workflows, CI/CD, monitoring, and team collaboration.' It was created by Alice Wang. Members: Alice Wang (manager), Bob Chen (editor), and Charlie Li (editor). It contains 21 tasks spanning planning, infrastructure, features, security, and operations.",
+    "goldFacts": []
+  },
+  {
+    "id": "F4",
+    "category": "Edge case — false-positive detection",
+    "expectedBehavior": "answerable",
+    "expectedRetrievalClass": "FACT",
+    "expectedTasks": [
+      "Post-mortem: January 15, 2026 Production Outage"
+    ],
+    "query": "How long was the January 15 outage?",
+    "groundTruth": "2 hours and 40 minutes (10:12 AM – 12:52 PM PST on January 15, 2026).",
+    "goldFacts": [
+      {
+        "taskTitle": "Post-mortem: January 15, 2026 Production Outage",
+        "label": "duration 2 hours 40 minutes",
+        "anchor": "content",
+        "start": 39,
+        "end": 77,
+        "startText": "unavailable for 2 hours and 40 minutes",
+        "endText": "2 hours and 40 minutes",
+        "alsoIn": [
+          {
+            "startText": "Total user-visible downtime: 2 hours 40 minutes",
+            "endText": "2 hours 40 minutes",
+            "start": 1745,
+            "end": 1792
+          }
+        ],
+        "chunks": {
+          "150/50": {
+            "full": [
+              0,
+              2
+            ],
+            "partial": []
+          },
+          "150/25": {
+            "full": [
+              0,
+              2
+            ],
+            "partial": []
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "G1",
+    "category": "Cross-task synthesis",
+    "expectedBehavior": "multi_task_synthesis",
+    "expectedRetrievalClass": "LIST",
+    "expectedTasks": [
+      "Search Index Performance Optimization",
+      "GitHub Actions CI/CD Pipeline Upgrade",
+      "Load Testing Report — February 2026"
+    ],
+    "query": "What performance improvements were made this quarter?",
+    "groundTruth": "Performance improvements made this quarter: (1) Search index optimization — the invalid GIN index on content_tsv was dropped and recreated on January 24, bringing search P95 from ~850ms back to 115ms; a Redis query-result cache (60-second TTL) added on February 3 further cut P50 to 12ms for cached queries and reduced average database load by 31%. (2) CI/CD migration (Jenkins to GitHub Actions) — pipeline startup time dropped from about 4 minutes to 45 seconds, average CI duration from 11 minutes to 4 minutes 10 seconds, and failure rate from 7.8% to 3.2%. (3) Load-test-driven capacity changes — minimum app-server count was raised from 2 to 3 on February 25, and the RDS connection pool was increased from 100 to 150 on February 22. Enabling ElastiCache for session storage was planned for March 5, not yet completed in the seed.",
+    "goldFacts": [
+      {
+        "taskTitle": "Search Index Performance Optimization",
+        "label": "search P95 850→115ms after GIN index recreate",
+        "anchor": "content",
+        "start": 1157,
+        "end": 1192,
+        "startText": "P50 = 52ms, P75 = 88ms, P95 = 115ms",
+        "endText": "P95 = 115ms",
+        "chunks": {
+          "150/50": {
+            "full": [
+              1
+            ],
+            "partial": [
+              2
+            ]
+          },
+          "150/25": {
+            "full": [
+              1
+            ],
+            "partial": []
+          }
+        }
+      },
+      {
+        "taskTitle": "Search Index Performance Optimization",
+        "label": "Redis query cache cut P50 to 12ms (Feb 3)",
+        "anchor": "content",
+        "start": 1457,
+        "end": 1495,
+        "startText": "reduced P50 to 12ms",
+        "endText": "for cached queries",
+        "chunks": {
+          "150/50": {
+            "full": [
+              2
+            ],
+            "partial": [
+              1
+            ]
+          },
+          "150/25": {
+            "full": [
+              1
+            ],
+            "partial": [
+              2
+            ]
+          }
+        }
+      },
+      {
+        "taskTitle": "GitHub Actions CI/CD Pipeline Upgrade",
+        "label": "pipeline startup 4 min → 45 seconds",
+        "anchor": "content",
+        "start": 890,
+        "end": 933,
+        "startText": "Pipeline startup time reduced to 45 seconds",
+        "endText": "45 seconds",
+        "chunks": {
+          "150/50": {
+            "full": [
+              0,
+              1
+            ],
+            "partial": []
+          },
+          "150/25": {
+            "full": [
+              0,
+              1
+            ],
+            "partial": []
+          }
+        }
+      },
+      {
+        "taskTitle": "GitHub Actions CI/CD Pipeline Upgrade",
+        "label": "CI duration 11 min → 4 m 10 s, failure 7.8% → 3.2%",
+        "anchor": "content",
+        "start": 1794,
+        "end": 1921,
+        "startText": "average CI pipeline duration 4 minutes 10 seconds",
+        "endText": "down from 7.8%",
+        "chunks": {
+          "150/50": {
+            "full": [
+              2
+            ],
+            "partial": []
+          },
+          "150/25": {
+            "full": [
+              2
+            ],
+            "partial": [
+              1
+            ]
+          }
+        }
+      },
+      {
+        "taskTitle": "Load Testing Report — February 2026",
+        "label": "min app server count raised 2 → 3 (Feb 25)",
+        "anchor": "content",
+        "start": 1801,
+        "end": 1854,
+        "startText": "raise minimum app server count to 3",
+        "endText": "done February 25",
+        "chunks": {
+          "150/50": {
+            "full": [
+              2
+            ],
+            "partial": []
+          },
+          "150/25": {
+            "full": [
+              2
+            ],
+            "partial": []
+          }
+        }
+      },
+      {
+        "taskTitle": "Load Testing Report — February 2026",
+        "label": "RDS connection pool raised 100 → 150 (Feb 22)",
+        "anchor": "content",
+        "start": 1857,
+        "end": 1910,
+        "startText": "increase RDS connection pool to 150",
+        "endText": "done February 22",
+        "chunks": {
+          "150/50": {
+            "full": [
+              2
+            ],
+            "partial": []
+          },
+          "150/25": {
+            "full": [
+              2
+            ],
+            "partial": []
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "G2",
+    "category": "Cross-task synthesis",
+    "expectedBehavior": "multi_task_synthesis",
+    "expectedRetrievalClass": "LIST",
+    "expectedTasks": [
+      "API Rate Limiting — Design & Implementation",
+      "GitHub Actions CI/CD Pipeline Upgrade",
+      "Stripe Payment Integration — Developer Portal",
+      "Analytics Dashboard v2 — Design & Build",
+      "New Engineer Onboarding — Marcus Chen",
+      "Atlas Core Service Registry — Technical Design"
+    ],
+    "query": "What did Bob Chen work on in February?",
+    "groundTruth": "In February 2026 Bob Chen worked on: (1) API Rate Limiting (lead) — led the February 3 design review and opened draft PR #214 on February 5. (2) Jenkins → GitHub Actions migration (lead) — completed Phase 2 (staging deploy pipeline) on February 5, completed Phase 3 (production deploy pipeline) on February 24, and decommissioned the Jenkins instance on February 28. (3) Stripe payment integration (lead) — started integration work on February 3 and ran testing February 24–28. (4) Analytics Dashboard v2 (lead) — completed the API backend (three /api/v1/analytics/ endpoints) on February 28. (5) Marcus Chen's onboarding — ran the dev-environment setup session on February 1 and updated CONTRIBUTING.md with the minimum Docker Desktop version. (6) Atlas Core service registry (infrastructure) — attended the February 10 design kickoff, prepared the cost analysis on February 12 (approved by Alice on February 13), and was assigned to provision the MongoDB collection and Redis key namespace on staging in Phase 1 (starting February 17). He was also a contributor to the OpenAPI rewrite (rate-limiting and auth sections), though the seed gives no specific February date for that work.",
+    "goldFacts": [
+      {
+        "taskTitle": "API Rate Limiting — Design & Implementation",
+        "label": "Bob led Feb 3 rate-limiting design review",
+        "anchor": "content",
+        "start": 96,
+        "end": 122,
+        "startText": "Attendees: Bob Chen (lead)",
+        "endText": "Bob Chen (lead)",
+        "chunks": {
+          "150/50": {
+            "full": [
+              0
+            ],
+            "partial": []
+          },
+          "150/25": {
+            "full": [
+              0
+            ],
+            "partial": []
+          }
+        }
+      },
+      {
+        "taskTitle": "API Rate Limiting — Design & Implementation",
+        "label": "Bob opened draft PR #214 on Feb 5",
+        "anchor": "content",
+        "start": 1206,
+        "end": 1254,
+        "startText": "Bob opened a draft PR (#214) on February 5",
+        "endText": "February 5, 2026",
+        "chunks": {
+          "150/50": {
+            "full": [
+              1
+            ],
+            "partial": []
+          },
+          "150/25": {
+            "full": [
+              1
+            ],
+            "partial": []
+          }
+        }
+      },
+      {
+        "taskTitle": "GitHub Actions CI/CD Pipeline Upgrade",
+        "label": "CI/CD Phase 2 staging deploy completed Feb 5",
+        "anchor": "content",
+        "start": 936,
+        "end": 1000,
+        "startText": "Phase 2 (staging deploy pipeline) was completed February 5",
+        "endText": "February 5, 2026",
+        "chunks": {
+          "150/50": {
+            "full": [
+              0,
+              1
+            ],
+            "partial": []
+          },
+          "150/25": {
+            "full": [
+              0,
+              1
+            ],
+            "partial": []
+          }
+        }
+      },
+      {
+        "taskTitle": "GitHub Actions CI/CD Pipeline Upgrade",
+        "label": "CI/CD Phase 3 production deploy completed Feb 24",
+        "anchor": "content",
+        "start": 1236,
+        "end": 1304,
+        "startText": "Phase 3 (production deploy pipeline) was completed February 24",
+        "endText": "February 24, 2026",
+        "chunks": {
+          "150/50": {
+            "full": [
+              1
+            ],
+            "partial": []
+          },
+          "150/25": {
+            "full": [
+              1
+            ],
+            "partial": []
+          }
+        }
+      },
+      {
+        "taskTitle": "GitHub Actions CI/CD Pipeline Upgrade",
+        "label": "Jenkins decommissioned Feb 28",
+        "anchor": "content",
+        "start": 1510,
+        "end": 1566,
+        "startText": "Jenkins instance was decommissioned on February 28",
+        "endText": "February 28, 2026",
+        "chunks": {
+          "150/50": {
+            "full": [
+              1,
+              2
+            ],
+            "partial": []
+          },
+          "150/25": {
+            "full": [
+              1
+            ],
+            "partial": []
+          }
+        }
+      },
+      {
+        "taskTitle": "Stripe Payment Integration — Developer Portal",
+        "label": "Stripe integration started Feb 3, Bob as lead",
+        "anchor": "content",
+        "start": 572,
+        "end": 639,
+        "startText": "Integration work started February 3, 2026 with Bob Chen as the lead",
+        "endText": "Bob Chen as the lead",
+        "chunks": {
+          "150/50": {
+            "full": [
+              0
+            ],
+            "partial": []
+          },
+          "150/25": {
+            "full": [
+              0
+            ],
+            "partial": []
+          }
+        }
+      },
+      {
+        "taskTitle": "Stripe Payment Integration — Developer Portal",
+        "label": "Stripe testing Feb 24–28",
+        "anchor": "content",
+        "start": 1210,
+        "end": 1252,
+        "startText": "Testing was completed February 24–28, 2026",
+        "endText": "February 24–28, 2026",
+        "chunks": {
+          "150/50": {
+            "full": [
+              1
+            ],
+            "partial": []
+          },
+          "150/25": {
+            "full": [
+              1
+            ],
+            "partial": []
+          }
+        }
+      },
+      {
+        "taskTitle": "Analytics Dashboard v2 — Design & Build",
+        "label": "Bob completed analytics API backend Feb 28",
+        "anchor": "content",
+        "start": 1208,
+        "end": 1276,
+        "startText": "Bob completed the API backend for the dashboard on February 28",
+        "endText": "February 28, 2026",
+        "chunks": {
+          "150/50": {
+            "full": [
+              1
+            ],
+            "partial": [
+              2
+            ]
+          },
+          "150/25": {
+            "full": [
+              1
+            ],
+            "partial": []
+          }
+        }
+      },
+      {
+        "taskTitle": "New Engineer Onboarding — Marcus Chen",
+        "label": "Bob ran Marcus dev env setup Feb 1",
+        "anchor": "content",
+        "start": 658,
+        "end": 707,
+        "startText": "11:00 AM — dev environment setup session with Bob",
+        "endText": "session with Bob",
+        "chunks": {
+          "150/50": {
+            "full": [
+              0,
+              1
+            ],
+            "partial": []
+          },
+          "150/25": {
+            "full": [
+              0
+            ],
+            "partial": []
+          }
+        }
+      },
+      {
+        "taskTitle": "New Engineer Onboarding — Marcus Chen",
+        "label": "Bob updated CONTRIBUTING.md for min Docker version",
+        "anchor": "content",
+        "start": 1023,
+        "end": 1110,
+        "startText": "Bob updated the `CONTRIBUTING.md`",
+        "endText": "version requirement",
+        "chunks": {
+          "150/50": {
+            "full": [
+              1
+            ],
+            "partial": []
+          },
+          "150/25": {
+            "full": [
+              1
+            ],
+            "partial": []
+          }
+        }
+      },
+      {
+        "taskTitle": "Atlas Core Service Registry — Technical Design",
+        "label": "Bob attended Feb 10 Atlas Core kickoff (infrastructure)",
+        "anchor": "content",
+        "start": 234,
+        "end": 259,
+        "startText": "Bob Chen (infrastructure)",
+        "endText": "Bob Chen (infrastructure)",
+        "chunks": {
+          "150/50": {
+            "full": [
+              0
+            ],
+            "partial": []
+          },
+          "150/25": {
+            "full": [
+              0
+            ],
+            "partial": []
+          }
+        }
+      },
+      {
+        "taskTitle": "Atlas Core Service Registry — Technical Design",
+        "label": "Bob prepared Atlas Core cost analysis Feb 12",
+        "anchor": "content",
+        "start": 9022,
+        "end": 9078,
+        "startText": "Cost analysis (prepared by Bob Chen on February 12",
+        "endText": "February 12, 2026",
+        "chunks": {
+          "150/50": {
+            "full": [
+              12,
+              13
+            ],
+            "partial": []
+          },
+          "150/25": {
+            "full": [
+              10
+            ],
+            "partial": []
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "H1",
+    "category": "Long task — early facts",
+    "expectedBehavior": "answerable",
+    "expectedRetrievalClass": "FACT",
+    "expectedTasks": [
+      "Atlas Core Service Registry — Technical Design"
+    ],
+    "query": "When was the Atlas Core service registry kickoff meeting and who attended?",
+    "groundTruth": "The design kickoff meeting was held on February 10, 2026 at 2:00 PM PST and lasted two hours. Attendees: Alice Wang (architect), Charlie Li (tech lead), Bob Chen (infrastructure), and Priya Sharma (product).",
+    "goldFacts": [
+      {
+        "taskTitle": "Atlas Core Service Registry — Technical Design",
+        "label": "kickoff Feb 10, 2026 at 2:00 PM PST",
+        "anchor": "content",
+        "start": 106,
+        "end": 173,
+        "startText": "design kickoff meeting was held on February 10, 2026 at 2:00 PM PST",
+        "endText": "at 2:00 PM PST",
+        "chunks": {
+          "150/50": {
+            "full": [
+              0
+            ],
+            "partial": []
+          },
+          "150/25": {
+            "full": [
+              0
+            ],
+            "partial": []
+          }
+        }
+      },
+      {
+        "taskTitle": "Atlas Core Service Registry — Technical Design",
+        "label": "attendee Alice Wang (architect)",
+        "anchor": "content",
+        "start": 186,
+        "end": 208,
+        "startText": "Alice Wang (architect)",
+        "endText": "Alice Wang (architect)",
+        "chunks": {
+          "150/50": {
+            "full": [
+              0
+            ],
+            "partial": []
+          },
+          "150/25": {
+            "full": [
+              0
+            ],
+            "partial": []
+          }
+        }
+      },
+      {
+        "taskTitle": "Atlas Core Service Registry — Technical Design",
+        "label": "attendee Charlie Li (tech lead)",
+        "anchor": "content",
+        "start": 210,
+        "end": 232,
+        "startText": "Charlie Li (tech lead)",
+        "endText": "Charlie Li (tech lead)",
+        "chunks": {
+          "150/50": {
+            "full": [
+              0
+            ],
+            "partial": []
+          },
+          "150/25": {
+            "full": [
+              0
+            ],
+            "partial": []
+          }
+        }
+      },
+      {
+        "taskTitle": "Atlas Core Service Registry — Technical Design",
+        "label": "attendee Bob Chen (infrastructure)",
+        "anchor": "content",
+        "start": 234,
+        "end": 259,
+        "startText": "Bob Chen (infrastructure)",
+        "endText": "Bob Chen (infrastructure)",
+        "chunks": {
+          "150/50": {
+            "full": [
+              0
+            ],
+            "partial": []
+          },
+          "150/25": {
+            "full": [
+              0
+            ],
+            "partial": []
+          }
+        }
+      },
+      {
+        "taskTitle": "Atlas Core Service Registry — Technical Design",
+        "label": "attendee Priya Sharma (product)",
+        "anchor": "content",
+        "start": 265,
+        "end": 287,
+        "startText": "Priya Sharma (product)",
+        "endText": "Priya Sharma (product)",
+        "chunks": {
+          "150/50": {
+            "full": [
+              0
+            ],
+            "partial": []
+          },
+          "150/25": {
+            "full": [
+              0
+            ],
+            "partial": []
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "H2",
+    "category": "Long task — middle facts",
+    "expectedBehavior": "answerable",
+    "expectedRetrievalClass": "FACT",
+    "expectedTasks": [
+      "Atlas Core Service Registry — Technical Design"
+    ],
+    "query": "What is the Redis cache TTL and what is the maximum number of services that can be registered?",
+    "groundTruth": "For the main service-registry discovery cache, the Redis TTL is 60 seconds. The maximum capacity is 500 registered services per Atlas project. Note: the separate health-check endpoint response cache is 15 seconds.",
+    "goldFacts": [
+      {
+        "taskTitle": "Atlas Core Service Registry — Technical Design",
+        "label": "Redis cache TTL 60 seconds (discovery cache)",
+        "anchor": "content",
+        "start": 1167,
+        "end": 1201,
+        "startText": "Redis cache layer (TTL: 60 seconds)",
+        "endText": "TTL: 60 seconds",
+        "chunks": {
+          "150/50": {
+            "full": [
+              1
+            ],
+            "partial": []
+          },
+          "150/25": {
+            "full": [
+              1
+            ],
+            "partial": []
+          }
+        }
+      },
+      {
+        "taskTitle": "Atlas Core Service Registry — Technical Design",
+        "label": "max 500 registered services per project",
+        "anchor": "content",
+        "start": 2567,
+        "end": 2616,
+        "startText": "maximum 500 registered services per Atlas project",
+        "endText": "per Atlas project",
+        "chunks": {
+          "150/50": {
+            "full": [
+              3
+            ],
+            "partial": []
+          },
+          "150/25": {
+            "full": [
+              2
+            ],
+            "partial": []
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "H3",
+    "category": "Long task — deep retrieval",
+    "expectedBehavior": "answerable",
+    "expectedRetrievalClass": "FACT",
+    "expectedTasks": [
+      "Atlas Core Service Registry — Technical Design"
+    ],
+    "query": "What is the estimated monthly cost of the service registry and who approved it?",
+    "groundTruth": "The total estimated incremental monthly cost is under $20. The cost analysis was prepared by Bob Chen on February 12, 2026 and approved by Alice Wang on February 13, 2026.",
+    "goldFacts": [
+      {
+        "taskTitle": "Atlas Core Service Registry — Technical Design",
+        "label": "estimated monthly cost under $20",
+        "anchor": "content",
+        "start": 9734,
+        "end": 9785,
+        "startText": "Total estimated incremental monthly cost: under $20",
+        "endText": "under $20",
+        "chunks": {
+          "150/50": {
+            "full": [
+              13
+            ],
+            "partial": []
+          },
+          "150/25": {
+            "full": [
+              11
+            ],
+            "partial": []
+          }
+        }
+      },
+      {
+        "taskTitle": "Atlas Core Service Registry — Technical Design",
+        "label": "approved by Alice Wang Feb 13, 2026",
+        "anchor": "content",
+        "start": 9787,
+        "end": 9830,
+        "startText": "Approved by Alice Wang on February 13, 2026",
+        "endText": "February 13, 2026",
+        "chunks": {
+          "150/50": {
+            "full": [
+              13
+            ],
+            "partial": []
+          },
+          "150/25": {
+            "full": [
+              11
+            ],
+            "partial": []
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "H4",
+    "category": "Long task — deep retrieval",
+    "expectedBehavior": "answerable",
+    "expectedRetrievalClass": "LIST",
+    "expectedTasks": [
+      "Atlas Core Service Registry — Technical Design"
+    ],
+    "query": "What technologies were evaluated and rejected for the service registry, and why?",
+    "groundTruth": "For storage, etcd was rejected (operational complexity) and Consul was rejected (licensing cost at scale) — MongoDB was chosen. For the communication protocol, gRPC was evaluated and rejected (on February 10, 2026) because most Atlas services are Node.js-based and the Node.js gRPC ecosystem requires native bindings that complicate Docker builds — REST over HTTPS was chosen.",
+    "goldFacts": [
+      {
+        "taskTitle": "Atlas Core Service Registry — Technical Design",
+        "label": "etcd rejected: operational complexity",
+        "anchor": "content",
+        "start": 1397,
+        "end": 1436,
+        "startText": "etcd (rejected: operational complexity)",
+        "endText": "operational complexity)",
+        "chunks": {
+          "150/50": {
+            "full": [
+              1,
+              2
+            ],
+            "partial": []
+          },
+          "150/25": {
+            "full": [
+              1
+            ],
+            "partial": []
+          }
+        }
+      },
+      {
+        "taskTitle": "Atlas Core Service Registry — Technical Design",
+        "label": "Consul rejected: licensing cost at scale",
+        "anchor": "content",
+        "start": 1441,
+        "end": 1483,
+        "startText": "Consul (rejected: licensing cost at scale)",
+        "endText": "licensing cost at scale)",
+        "chunks": {
+          "150/50": {
+            "full": [
+              1,
+              2
+            ],
+            "partial": []
+          },
+          "150/25": {
+            "full": [
+              1
+            ],
+            "partial": []
+          }
+        }
+      },
+      {
+        "taskTitle": "Atlas Core Service Registry — Technical Design",
+        "label": "gRPC rejected: Node.js native bindings complicate Docker builds",
+        "anchor": "content",
+        "start": 1593,
+        "end": 1788,
+        "startText": "gRPC was evaluated and rejected",
+        "endText": "complicate Docker builds",
+        "chunks": {
+          "150/50": {
+            "full": [
+              2
+            ],
+            "partial": [
+              1
+            ]
+          },
+          "150/25": {
+            "full": [
+              1
+            ],
+            "partial": [
+              2
+            ]
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "H5",
+    "category": "Long task — deep retrieval",
+    "expectedBehavior": "answerable",
+    "expectedRetrievalClass": "FACT",
+    "expectedTasks": [
+      "Atlas Core Service Registry — Technical Design"
+    ],
+    "query": "What are the three migration waves for onboarding existing services, and what are their dates?",
+    "groundTruth": "Three waves onboard the 47 existing microservices: Wave 1 (April 1–14, 2026) — the 5 pilot teams (Platform Infrastructure, Developer Experience, Data Pipelines, Payments, Identity), 18 services total; Wave 2 (April 15–30, 2026) — the next 19 highest-traffic services, prioritized by request volume from load balancer logs; Wave 3 (May 1–15, 2026) — the remaining 10 services, including legacy systems.",
+    "goldFacts": [
+      {
+        "taskTitle": "Atlas Core Service Registry — Technical Design",
+        "label": "Wave 1 April 1–14, 2026 — 5 pilot teams, 18 services",
+        "anchor": "content",
+        "start": 7574,
+        "end": 7752,
+        "startText": "Wave 1 (April 1–14, 2026)",
+        "endText": "18 services total",
+        "chunks": {
+          "150/50": {
+            "full": [
+              10
+            ],
+            "partial": [
+              11
+            ]
+          },
+          "150/25": {
+            "full": [
+              8
+            ],
+            "partial": []
+          }
+        }
+      },
+      {
+        "taskTitle": "Atlas Core Service Registry — Technical Design",
+        "label": "Wave 2 April 15–30, 2026 — next 19 highest-traffic services",
+        "anchor": "content",
+        "start": 7754,
+        "end": 7818,
+        "startText": "Wave 2 (April 15–30, 2026)",
+        "endText": "highest-traffic services",
+        "chunks": {
+          "150/50": {
+            "full": [
+              10,
+              11
+            ],
+            "partial": []
+          },
+          "150/25": {
+            "full": [
+              8
+            ],
+            "partial": []
+          }
+        }
+      },
+      {
+        "taskTitle": "Atlas Core Service Registry — Technical Design",
+        "label": "Wave 3 May 1–15, 2026 — remaining 10 services incl. legacy",
+        "anchor": "content",
+        "start": 7875,
+        "end": 7946,
+        "startText": "Wave 3 (May 1–15, 2026)",
+        "endText": "legacy systems",
+        "chunks": {
+          "150/50": {
+            "full": [
+              10,
+              11
+            ],
+            "partial": []
+          },
+          "150/25": {
+            "full": [
+              8,
+              9
+            ],
+            "partial": []
+          }
+        }
+      }
+    ]
+  }
+]

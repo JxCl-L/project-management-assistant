@@ -1,0 +1,12 @@
+POST http://localhost:3001/auth/login
+Content-Type: application/json
+
+// {
+//     "email": "cloudia@example.com",
+//     "password": "Password123#"
+// }
+
+{
+    "email": "testt@example.com",
+    "password": "QWqw!@12"
+}

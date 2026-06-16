@@ -1,0 +1,12 @@
+POST http://localhost:3001/projects/68f2f91b3be0146bb7ab94fb/tasks
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2OGQ3ZDMzZGMwYTQ3NWEzYzIxODBmNmIiLCJlbWFpbCI6InRlc3R0QGV4YW1wbGUuY29tIiwiaWF0IjoxNzYwNzY5Mzg1LCJleHAiOjE3NjA4NTU3ODV9.koyWIRGT_WEOAgVg0oI8scrVm8S-s2yI_J9PNyp4_nA
+{
+    "title": "Created By Ttest 10",
+    "dueDate": "2026-01-07T12:00:00Z",
+    "description": "This is a task for testing purposes.",
+    "priority": "normal",
+    "status": "todo"
+    // "user": "68ccbaa985457524a8092848"
+    // "extraField": "This field is not defined in the schema and should be ignored"
+}

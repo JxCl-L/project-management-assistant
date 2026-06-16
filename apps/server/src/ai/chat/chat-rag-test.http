@@ -1,0 +1,506 @@
+@baseUrl = http://localhost:3001
+@token = PASTE_TOKEN_HERE
+@projectId = PASTE_PROJECT_ID_HERE
+
+# ============================================================
+# RAG Test — Project Atlas (fullstackTasks_rag_test)
+# ============================================================
+# Setup:
+#   1. npm run dev:rag-test
+#   2. Login below → copy token into @token above
+#   3. GET /projects → copy Project Atlas _id into @projectId above
+#   4. Run queries — ?debug=true shows retrieved chunks + scores
+#   5. Results are pasted in chat-rag-test-result.http (gitignored)
+# ============================================================
+
+# ── 1. Login ─────────────────────────────────────────────────
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "alice@example.com",
+  "password": "Password123#"
+}
+
+###
+
+# ── 2. Get projects (find Project Atlas _id) ─────────────────
+GET {{baseUrl}}/projects
+Authorization: Bearer {{token}}
+
+###
+
+# ============================================================
+# CATEGORY A — Specific date facts
+# Facts exist only in task content, NOT in title/description.
+# Good answer = correct date + correct task in _debug.retrieved.
+# ============================================================
+
+# A1. Outage start time
+POST {{baseUrl}}/projects/{{projectId}}/chat?debug=true
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "messages": [{ "role": "user", "content": "What time did the January 15 outage start and how long did it last?" }]
+}
+
+###
+
+# A2. Meeting date in content
+POST {{baseUrl}}/projects/{{projectId}}/chat?debug=true
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "messages": [{ "role": "user", "content": "When was the API rate limiting design review meeting held?" }]
+}
+
+###
+
+# A3. Go-live date
+POST {{baseUrl}}/projects/{{projectId}}/chat?debug=true
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "messages": [{ "role": "user", "content": "What date did the Stripe integration go live in production?" }]
+}
+
+###
+
+# A4. Date buried in content, different from task dueDate
+POST {{baseUrl}}/projects/{{projectId}}/chat?debug=true
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "messages": [{ "role": "user", "content": "When did Marcus Chen's first PR get merged?" }]
+}
+
+###
+
+# ============================================================
+# CATEGORY B — Specific numbers and metrics
+# ============================================================
+
+# B1. Latency before/after fix
+POST {{baseUrl}}/projects/{{projectId}}/chat?debug=true
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "messages": [{ "role": "user", "content": "What was the P95 search latency before and after the fix in January?" }]
+}
+
+###
+
+# B2. Cost / budget fact
+POST {{baseUrl}}/projects/{{projectId}}/chat?debug=true
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "messages": [{ "role": "user", "content": "How much did the Jenkins to GitHub Actions migration save per year?" }]
+}
+
+###
+
+# B3. Load test numbers
+POST {{baseUrl}}/projects/{{projectId}}/chat?debug=true
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "messages": [{ "role": "user", "content": "What were the load test results at 500 concurrent users?" }]
+}
+
+###
+
+# B4. Stripe first-day numbers
+POST {{baseUrl}}/projects/{{projectId}}/chat?debug=true
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "messages": [{ "role": "user", "content": "How many subscriptions were created on the first day Stripe launched?" }]
+}
+
+###
+
+# ============================================================
+# CATEGORY C — Person attribution
+# ============================================================
+
+# C1. Who ran load testing
+POST {{baseUrl}}/projects/{{projectId}}/chat?debug=true
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "messages": [{ "role": "user", "content": "Who ran the load testing in February and what tool did they use?" }]
+}
+
+###
+
+# C2. Who found the root cause
+POST {{baseUrl}}/projects/{{projectId}}/chat?debug=true
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "messages": [{ "role": "user", "content": "Who identified the root cause of the auth token expiry bug and when?" }]
+}
+
+###
+
+# ============================================================
+# CATEGORY D — Multi-chunk within one task
+# Good result = multiple chunks from the same task retrieved.
+# ============================================================
+
+# D1. Timeline spanning multiple paragraphs
+POST {{baseUrl}}/projects/{{projectId}}/chat?debug=true
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "messages": [{ "role": "user", "content": "Walk me through the full timeline of the January 15 outage from alert to full recovery." }]
+}
+
+###
+
+# D2. Action items (last paragraph of task)
+POST {{baseUrl}}/projects/{{projectId}}/chat?debug=true
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "messages": [{ "role": "user", "content": "What action items came out of the January 15 outage post-mortem?" }]
+}
+
+###
+
+# ============================================================
+# CATEGORY E — Strategy comparison (chunked vs single)
+# Run both and compare _debug.retrieved scores.
+# ============================================================
+
+# E1. chunked
+POST {{baseUrl}}/projects/{{projectId}}/chat?strategy=chunked&debug=true
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "messages": [{ "role": "user", "content": "What was the root cause of the auth token expiry bug?" }]
+}
+
+###
+
+# E1. single — same query
+POST {{baseUrl}}/projects/{{projectId}}/chat?strategy=single&debug=true
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "messages": [{ "role": "user", "content": "What was the root cause of the auth token expiry bug?" }]
+}
+
+###
+
+# ============================================================
+# CATEGORY F — Edge cases
+# ============================================================
+
+# F1. Answerable from task overview alone (no content needed)
+POST {{baseUrl}}/projects/{{projectId}}/chat?debug=true
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "messages": [{ "role": "user", "content": "Which tasks are currently in progress?" }]
+}
+
+###
+
+# F2. Unanswerable — fact not in any content
+POST {{baseUrl}}/projects/{{projectId}}/chat?debug=true
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "messages": [{ "role": "user", "content": "What is the team's Figma file URL?" }]
+}
+
+###
+
+# F3. Vague query
+POST {{baseUrl}}/projects/{{projectId}}/chat?debug=true
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "messages": [{ "role": "user", "content": "Tell me about the project." }]
+}
+
+###
+
+# ============================================================
+# CATEGORY G — Gap coverage
+# ============================================================
+
+# G1. Ambiguous query — semantically matches multiple tasks
+POST {{baseUrl}}/projects/{{projectId}}/chat?debug=true
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "messages": [{ "role": "user", "content": "What performance improvements were made this quarter?" }]
+}
+
+###
+
+# G2. Cross-task synthesis — requires facts from 2 different tasks
+POST {{baseUrl}}/projects/{{projectId}}/chat?debug=true
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "messages": [{ "role": "user", "content": "What did Bob Chen work on in February?" }]
+}
+
+###
+
+# G3. Chunk boundary — answer straddles chunk 0/1 split
+POST {{baseUrl}}/projects/{{projectId}}/chat?debug=true
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "messages": [{ "role": "user", "content": "What was Marcus Chen's schedule on his first day and what issue did he run into with Docker?" }]
+}
+
+###
+
+# G4. False positive detection — answer exists in task description (overview)
+POST {{baseUrl}}/projects/{{projectId}}/chat?debug=true
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "messages": [{ "role": "user", "content": "How long was the January 15 outage?" }]
+}
+
+###
+
+# G5. Strategy comparison — multi-fact query (chunked)
+POST {{baseUrl}}/projects/{{projectId}}/chat?strategy=chunked&debug=true
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "messages": [{ "role": "user", "content": "What were the load test results and what bottlenecks were found?" }]
+}
+
+###
+
+# G5. Strategy comparison — same query (single)
+POST {{baseUrl}}/projects/{{projectId}}/chat?strategy=single&debug=true
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "messages": [{ "role": "user", "content": "What were the load test results and what bottlenecks were found?" }]
+}
+
+###
+
+# ============================================================
+# CATEGORY H — Long task strategy stress test (1,428w, ~12 chunks)
+# Task: Atlas Core Service Registry — Technical Design
+# ============================================================
+
+# H1. Fact from early paragraph
+POST {{baseUrl}}/projects/{{projectId}}/chat?debug=true
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "messages": [{ "role": "user", "content": "When was the Atlas Core service registry kickoff meeting and who attended?" }]
+}
+
+###
+
+# H2. Two facts from different middle paragraphs
+POST {{baseUrl}}/projects/{{projectId}}/chat?debug=true
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "messages": [{ "role": "user", "content": "What is the Redis cache TTL and what is the maximum number of services that can be registered?" }]
+}
+
+###
+
+# H3. Fact from last paragraph — core lost-in-the-middle test
+POST {{baseUrl}}/projects/{{projectId}}/chat?debug=true
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "messages": [{ "role": "user", "content": "What is the estimated monthly cost of the service registry and who approved it?" }]
+}
+
+###
+
+# H4. Cross-chunk — rejected technologies in separate paragraphs
+POST {{baseUrl}}/projects/{{projectId}}/chat?debug=true
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "messages": [{ "role": "user", "content": "What technologies were evaluated and rejected for the service registry, and why?" }]
+}
+
+###
+
+# H5. Strategy comparison — deep document query (chunked)
+POST {{baseUrl}}/projects/{{projectId}}/chat?strategy=chunked&debug=true
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "messages": [{ "role": "user", "content": "What are the three migration waves for onboarding existing services, and what are their dates?" }]
+}
+
+###
+
+# H5. Strategy comparison — same query (single)
+POST {{baseUrl}}/projects/{{projectId}}/chat?strategy=single&debug=true
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "messages": [{ "role": "user", "content": "What are the three migration waves for onboarding existing services, and what are their dates?" }]
+}
+
+###
+
+# ============================================================
+# CATEGORY I — Full context baseline (no retrieval)
+# Compare each answer against the RAG chunked result.
+# ============================================================
+
+# I-A1. Date fact
+POST {{baseUrl}}/projects/{{projectId}}/chat?strategy=fullcontext&debug=true
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "messages": [{ "role": "user", "content": "What time did the January 15 outage start and how long did it last?" }]
+}
+
+###
+
+# I-B2. Specific number
+POST {{baseUrl}}/projects/{{projectId}}/chat?strategy=fullcontext&debug=true
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "messages": [{ "role": "user", "content": "How much did the Jenkins to GitHub Actions migration save per year?" }]
+}
+
+###
+
+# I-C2. Attribution
+POST {{baseUrl}}/projects/{{projectId}}/chat?strategy=fullcontext&debug=true
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "messages": [{ "role": "user", "content": "Who identified the root cause of the auth token expiry bug and when?" }]
+}
+
+###
+
+# I-D1. Multi-fact timeline
+POST {{baseUrl}}/projects/{{projectId}}/chat?strategy=fullcontext&debug=true
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "messages": [{ "role": "user", "content": "Walk me through the full timeline of the January 15 outage from alert to full recovery." }]
+}
+
+###
+
+# I-H3. End of long task — lost-in-the-middle test
+POST {{baseUrl}}/projects/{{projectId}}/chat?strategy=fullcontext&debug=true
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "messages": [{ "role": "user", "content": "What is the estimated monthly cost of the service registry and who approved it?" }]
+}
+
+###
+
+# I-H4. Rejected technologies
+POST {{baseUrl}}/projects/{{projectId}}/chat?strategy=fullcontext&debug=true
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "messages": [{ "role": "user", "content": "What technologies were evaluated and rejected for the service registry, and why?" }]
+}
+
+###
+
+# I-F1. Metadata query (sanity check)
+POST {{baseUrl}}/projects/{{projectId}}/chat?strategy=fullcontext&debug=true
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "messages": [{ "role": "user", "content": "Which tasks are currently in progress?" }]
+}
+
+###
+
+# I-F2. Unanswerable (sanity check)
+POST {{baseUrl}}/projects/{{projectId}}/chat?strategy=fullcontext&debug=true
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "messages": [{ "role": "user", "content": "What is the team's Figma file URL?" }]
+}
+
+###
+
+# ============================================================
+# CATEGORY J — Hybrid search (vector + keyword RRF)
+# ============================================================
+
+# J-G1. Ambiguous performance query
+POST {{baseUrl}}/projects/{{projectId}}/chat?strategy=hybrid&debug=true
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "messages": [{ "role": "user", "content": "What performance improvements were made this quarter?" }]
+}
+
+###
+
+# J-G2. Cross-task person query — key test for hybrid
+POST {{baseUrl}}/projects/{{projectId}}/chat?strategy=hybrid&debug=true
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "messages": [{ "role": "user", "content": "What did Bob Chen work on in February?" }]
+}
+
+###

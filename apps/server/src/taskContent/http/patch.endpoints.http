@@ -1,0 +1,7 @@
+PATCH http://localhost:3001/projects/68f2f91b3be0146bb7ab94fb/tasks/68f33f80c37d4c3f452b61c6/contents
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2OGQ3ZDMzZGMwYTQ3NWEzYzIxODBmNmIiLCJlbWFpbCI6InRlc3R0QGV4YW1wbGUuY29tIiwiaWF0IjoxNzY1MDIzMzEwLCJleHAiOjE3NjUxMDk3MTB9.bvF7Vt2m8_r5jWUgfDGPvym3ywKEAo685LJWldtpLwo
+{
+  "content": "{\"type\":\"doc\",\"content\":[{\"type\":\"paragraph\",\"content\":[{\"type\":\"text\",\"text\":\"Hello World\"}]}]}",
+  "plainText": "Hello World"
+}

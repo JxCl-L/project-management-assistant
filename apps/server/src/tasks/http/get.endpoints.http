@@ -1,0 +1,7 @@
+// get all tasks for a specific project
+GET http://localhost:3001/projects/69049f8650f5ea7c836db84b/tasks
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2OGQ3ZDMzZGMwYTQ3NWEzYzIxODBmNmIiLCJlbWFpbCI6InRlc3R0QGV4YW1wbGUuY29tIiwiaWF0IjoxNzY2NjQzMDM2LCJleHAiOjE3NjY3Mjk0MzZ9.8NmqHCmwXahbmRL2rwezxWU2xgrWzomDIZNXIiGbCew
+
+// get a specific task by its ID within a project
+GET http://localhost:3001/projects/69049f8650f5ea7c836db84b/tasks/6905fa9657971231edb7bbf4
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2OGQ3ZDMzZGMwYTQ3NWEzYzIxODBmNmIiLCJlbWFpbCI6InRlc3R0QGV4YW1wbGUuY29tIiwiaWF0IjoxNzY2NjQzMDM2LCJleHAiOjE3NjY3Mjk0MzZ9.8NmqHCmwXahbmRL2rwezxWU2xgrWzomDIZNXIiGbCew

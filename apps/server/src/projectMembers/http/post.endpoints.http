@@ -1,0 +1,8 @@
+POST http://localhost:3001/projects/68e8cbaa4d99c5f34c200f48/members
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2OGQ3ZDMzZGMwYTQ3NWEzYzIxODBmNmIiLCJlbWFpbCI6InRlc3R0QGV4YW1wbGUuY29tIiwiaWF0IjoxNzYyNzY1MjY4LCJleHAiOjE3NjI4NTE2Njh9.36aBuiqdGJo9Bh5IIwYrBdmF2Vai7wdd-MMLuH5Gqr8
+
+{
+    "user": "68d7c5eec0a475a3c2180f66",
+    "role": "viewer"
+}
