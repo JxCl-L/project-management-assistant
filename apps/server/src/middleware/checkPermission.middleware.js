@@ -1,6 +1,6 @@
 // middleware/checkPermission.js
 const { StatusCodes } = require("http-status-codes");
-const { canPerformAction } = require("@pm/schemas");
+const { canPerformAction } = require("@pm/permissions");
 const Member = require("../projectMembers/member.schema.js");
 
 /**

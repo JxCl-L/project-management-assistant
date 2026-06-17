@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Check, Pencil, X } from "lucide-react";
 import { useUpdateTask } from "@/hooks/useUpdateTask.hook.js";
+import { canPerformAction } from "@/lib/permissions";
 import { PresenceField } from "@/components/task/PresenceField.jsx";
 
 export default function TaskDescriptionEdit({
@@ -20,7 +21,7 @@ export default function TaskDescriptionEdit({
   const textareaRef = useRef(null);
   const { mutate, isPending } = useUpdateTask();
 
-  const canEdit = role === "manager" || role === "editor";
+  const canEdit = canPerformAction(role, "tasks", "PATCH");
 
   useEffect(() => {
     if (isEditing && textareaRef.current) {

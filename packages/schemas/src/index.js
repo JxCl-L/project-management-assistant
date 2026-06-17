@@ -8,5 +8,4 @@ module.exports = {
   ...require("./task"),
   ...require("./member"),
   ...require("./aiPrompt"),
-  ...require("./permissions"),
 };

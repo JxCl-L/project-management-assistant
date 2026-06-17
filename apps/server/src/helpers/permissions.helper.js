@@ -1,41 +1,33 @@
-const permissions = require("../settings/permissions.js");
+const { canPerformAction } = require("@pm/permissions");
 
 /**
- * Get all permissions for a given role
- * @param {string} role - User role (manager, editor, viewer)
- * @returns {object} Permission object with boolean values
+ * Derive a flat object of per-action booleans from the shared permission
+ * table, attached to project responses so the client can gate UI without
+ * re-implementing the rules. Both client and server thus agree on what
+ * each role can do, because the answer comes from one helper backed by
+ * one table.
+ *
+ * @param {string} role - User role (manager, editor, viewer) or null
+ * @returns {object} Flag object consumed by the React components
  */
-const getPermissionsForRole = (role) => {
-  if (!role) {
-    return {
-      canEditProject: false,
-      canDeleteProject: false,
-      canCreateTask: false,
-      canEditTask: false,
-      canDeleteTask: false,
-      canViewMembers: false,
-      canCreateMembers: false,
-      canEditMembers: false,
-      canDeleteMembers: false,
-    };
-  }
+const getPermissionsForRole = (role) => ({
+  // Projects
+  canEditProject:   canPerformAction(role, "projects", "PATCH"),
+  canDeleteProject: canPerformAction(role, "projects", "DELETE"),
 
-  return {
-    // Projects
-    canEditProject: permissions.projects.PATCH?.includes(role) || false,
-    canDeleteProject: permissions.projects.DELETE?.includes(role) || false,
-    
-    // Tasks
-    canCreateTask: permissions.tasks.POST?.includes(role) || false,
-    canEditTask: permissions.tasks.PATCH?.includes(role) || false,
-    canDeleteTask: permissions.tasks.DELETE?.includes(role) || false,
-    
-    // Members
-    canViewMembers: permissions.members.GET?.includes(role) || false,
-    canCreateMembers: permissions.members.POST?.includes(role) || false,
-    canEditMembers: permissions.members.PATCH?.includes(role) || false,
-    canDeleteMembers: permissions.members.DELETE?.includes(role) || false,
-  };
-};
+  // Tasks
+  canCreateTask: canPerformAction(role, "tasks", "POST"),
+  canEditTask:   canPerformAction(role, "tasks", "PATCH"),
+  canDeleteTask: canPerformAction(role, "tasks", "DELETE"),
+
+  // Task content (rich text editor)
+  canEditTaskContent: canPerformAction(role, "taskContent", "PATCH"),
+
+  // Members
+  canViewMembers:   canPerformAction(role, "members", "GET"),
+  canCreateMembers: canPerformAction(role, "members", "POST"),
+  canEditMembers:   canPerformAction(role, "members", "PATCH"),
+  canDeleteMembers: canPerformAction(role, "members", "DELETE"),
+});
 
 module.exports = { getPermissionsForRole };

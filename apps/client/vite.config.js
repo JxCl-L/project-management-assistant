@@ -24,6 +24,6 @@ export default defineConfig({
   // browser can't parse as ESM. Forcing it into optimizeDeps tells esbuild
   // to pre-bundle and convert the CJS named exports to native ESM.
   optimizeDeps: {
-    include: ["@pm/schemas"],
+    include: ["@pm/schemas", "@pm/permissions"],
   },
 })

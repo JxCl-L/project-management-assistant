@@ -9,6 +9,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useUpdateTask } from "@/hooks/useUpdateTask.hook.js";
+import { canPerformAction } from "@/lib/permissions";
 
 
 export default function TaskPrioritySelection({
@@ -21,7 +22,7 @@ export default function TaskPrioritySelection({
   const [showMessage, setShowMessage] = useState(false);
   const { mutate, isSuccess, isPending, error } = useUpdateTask();
 
-  const canEdit = role === "manager" || role === "editor";
+  const canEdit = canPerformAction(role, "tasks", "PATCH");
 
   useEffect(() => {
     if (isSuccess || error) {

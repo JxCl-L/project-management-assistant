@@ -162,7 +162,7 @@ export default function Task() {
                 initialTitle={title}
                 role={projectData?.data?.currentUserRole}
               />
-              {projectData?.data?.currentUserRole === "manager" && (
+              {projectData?.data?.permissions?.canDeleteTask && (
                 <AlertDialog>
                   <AlertDialogTrigger asChild>
                     <button

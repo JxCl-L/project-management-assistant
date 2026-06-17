@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useUpdateTask } from "@/hooks/useUpdateTask.hook.js";
+import { canPerformAction } from "@/lib/permissions";
 import { Check } from "lucide-react";
 
 export default function TaskStatusSelection({
@@ -12,7 +13,7 @@ export default function TaskStatusSelection({
   const [showMessage, setShowMessage] = useState(false);
   const { mutate, isSuccess, isPending, error } = useUpdateTask();
 
-  const canEdit = role === "manager" || role === "editor";
+  const canEdit = canPerformAction(role, "tasks", "PATCH");
   const isDisabled = isPending || !canEdit;
 
   useEffect(() => {

@@ -156,15 +156,19 @@ export function EditProjectDialog({ open, onOpenChange, project }) {
               </div>
 
               <DialogFooter className="mt-8 flex flex-row justify-between sm:justify-between">
-                <Button
-                  type="button"
-                  variant="destructive"
-                  onClick={() => setShowDeleteAlert(true)}
-                  disabled={isDeletePending}
-                >
-                  <Trash2 className="h-4 w-4" />
-                  Delete
-                </Button>
+                {project?.permissions?.canDeleteProject ? (
+                  <Button
+                    type="button"
+                    variant="destructive"
+                    onClick={() => setShowDeleteAlert(true)}
+                    disabled={isDeletePending}
+                  >
+                    <Trash2 className="h-4 w-4" />
+                    Delete
+                  </Button>
+                ) : (
+                  <span />
+                )}
                 <div className="flex gap-2">
                   <DialogClose asChild>
                     <Button
@@ -177,7 +181,7 @@ export function EditProjectDialog({ open, onOpenChange, project }) {
                     </Button>
                   </DialogClose>
 
-                  <Button type="submit" disabled={isUpdatePending}>
+                  <Button type="submit" disabled={isUpdatePending || !project?.permissions?.canEditProject}>
                     {isUpdatePending ? "Updating..." : "Update"}
                   </Button>
                 </div>

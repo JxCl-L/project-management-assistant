@@ -1,0 +1,12 @@
+{
+  "name": "@pm/permissions",
+  "version": "0.0.0",
+  "private": true,
+  "main": "src/index.js",
+  "exports": {
+    ".": {
+      "import": "./src/index.mjs",
+      "require": "./src/index.js"
+    }
+  }
+}

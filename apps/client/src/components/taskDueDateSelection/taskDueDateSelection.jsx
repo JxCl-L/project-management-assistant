@@ -6,6 +6,7 @@ import {
 } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
 import { useUpdateTask } from "@/hooks/useUpdateTask.hook.js";
+import { canPerformAction } from "@/lib/permissions";
 import { ChevronDown } from "lucide-react";
 
 export default function TaskDueDateSelection({
@@ -19,7 +20,7 @@ export default function TaskDueDateSelection({
   const [showMessage, setShowMessage] = useState(false);
   const { mutate, isSuccess, isPending, error } = useUpdateTask();
 
-  const canEdit = role === "manager" || role === "editor";
+  const canEdit = canPerformAction(role, "tasks", "PATCH");
 
   useEffect(() => {
     if (isSuccess || error) {

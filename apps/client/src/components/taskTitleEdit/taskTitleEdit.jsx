@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { Pencil, Check, X } from "lucide-react";
 import { useUpdateTask } from "@/hooks/useUpdateTask.hook.js";
+import { canPerformAction } from "@/lib/permissions";
 
 export default function TaskTitleEdit({ projectId, taskId, initialTitle, role }) {
   const [isEditing, setIsEditing] = useState(false);
@@ -10,7 +11,7 @@ export default function TaskTitleEdit({ projectId, taskId, initialTitle, role })
   const inputRef = useRef(null);
   const { mutate, isPending } = useUpdateTask();
 
-  const canEdit = role === "manager" || role === "editor";
+  const canEdit = canPerformAction(role, "tasks", "PATCH");
 
   useEffect(() => {
     if (isEditing && inputRef.current) {

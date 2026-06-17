@@ -4,6 +4,7 @@ import StarterKit from "@tiptap/starter-kit";
 import { useFetchTaskContent } from "@/hooks/useFetchTaskContent.hook.js";
 import { useUpdateTaskContent } from "@/hooks/useUpdateTaskContent.hook.js";
 import { useRewriteTaskContent } from "@/hooks/useRewriteTaskContent.hook.js";
+import { canPerformAction } from "@/lib/permissions";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import {
   CheckCircle2,
@@ -357,7 +358,7 @@ export default function TaskContentEdit({ projectId, taskId, role, fieldEditors,
   const { data, isLoading } = useFetchTaskContent(projectId, taskId);
   const { mutate, isSuccess, isPending, error } = useUpdateTaskContent();
 
-  const canEdit = role === "manager" || role === "editor";
+  const canEdit = canPerformAction(role, "taskContent", "PATCH");
 
   if (isLoading) return <ContentSkeleton canEdit={canEdit} />;
 

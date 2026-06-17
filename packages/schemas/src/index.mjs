@@ -17,6 +17,4 @@ export const {
   DeleteMemberSchema,
   TaskGeneratePromptSchema,
   ChatMessageSchema,
-  PERMISSIONS,
-  canPerformAction,
 } = pkg;
