@@ -24,7 +24,19 @@ const markdownComponents = {
   hr: () => <hr className="border-border my-2" />,
 };
 
-function AiMessage({ content, isError }) {
+// Maps the server's stage event names to the user-facing label the bubble
+// shows while waiting for the first token. Keep these calm and concrete —
+// they reflect real pipeline phases, not animated filler.
+const STAGE_LABELS = {
+  analyzing: "Analysing your question",
+  retrieving: "Searching project knowledge",
+  generating: "Generating answer",
+};
+
+function AiMessage({ content, isError, isStreaming, stage }) {
+  // While streaming and no content yet, show the stage label with the
+  // bouncing dots. Once tokens have arrived, swap to the markdown render.
+  const showStageOnly = isStreaming && !content && !isError;
   return (
     <div className="flex items-start gap-2.5">
       <div className="shrink-0 w-7 h-7 rounded-full bg-[hsl(var(--ai-accent-bg))] border border-[hsl(var(--ai-accent-border))] flex items-center justify-center mt-0.5">
@@ -43,6 +55,15 @@ function AiMessage({ content, isError }) {
       >
         {isError ? (
           content
+        ) : showStageOnly ? (
+          <div className="flex items-center gap-2 text-muted-foreground">
+            <span>{STAGE_LABELS[stage] ?? "Working"}</span>
+            <span className="flex items-center gap-1">
+              <span className="w-1 h-1 rounded-full bg-muted-foreground animate-bounce [animation-delay:0ms]" />
+              <span className="w-1 h-1 rounded-full bg-muted-foreground animate-bounce [animation-delay:150ms]" />
+              <span className="w-1 h-1 rounded-full bg-muted-foreground animate-bounce [animation-delay:300ms]" />
+            </span>
+          </div>
         ) : (
           <ReactMarkdown components={markdownComponents}>{content}</ReactMarkdown>
         )}
@@ -133,25 +154,73 @@ export function AiPanel({ isOpen, onClose, projectId, projectName }) {
     const userDisplayMsg = { id: Date.now().toString(), role: "user", content: text };
     const updatedHistory = [...apiHistory, { role: "user", content: text }];
 
-    setMessages((prev) => [...prev, userDisplayMsg]);
+    // Reserve a placeholder AI message slot so tokens have somewhere to
+    // accumulate into as they stream. The stage label is shown until the
+    // first token arrives, then the content takes over.
+    const placeholderId = `ai-${Date.now()}`;
+
+    setMessages((prev) => [
+      ...prev,
+      userDisplayMsg,
+      { id: placeholderId, role: "ai", content: "", stage: "analyzing", isStreaming: true },
+    ]);
     setApiHistory(updatedHistory);
     setInputValue("");
 
     sendMessage(
-      { projectId, messages: updatedHistory, strategy },
+      {
+        projectId,
+        messages: updatedHistory,
+        strategy,
+        onStage: (stage) => {
+          // Stage events refresh the placeholder's visible status until the
+          // first token arrives. Once content is non-empty we leave the
+          // stage in state but the renderer prefers content.
+          setMessages((prev) =>
+            prev.map((m) => (m.id === placeholderId ? { ...m, stage } : m))
+          );
+        },
+        onToken: (_text, assembled) => {
+          // Replace the placeholder's content with the running assembled
+          // string on every token. React batches these updates, so even
+          // bursty token streams render smoothly.
+          setMessages((prev) =>
+            prev.map((m) =>
+              m.id === placeholderId ? { ...m, content: assembled } : m
+            )
+          );
+        },
+      },
       {
         onSuccess: (data) => {
           const reply = data?.message || "No response received.";
           console.log("[RAG]", JSON.stringify({ query: text, reply, debug: data?._debug }, null, 2));
-          setMessages((prev) => [...prev, { id: Date.now().toString(), role: "ai", content: reply }]);
+          // Finalise the placeholder: drop streaming flag + ensure content
+          // matches the fully assembled reply (handles the edge case where
+          // the last token batched before the placeholder was updated).
+          setMessages((prev) =>
+            prev.map((m) =>
+              m.id === placeholderId
+                ? { ...m, content: reply, isStreaming: false, stage: undefined }
+                : m
+            )
+          );
           setApiHistory((prev) => [...prev, { role: "assistant", content: reply }]);
         },
         onError: (error) => {
           const msg =
-            error?.response?.status === 403
+            error?.message?.includes("permission")
               ? "You don't have permission to use AI chat in this project."
-              : "Something went wrong. Please try again.";
-          setMessages((prev) => [...prev, { id: Date.now().toString(), role: "ai", content: msg, isError: true }]);
+              : error?.message || "Something went wrong. Please try again.";
+          // Convert the placeholder into the error message so the failed
+          // request isn't represented twice in the transcript.
+          setMessages((prev) =>
+            prev.map((m) =>
+              m.id === placeholderId
+                ? { ...m, content: msg, isStreaming: false, stage: undefined, isError: true }
+                : m
+            )
+          );
         },
       }
     );
@@ -242,13 +311,21 @@ export function AiPanel({ isOpen, onClose, projectId, projectName }) {
         <div className="flex-1 overflow-y-auto px-4 py-4 space-y-4 min-h-0">
           {messages.map((msg) =>
             msg.role === "ai" ? (
-              <AiMessage key={msg.id} content={msg.content} isError={msg.isError} />
+              <AiMessage
+                key={msg.id}
+                content={msg.content}
+                isError={msg.isError}
+                isStreaming={msg.isStreaming}
+                stage={msg.stage}
+              />
             ) : (
               <UserMessage key={msg.id} content={msg.content} />
             )
           )}
 
-          {isPending && <TypingIndicator />}
+          {/* Generic dots only when *summarising* — the streaming chat reply
+              renders its own per-message stage/typing indicator inline. */}
+          {isSummarizing && <TypingIndicator />}
 
           {/* Quick action chip */}
           {!summarized && !isPending && (

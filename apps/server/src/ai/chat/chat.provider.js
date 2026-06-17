@@ -1,4 +1,4 @@
-const { callAI, generateEmbedding } = require("../aiClient.js");
+const { callAI, callAIStream, generateEmbedding } = require("../aiClient.js");
 const { classifyRetrievalClass } = require("../classifyRetrieval.js");
 const { getAnswerInstructions } = require("./answerPrompts.js");
 const Project = require("../../projects/project.schema.js");
@@ -29,7 +29,32 @@ function reciprocalRankFusion(lists, k = 60) {
     .map((e) => ({ ...e.doc, _rrfScore: e.score }));
 }
 
+// Server-Sent Events helper. `data:` lines must be followed by a blank line
+// per the SSE spec. We JSON-encode each event so the client can parse a
+// stable payload shape regardless of which event type fired.
+function writeSSE(res, payload) {
+  res.write(`data: ${JSON.stringify(payload)}\n\n`);
+}
+
 async function chatProvider(req, res) {
+  // Streaming mode is enabled per-request via ?stream=true so the existing
+  // JSON callers (eval scripts, debug tools) keep working unchanged.
+  const streaming = req.query.stream === "true";
+  // Stage callback: writes an SSE event when streaming, no-op otherwise.
+  // Inserted at real pipeline boundaries (analyzing, retrieving, generating)
+  // so the client UI reflects what the server is actually doing — not
+  // hardcoded progress phrases.
+  const onStage = streaming
+    ? (stage) => writeSSE(res, { type: "stage", stage })
+    : () => {};
+
+  if (streaming) {
+    res.setHeader("Content-Type", "text/event-stream");
+    res.setHeader("Cache-Control", "no-cache, no-transform");
+    res.setHeader("Connection", "keep-alive");
+    res.flushHeaders?.();
+  }
+
   try {
     const { projectId } = req.params;
     const { messages } = req.body; // [{ role: "user"|"assistant", content: string }]
@@ -70,12 +95,24 @@ async function chatProvider(req, res) {
     ]);
 
     if (!project) {
+      if (streaming) {
+        writeSSE(res, { type: "error", message: "Project not found." });
+        return res.end();
+      }
       return res.status(StatusCodes.NOT_FOUND).json({ message: "Project not found." });
     }
     if (!currentMember) {
+      if (streaming) {
+        writeSSE(res, { type: "error", message: "You do not have permission to access this project." });
+        return res.end();
+      }
       return res.status(StatusCodes.FORBIDDEN).json({ message: "You do not have permission to access this project." });
     }
 
+    // First visible stage: server is parsing the request, kicking off the
+    // classifier, and starting to assemble project context. The frontend
+    // shows "Analyzing your question…" while this runs.
+    onStage("analyzing");
     // Retrieval-mode classifier — kicked off here, after project existence
     // and membership are confirmed, so we never spend a classifier call on
     // 404/403 paths (auth probes, expired sessions, deleted projects). The
@@ -116,6 +153,10 @@ async function chatProvider(req, res) {
       })
       .join("\n");
 
+    // Second visible stage: retrieval. We're about to embed the query (if
+    // not in fullcontext mode) and run Atlas Vector Search / BM25 / RRF.
+    // The frontend shows "Searching project knowledge…" while this runs.
+    if (lastUserMessage && allTasks.length > 0) onStage("retrieving");
     // RAG: embed the latest user message and retrieve semantically relevant task contents
     // (lastUserMessage was identified above next to the classifier kickoff)
     let retrievedContext = "";
@@ -372,25 +413,56 @@ ${answerInstructions}`;
 
     const aiMessages = [{ role: "system", content: systemPrompt }, ...messages];
 
-    const reply = await callAI(aiMessages, 1000);
+    // Third visible stage: the model is generating. Fires just before the
+    // LLM call so the frontend can swap the "Searching…" status for
+    // "Generating answer…" right when streamed tokens are about to start.
+    onStage("generating");
 
-    const response = { message: reply };
-    if (debug) {
-      response._debug = {
-        strategy,
-        chunkFilter,
-        retrieved: debugChunks,
-        retrievalClass,
-        classifyMs,
-        promptMode,
-        // Resolved class actually used to pick the prompt (null + routed -> fell back to baseline)
-        promptClass: promptMode === "routed" && retrievalClass ? retrievalClass : "BASELINE",
-        ...(hybridStats ? { hybrid: hybridStats } : {}),
-      };
+    const debugPayload = debug
+      ? {
+          strategy,
+          chunkFilter,
+          retrieved: debugChunks,
+          retrievalClass,
+          classifyMs,
+          promptMode,
+          // Resolved class actually used to pick the prompt (null + routed -> fell back to baseline)
+          promptClass: promptMode === "routed" && retrievalClass ? retrievalClass : "BASELINE",
+          ...(hybridStats ? { hybrid: hybridStats } : {}),
+        }
+      : null;
+
+    if (streaming) {
+      try {
+        for await (const token of callAIStream(aiMessages, 1000)) {
+          writeSSE(res, { type: "token", text: token });
+        }
+      } catch (streamError) {
+        errorLogger(`Streaming chat call failed: ${streamError.message}`, req, streamError);
+        writeSSE(res, {
+          type: "error",
+          message: "The model call failed partway through. Please try again.",
+        });
+        return res.end();
+      }
+      if (debugPayload) writeSSE(res, { type: "debug", debug: debugPayload });
+      writeSSE(res, { type: "done" });
+      return res.end();
     }
+
+    const reply = await callAI(aiMessages, 1000);
+    const response = { message: reply };
+    if (debugPayload) response._debug = debugPayload;
     return res.status(StatusCodes.OK).json(response);
   } catch (error) {
     errorLogger(`Error in AI chat: ${error.message}`, req, error);
+    if (streaming) {
+      writeSSE(res, {
+        type: "error",
+        message: "Unable to process your request, please try again later.",
+      });
+      return res.end();
+    }
     return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
       message: "Unable to process your request, please try again later.",
     });
