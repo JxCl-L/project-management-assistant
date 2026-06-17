@@ -260,15 +260,37 @@ export function CreateTaskForm({ onSuccess }) {
 
             {/* Overwrite warning */}
             {pendingGenerate && (
-              <div className="flex items-start gap-2 px-3 py-2 rounded-md bg-amber-500/10 border border-amber-500/30 text-amber-300 text-xs">
-                <AlertTriangle className="h-3.5 w-3.5 shrink-0 mt-0.5" />
+              <div
+                className="flex items-start gap-2 px-3 py-2 rounded-md text-xs text-foreground"
+                style={{
+                  backgroundColor: "hsl(var(--warning) / 0.1)",
+                  borderWidth: 1,
+                  borderColor: "hsl(var(--warning) / 0.4)",
+                }}
+              >
+                <AlertTriangle
+                  className="h-3.5 w-3.5 shrink-0 mt-0.5"
+                  style={{ color: "hsl(var(--warning))" }}
+                />
                 <div className="flex-1">
                   <p className="mb-1.5">This will overwrite your filled fields.</p>
                   <div className="flex gap-2">
                     <button
                       type="button"
                       onClick={runGenerate}
-                      className="px-2.5 py-1 rounded border border-amber-500/40 hover:bg-amber-500/20 transition-colors"
+                      className="px-2.5 py-1 rounded transition-colors"
+                      style={{
+                        color: "hsl(var(--warning))",
+                        borderWidth: 1,
+                        borderColor: "hsl(var(--warning) / 0.5)",
+                      }}
+                      onMouseEnter={(e) =>
+                        (e.currentTarget.style.backgroundColor =
+                          "hsl(var(--warning) / 0.15)")
+                      }
+                      onMouseLeave={(e) =>
+                        (e.currentTarget.style.backgroundColor = "transparent")
+                      }
                     >
                       Continue anyway
                     </button>
