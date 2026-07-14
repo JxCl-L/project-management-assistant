@@ -54,7 +54,6 @@ const taskContentSchema = new Schema(
   }
 );
 
-taskContentSchema.index({ task: 1 }); // index on task field for faster queries
 
 const TaskContent = model("TaskContent", taskContentSchema); // "TaskContent" is the name of the collection in MongoDB
 
