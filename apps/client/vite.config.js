@@ -1,3 +1,4 @@
+/// <reference types="vitest" />
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import path from 'path'
@@ -25,5 +26,11 @@ export default defineConfig({
   // to pre-bundle and convert the CJS named exports to native ESM.
   optimizeDeps: {
     include: ["@pm/schemas", "@pm/permissions"],
+  },
+  test: {
+    environment: "jsdom",
+    globals: true,
+    setupFiles: ["./src/test/setup.js"],
+    css: false,
   },
 })
