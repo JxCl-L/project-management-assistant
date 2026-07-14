@@ -6,7 +6,7 @@
  * `chat.provider.js` picks one based on the classifier's output when the
  * request includes ?promptMode=routed.
  *
- * Class taxonomy (see classifyRetrieval.js):
+ * Class taxonomy (see classifyAnswerMode.js):
  *   FACT — query specifies the facts and how many. Strict quote-or-scoped-refusal.
  *   LIST — query asks for items matching a pattern (count unspecified). Bullets, cite each.
  *   OPEN — query has no defined answer shape. Structured summary.
@@ -60,20 +60,20 @@ const ROUTED_BY_CLASS = {
  * Pick the trailing instruction block for a chat request.
  *
  * @param {"baseline" | "routed"} promptMode
- * @param {"FACT" | "LIST" | "OPEN" | null} retrievalClass
+ * @param {"FACT" | "LIST" | "OPEN" | null} answerMode
  * @returns {string} The instructions to append after the project context.
  *
  * Falls back to BASELINE_INSTRUCTIONS when:
  *   - promptMode is "baseline" (explicit opt-out)
  *   - promptMode is "routed" but classifier returned null (auth/timeout/parse fail)
- *   - retrievalClass is an unrecognised value (defensive)
+ *   - answerMode is an unrecognised value (defensive)
  * In all of these the caller observes byte-identical-to-old behavior, so a
  * routed request can never be worse than baseline.
  */
-function getAnswerInstructions(promptMode, retrievalClass) {
+function getAnswerInstructions(promptMode, answerMode) {
   if (promptMode !== "routed") return BASELINE_INSTRUCTIONS;
-  if (!retrievalClass) return BASELINE_INSTRUCTIONS;
-  return ROUTED_BY_CLASS[retrievalClass] || BASELINE_INSTRUCTIONS;
+  if (!answerMode) return BASELINE_INSTRUCTIONS;
+  return ROUTED_BY_CLASS[answerMode] || BASELINE_INSTRUCTIONS;
 }
 
 module.exports = {

@@ -5,8 +5,8 @@ const { matchedData } = require("express-validator");
 const { StatusCodes } = require("http-status-codes");
 const errorLogger = require("../../helpers/errorLogger.helper.js");
 const { getIO } = require("../../socket/io.js");
-const { scheduleEmbedding } = require("../../ai/embeddingDebouncer.js");
-const { generateTaskEmbeddings } = require("../../ai/generateTaskEmbeddings.js");
+const { scheduleEmbedding } = require("../../ai/embeddings/embeddingDebouncer.js");
+const { generateTaskEmbeddings } = require("../../ai/embeddings/generateTaskEmbeddings.js");
 
 async function updateTaskContentProvider(req, res) {
   const validatedData = matchedData(req);

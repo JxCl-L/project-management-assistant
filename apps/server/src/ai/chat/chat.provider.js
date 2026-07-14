@@ -1,5 +1,5 @@
 const { callAI, callAIStream, generateEmbedding } = require("../aiClient.js");
-const { classifyRetrievalClass } = require("../classifyRetrieval.js");
+const { classifyAnswerMode } = require("./classifyAnswerMode.js");
 const { getAnswerInstructions } = require("./answerPrompts.js");
 const Project = require("../../projects/project.schema.js");
 const Task = require("../../tasks/task.schema.js");
@@ -69,7 +69,7 @@ async function chatProvider(req, res) {
     const debug = req.query.debug === "true";
     // ?promptMode=baseline (default) uses the legacy answer-instruction block.
     // ?promptMode=routed picks one of three class-specific contracts
-    // (FACT/LIST/OPEN) based on classifyRetrievalClass's output.
+    // (FACT/LIST/OPEN) based on classifyAnswerMode's output.
     // If the classifier returned null (failure), routed silently falls back
     // to baseline so a routed request can never be worse than baseline.
     const promptMode = req.query.promptMode === "routed" ? "routed" : "baseline";
@@ -113,7 +113,7 @@ async function chatProvider(req, res) {
     // classifier, and starting to assemble project context. The frontend
     // shows "Analyzing your question…" while this runs.
     onStage("analyzing");
-    // Retrieval-mode classifier — kicked off here, after project existence
+    // Answer-mode classifier — kicked off here, after project existence
     // and membership are confirmed, so we never spend a classifier call on
     // 404/403 paths (auth probes, expired sessions, deleted projects). The
     // project+membership check is one round trip (~30-80ms); the classifier
@@ -121,14 +121,13 @@ async function chatProvider(req, res) {
     // members/tasks fetch, embedding, and retrieval below — wall-clock cost
     // approaches zero by the time we await it before the answer LLM call.
     // Stateless on purpose: only the latest user message, no history.
-    // Currently used only for telemetry/debug; prompt routing wires in next phase.
     const lastUserMessage = Array.isArray(messages)
       ? [...messages].reverse().find((m) => m.role === "user")
       : null;
     const classifyStart = lastUserMessage ? Date.now() : null;
-    const retrievalClassPromise = lastUserMessage
-      ? classifyRetrievalClass(lastUserMessage.content).catch((err) => {
-          errorLogger(`Retrieval-class classification failed: ${err.message}`, req, err);
+    const answerModePromise = lastUserMessage
+      ? classifyAnswerMode(lastUserMessage.content).catch((err) => {
+          errorLogger(`Answer-mode classification failed: ${err.message}`, req, err);
           return null;
         })
       : Promise.resolve(null);
@@ -390,10 +389,10 @@ async function chatProvider(req, res) {
     // Await classifier result (kicked off above, in parallel with retrieval)
     // Must happen BEFORE building systemPrompt so the answer-instruction
     // block can vary by class when ?promptMode=routed.
-    const retrievalClass = await retrievalClassPromise;
+    const answerMode = await answerModePromise;
     const classifyMs = classifyStart ? Date.now() - classifyStart : null;
 
-    const answerInstructions = getAnswerInstructions(promptMode, retrievalClass);
+    const answerInstructions = getAnswerInstructions(promptMode, answerMode);
 
     const systemPrompt = `You are a project management assistant for the project "${project.name}".
 ${project.description ? `Project description: ${project.description}` : ""}
@@ -423,11 +422,11 @@ ${answerInstructions}`;
           strategy,
           chunkFilter,
           retrieved: debugChunks,
-          retrievalClass,
+          answerMode,
           classifyMs,
           promptMode,
           // Resolved class actually used to pick the prompt (null + routed -> fell back to baseline)
-          promptClass: promptMode === "routed" && retrievalClass ? retrievalClass : "BASELINE",
+          promptClass: promptMode === "routed" && answerMode ? answerMode : "BASELINE",
           ...(hybridStats ? { hybrid: hybridStats } : {}),
         }
       : null;

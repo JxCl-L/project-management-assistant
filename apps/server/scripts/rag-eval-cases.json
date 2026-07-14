@@ -3,7 +3,7 @@
     "id": "A1",
     "category": "Specific time and duration facts",
     "expectedBehavior": "answerable",
-    "expectedRetrievalClass": "FACT",
+    "expectedAnswerMode": "FACT",
     "expectedTasks": [
       "Post-mortem: January 15, 2026 Production Outage"
     ],
@@ -82,7 +82,7 @@
     "id": "A2",
     "category": "Specific date facts",
     "expectedBehavior": "answerable",
-    "expectedRetrievalClass": "FACT",
+    "expectedAnswerMode": "FACT",
     "expectedTasks": [
       "API Rate Limiting — Design & Implementation"
     ],
@@ -118,7 +118,7 @@
     "id": "A3",
     "category": "Specific date facts",
     "expectedBehavior": "answerable",
-    "expectedRetrievalClass": "FACT",
+    "expectedAnswerMode": "FACT",
     "expectedTasks": [
       "Stripe Payment Integration — Developer Portal"
     ],
@@ -154,7 +154,7 @@
     "id": "A4",
     "category": "Specific date facts",
     "expectedBehavior": "answerable",
-    "expectedRetrievalClass": "FACT",
+    "expectedAnswerMode": "FACT",
     "expectedTasks": [
       "New Engineer Onboarding — Marcus Chen"
     ],
@@ -191,7 +191,7 @@
     "id": "B1",
     "category": "Specific numbers and metrics",
     "expectedBehavior": "answerable",
-    "expectedRetrievalClass": "FACT",
+    "expectedAnswerMode": "FACT",
     "expectedTasks": [
       "Search Index Performance Optimization"
     ],
@@ -252,7 +252,7 @@
     "id": "B2",
     "category": "Specific numbers and metrics",
     "expectedBehavior": "answerable",
-    "expectedRetrievalClass": "FACT",
+    "expectedAnswerMode": "FACT",
     "expectedTasks": [
       "GitHub Actions CI/CD Pipeline Upgrade"
     ],
@@ -292,7 +292,7 @@
     "id": "B3",
     "category": "Specific numbers and metrics",
     "expectedBehavior": "answerable",
-    "expectedRetrievalClass": "LIST",
+    "expectedAnswerMode": "LIST",
     "expectedTasks": [
       "Load Testing Report — February 2026"
     ],
@@ -501,7 +501,7 @@
     "id": "B4",
     "category": "Specific numbers and metrics",
     "expectedBehavior": "answerable",
-    "expectedRetrievalClass": "FACT",
+    "expectedAnswerMode": "FACT",
     "expectedTasks": [
       "Stripe Payment Integration — Developer Portal"
     ],
@@ -538,7 +538,7 @@
     "id": "C1",
     "category": "Person attribution",
     "expectedBehavior": "answerable",
-    "expectedRetrievalClass": "FACT",
+    "expectedAnswerMode": "FACT",
     "expectedTasks": [
       "Load Testing Report — February 2026"
     ],
@@ -574,7 +574,7 @@
     "id": "C2",
     "category": "Person attribution",
     "expectedBehavior": "unanswerable",
-    "expectedRetrievalClass": "FACT",
+    "expectedAnswerMode": "FACT",
     "expectedTasks": [
       "Auth Token Expiry Bug — Investigation & Fix"
     ],
@@ -611,7 +611,7 @@
     "id": "C3",
     "category": "Technical root cause",
     "expectedBehavior": "answerable",
-    "expectedRetrievalClass": "FACT",
+    "expectedAnswerMode": "FACT",
     "expectedTasks": [
       "Auth Token Expiry Bug — Investigation & Fix"
     ],
@@ -697,7 +697,7 @@
     "id": "D1",
     "category": "Multi-chunk within one task",
     "expectedBehavior": "summary",
-    "expectedRetrievalClass": "LIST",
+    "expectedAnswerMode": "LIST",
     "expectedTasks": [
       "Post-mortem: January 15, 2026 Production Outage"
     ],
@@ -998,7 +998,7 @@
     "id": "D2",
     "category": "Multi-chunk within one task",
     "expectedBehavior": "summary",
-    "expectedRetrievalClass": "LIST",
+    "expectedAnswerMode": "LIST",
     "expectedTasks": [
       "Post-mortem: January 15, 2026 Production Outage"
     ],
@@ -1130,7 +1130,7 @@
     "id": "D3",
     "category": "Multi-chunk within one task",
     "expectedBehavior": "summary",
-    "expectedRetrievalClass": "LIST",
+    "expectedAnswerMode": "LIST",
     "expectedTasks": [
       "New Engineer Onboarding — Marcus Chen"
     ],
@@ -1309,7 +1309,7 @@
     "id": "D4",
     "category": "Multi-chunk within one task",
     "expectedBehavior": "summary",
-    "expectedRetrievalClass": "LIST",
+    "expectedAnswerMode": "LIST",
     "expectedTasks": [
       "Load Testing Report — February 2026"
     ],
@@ -1474,7 +1474,7 @@
     "id": "F1",
     "category": "Edge case — no content needed",
     "expectedBehavior": "answerable",
-    "expectedRetrievalClass": "LIST",
+    "expectedAnswerMode": "LIST",
     "expectedTasks": [],
     "query": "Which tasks are currently in progress?",
     "groundTruth": "Six tasks have status 'inProgress': API Rate Limiting — Design & Implementation; Frontend Design System — Initial Setup; OpenAPI Documentation Rewrite; Mobile Responsive Redesign — Dashboard; Analytics Dashboard v2 — Design & Build; and Atlas Core Service Registry — Technical Design.",
@@ -1515,7 +1515,7 @@
     "id": "F2",
     "category": "Edge case — unanswerable",
     "expectedBehavior": "unanswerable",
-    "expectedRetrievalClass": "FACT",
+    "expectedAnswerMode": "FACT",
     "expectedTasks": [],
     "query": "What is the team's Figma file URL?",
     "groundTruth": "Not answerable from the seed data. Figma is referenced (Priya Sharma delivered Figma mockups/specs for the design system and the mobile redesign), but no Figma file URL appears anywhere in the seed.",
@@ -1525,7 +1525,7 @@
     "id": "F3",
     "category": "Edge case — vague query",
     "expectedBehavior": "summary",
-    "expectedRetrievalClass": "OPEN",
+    "expectedAnswerMode": "OPEN",
     "expectedTasks": [],
     "query": "Tell me about the project.",
     "groundTruth": "The project is 'Project Atlas', described as an 'Internal developer platform to streamline engineering workflows, CI/CD, monitoring, and team collaboration.' It was created by Alice Wang. Members: Alice Wang (manager), Bob Chen (editor), and Charlie Li (editor). It contains 21 tasks spanning planning, infrastructure, features, security, and operations.",
@@ -1535,7 +1535,7 @@
     "id": "F4",
     "category": "Edge case — false-positive detection",
     "expectedBehavior": "answerable",
-    "expectedRetrievalClass": "FACT",
+    "expectedAnswerMode": "FACT",
     "expectedTasks": [
       "Post-mortem: January 15, 2026 Production Outage"
     ],
@@ -1581,7 +1581,7 @@
     "id": "G1",
     "category": "Cross-task synthesis",
     "expectedBehavior": "multi_task_synthesis",
-    "expectedRetrievalClass": "LIST",
+    "expectedAnswerMode": "LIST",
     "expectedTasks": [
       "Search Index Performance Optimization",
       "GitHub Actions CI/CD Pipeline Upgrade",
@@ -1744,7 +1744,7 @@
     "id": "G2",
     "category": "Cross-task synthesis",
     "expectedBehavior": "multi_task_synthesis",
-    "expectedRetrievalClass": "LIST",
+    "expectedAnswerMode": "LIST",
     "expectedTasks": [
       "API Rate Limiting — Design & Implementation",
       "GitHub Actions CI/CD Pipeline Upgrade",
@@ -2045,7 +2045,7 @@
     "id": "H1",
     "category": "Long task — early facts",
     "expectedBehavior": "answerable",
-    "expectedRetrievalClass": "FACT",
+    "expectedAnswerMode": "FACT",
     "expectedTasks": [
       "Atlas Core Service Registry — Technical Design"
     ],
@@ -2173,7 +2173,7 @@
     "id": "H2",
     "category": "Long task — middle facts",
     "expectedBehavior": "answerable",
-    "expectedRetrievalClass": "FACT",
+    "expectedAnswerMode": "FACT",
     "expectedTasks": [
       "Atlas Core Service Registry — Technical Design"
     ],
@@ -2232,7 +2232,7 @@
     "id": "H3",
     "category": "Long task — deep retrieval",
     "expectedBehavior": "answerable",
-    "expectedRetrievalClass": "FACT",
+    "expectedAnswerMode": "FACT",
     "expectedTasks": [
       "Atlas Core Service Registry — Technical Design"
     ],
@@ -2291,7 +2291,7 @@
     "id": "H4",
     "category": "Long task — deep retrieval",
     "expectedBehavior": "answerable",
-    "expectedRetrievalClass": "LIST",
+    "expectedAnswerMode": "LIST",
     "expectedTasks": [
       "Atlas Core Service Registry — Technical Design"
     ],
@@ -2379,7 +2379,7 @@
     "id": "H5",
     "category": "Long task — deep retrieval",
     "expectedBehavior": "answerable",
-    "expectedRetrievalClass": "FACT",
+    "expectedAnswerMode": "FACT",
     "expectedTasks": [
       "Atlas Core Service Registry — Technical Design"
     ],

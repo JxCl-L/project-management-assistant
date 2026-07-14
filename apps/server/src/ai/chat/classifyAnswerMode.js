@@ -1,7 +1,12 @@
-const { callAI } = require("./aiClient.js");
+const { callAI } = require("../aiClient.js");
 
 /**
- * Retrieval-mode classifier.
+ * Answer-mode classifier.
+ *
+ * Runs on the user query and picks the SHAPE the generated answer should take
+ * (FACT / LIST / OPEN). It does not change what we retrieve — retrieval is the
+ * same across modes — so this is a generation-mode decision, not a retrieval
+ * one. Downstream, `answerPrompts.js` maps the class to a prompt template.
  *
  * Stateless on purpose: only sees the current query, no conversation history.
  * That keeps it fast, cheap, and cacheable. If we ever need history-aware
@@ -23,7 +28,7 @@ const { callAI } = require("./aiClient.js");
  * suppress content under strict quote-or-refuse).
  */
 
-const SYSTEM_PROMPT = `Classify the user query into one of three retrieval modes based on what the query itself reveals about the answer's shape.
+const SYSTEM_PROMPT = `Classify the user query into one of three answer modes based on what the query itself reveals about the answer's shape.
 
 - FACT: query specifies the facts AND how many. Each fact has a verifiable
   right answer.
@@ -68,7 +73,7 @@ Query: "Describe the team's setup." -> OPEN
 
 Return exactly one token: FACT, LIST, or OPEN. No other text.`;
 
-async function classifyRetrievalClass(query) {
+async function classifyAnswerMode(query) {
   if (!query || typeof query !== "string" || !query.trim()) {
     return "LIST";
   }
@@ -83,4 +88,4 @@ async function classifyRetrievalClass(query) {
   return match ? match[0] : "LIST";
 }
 
-module.exports = { classifyRetrievalClass };
+module.exports = { classifyAnswerMode };

@@ -222,11 +222,14 @@ src/
 │   │   ├── chat.provider.js          # RAG retrieval + LLM call
 │   │   ├── chat.router.js
 │   │   ├── chat.validator.js
-│   │   └── chat-rag-test.http        # Test queries with debug mode
-│   ├── aiClient.js                   # DeepSeek + OpenAI clients
-│   ├── chunker.js                    # Word-based sliding window chunker
-│   ├── embeddingDebouncer.js         # Debounces re-embedding on content saves
-│   └── generateTaskEmbeddings.js    # Generates chunked + single embeddings
+│   │   ├── chat-rag-test.http        # Test queries with debug mode
+│   │   ├── answerPrompts.js          # FACT/LIST/OPEN answer-instruction blocks
+│   │   └── classifyAnswerMode.js     # Picks FACT/LIST/OPEN answer shape from the query
+│   ├── embeddings/                   # Task-content embedding pipeline
+│   │   ├── chunker.js                # Word-based sliding window chunker
+│   │   ├── embeddingDebouncer.js     # Debounces re-embedding on content saves
+│   │   └── generateTaskEmbeddings.js # Generates chunked + single embeddings
+│   └── aiClient.js                   # DeepSeek + OpenAI clients
 ├── users/
 ├── projects/
 ├── projectMembers/
@@ -249,7 +252,7 @@ scripts/
 │   ├── rag-quality-html.js          #   Renders rag-quality-<tag>.json as an interactive matrix viewer
 │   ├── rag-quality-compare-html.js  #   Side-by-side viewer comparing two runs (e.g. baseline vs routed)
 │   ├── rag-retrieval-roadmap-html.js #  Standalone retrieval-optimization roadmap doc
-│   └── retrieval-classification/
+│   └── answer-mode-classification/
 │       └── rag-test-classifier.js   #   Standalone classifier validation
 │
 ├── results/                         # gitignored — eval outputs JSON + classifier results + reruns

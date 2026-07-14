@@ -1,7 +1,7 @@
-const { generateEmbedding } = require("./aiClient.js");
+const { generateEmbedding } = require("../aiClient.js");
 const { chunkText, getChunkConfigs } = require("./chunker.js");
-const TaskContent = require("../taskContent/taskContent.schema.js");
-const TaskChunkEmbedding = require("../taskContent/taskChunkEmbedding.schema.js");
+const TaskContent = require("../../taskContent/taskContent.schema.js");
+const TaskChunkEmbedding = require("../../taskContent/taskChunkEmbedding.schema.js");
 
 /**
  * Generates and saves both single-chunk and chunked embeddings for a task's content.
