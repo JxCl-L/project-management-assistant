@@ -616,6 +616,81 @@
     </tbody>
   </table>
 
+  <section style="margin: 32px 0 8px; padding: 20px 24px; background: white; border-radius: 10px; box-shadow: 0 1px 2px rgba(15,23,42,0.04); font-size: 13px; line-height: 1.6; color: #1e293b;">
+    <h2 style="font-size: 15px; font-weight: 700; margin: 0 0 10px; color: #0f172a;">Case study — B3 &amp; D3 regressions</h2>
+    <p style="margin: 0 0 14px; color: #334155;">
+      Both cells share the same failure shape: retrieval sufficiency is 100% (all gold-fact chunks made top-k), but the generated answer drops facts the baseline prompt happened to include. Diagnosis is <code style="background:#f1f5f9;padding:1px 5px;border-radius:3px;font-size:11px;">generation_partial</code> with root cause <code style="background:#f1f5f9;padding:1px 5px;border-radius:3px;font-size:11px;">multi_fact_drop</code>. Both entries are pre-registered in <code style="background:#f1f5f9;padding:1px 5px;border-radius:3px;font-size:11px;">rag-root-causes.js</code> — they are known-and-diagnosed, not surprises.
+    </p>
+
+    <h3 style="font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; color: #475569; margin: 18px 0 6px;">B3 · chunked@150/50 <span style="color: #94a3b8; font-weight: 500; text-transform: none; letter-spacing: 0;">(classified FACT)</span></h3>
+    <p style="margin: 0 0 8px; color: #475569;">
+      Query: <em>"What were the load test results at 500 concurrent users?"</em> — 8 gold facts.
+    </p>
+    <table style="border-collapse: collapse; margin: 0 0 12px; font-size: 12px; box-shadow: none; border-radius: 0; width: auto;">
+      <thead>
+        <tr>
+          <th style="text-align: left; padding: 5px 12px; background: #f8fafc; color: #475569; border-bottom: 1px solid #e2e8f0;">Fact</th>
+          <th style="padding: 5px 12px; background: #eff6ff; color: #1e40af; border-bottom: 1px solid #e2e8f0;">Baseline</th>
+          <th style="padding: 5px 12px; background: #eef2ff; color: #4338ca; border-bottom: 1px solid #e2e8f0;">Routed</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td style="padding: 4px 12px; border-bottom: 1px solid #f1f5f9;">P50 = 88ms</td><td style="text-align: center; border-bottom: 1px solid #f1f5f9; color: #16a34a; font-weight: 700;">✓</td><td style="text-align: center; border-bottom: 1px solid #f1f5f9; color: #dc2626; font-weight: 700;">✗</td></tr>
+        <tr><td style="padding: 4px 12px; border-bottom: 1px solid #f1f5f9;">P95 = 410ms</td><td style="text-align: center; border-bottom: 1px solid #f1f5f9; color: #16a34a; font-weight: 700;">✓</td><td style="text-align: center; border-bottom: 1px solid #f1f5f9; color: #dc2626; font-weight: 700;">✗</td></tr>
+        <tr><td style="padding: 4px 12px; border-bottom: 1px solid #f1f5f9;">P99 = 780ms</td><td style="text-align: center; border-bottom: 1px solid #f1f5f9; color: #16a34a; font-weight: 700;">✓</td><td style="text-align: center; border-bottom: 1px solid #f1f5f9; color: #dc2626; font-weight: 700;">✗</td></tr>
+        <tr><td style="padding: 4px 12px; border-bottom: 1px solid #f1f5f9;">Throughput 2,890 req/s</td><td style="text-align: center; border-bottom: 1px solid #f1f5f9; color: #16a34a; font-weight: 700;">✓</td><td style="text-align: center; border-bottom: 1px solid #f1f5f9; color: #16a34a; font-weight: 700;">✓</td></tr>
+        <tr><td style="padding: 4px 12px; border-bottom: 1px solid #f1f5f9;">Error rate 0.08%</td><td style="text-align: center; border-bottom: 1px solid #f1f5f9; color: #16a34a; font-weight: 700;">✓</td><td style="text-align: center; border-bottom: 1px solid #f1f5f9; color: #16a34a; font-weight: 700;">✓</td></tr>
+        <tr><td style="padding: 4px 12px; border-bottom: 1px solid #f1f5f9;">App-server CPU 78%</td><td style="text-align: center; border-bottom: 1px solid #f1f5f9; color: #16a34a; font-weight: 700;">✓</td><td style="text-align: center; border-bottom: 1px solid #f1f5f9; color: #16a34a; font-weight: 700;">✓</td></tr>
+        <tr><td style="padding: 4px 12px; border-bottom: 1px solid #f1f5f9;">RDS CPU 52%</td><td style="text-align: center; border-bottom: 1px solid #f1f5f9; color: #16a34a; font-weight: 700;">✓</td><td style="text-align: center; border-bottom: 1px solid #f1f5f9; color: #16a34a; font-weight: 700;">✓</td></tr>
+        <tr><td style="padding: 4px 12px;">/api/search P95 1,100ms</td><td style="text-align: center; color: #16a34a; font-weight: 700;">✓</td><td style="text-align: center; color: #16a34a; font-weight: 700;">✓</td></tr>
+      </tbody>
+    </table>
+    <p style="margin: 0 0 8px; color: #334155;">
+      <strong>Two layered causes.</strong>
+      <em>(1) Classifier misfire.</em> The gold <code style="background:#f1f5f9;padding:1px 5px;border-radius:3px;font-size:11px;">expectedAnswerMode</code> for this case is <code style="background:#f1f5f9;padding:1px 5px;border-radius:3px;font-size:11px;">LIST</code> (plural "results", no count quantifier), but the classifier tagged it FACT — the few-shot examples in <code style="background:#f1f5f9;padding:1px 5px;border-radius:3px;font-size:11px;">classifyAnswerMode.js</code> don't cover "plural-metric&nbsp;+&nbsp;quantified-condition" queries.
+      <em>(2) FACT contract's discipline.</em> Under <code style="background:#f1f5f9;padding:1px 5px;border-radius:3px;font-size:11px;">FACT_INSTRUCTIONS</code> the model treats "load test results" as one summary-shaped answer, keeps the five headline metrics (throughput, error, CPU, endpoint degradation) and drops the three latency percentiles as "detail". A LIST contract's "recall &gt; precision" rule would likely have retained all eight.
+    </p>
+
+    <h3 style="font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; color: #475569; margin: 22px 0 6px;">D3 · hybrid@150/25 <span style="color: #94a3b8; font-weight: 500; text-transform: none; letter-spacing: 0;">(classified LIST)</span></h3>
+    <p style="margin: 0 0 8px; color: #475569;">
+      Query: <em>"What was Marcus Chen's schedule on his first day and what issue did he run into with Docker?"</em> — 7 gold facts.
+    </p>
+    <table style="border-collapse: collapse; margin: 0 0 12px; font-size: 12px; box-shadow: none; border-radius: 0; width: auto;">
+      <thead>
+        <tr>
+          <th style="text-align: left; padding: 5px 12px; background: #f8fafc; color: #475569; border-bottom: 1px solid #e2e8f0;">Fact</th>
+          <th style="padding: 5px 12px; background: #eff6ff; color: #1e40af; border-bottom: 1px solid #e2e8f0;">Baseline</th>
+          <th style="padding: 5px 12px; background: #eef2ff; color: #4338ca; border-bottom: 1px solid #e2e8f0;">Routed</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td style="padding: 4px 12px; border-bottom: 1px solid #f1f5f9;">9:00 welcome call</td><td style="text-align: center; border-bottom: 1px solid #f1f5f9; color: #16a34a; font-weight: 700;">✓</td><td style="text-align: center; border-bottom: 1px solid #f1f5f9; color: #16a34a; font-weight: 700;">✓</td></tr>
+        <tr><td style="padding: 4px 12px; border-bottom: 1px solid #f1f5f9;">10:00 HR orientation</td><td style="text-align: center; border-bottom: 1px solid #f1f5f9; color: #16a34a; font-weight: 700;">✓</td><td style="text-align: center; border-bottom: 1px solid #f1f5f9; color: #16a34a; font-weight: 700;">✓</td></tr>
+        <tr><td style="padding: 4px 12px; border-bottom: 1px solid #f1f5f9;">11:00 dev env with Bob</td><td style="text-align: center; border-bottom: 1px solid #f1f5f9; color: #16a34a; font-weight: 700;">✓</td><td style="text-align: center; border-bottom: 1px solid #f1f5f9; color: #16a34a; font-weight: 700;">✓</td></tr>
+        <tr><td style="padding: 4px 12px; border-bottom: 1px solid #f1f5f9;">2:00 codebase walkthrough</td><td style="text-align: center; border-bottom: 1px solid #f1f5f9; color: #16a34a; font-weight: 700;">✓</td><td style="text-align: center; border-bottom: 1px solid #f1f5f9; color: #16a34a; font-weight: 700;">✓</td></tr>
+        <tr><td style="padding: 4px 12px; border-bottom: 1px solid #f1f5f9;">4:00 check-in with Alice</td><td style="text-align: center; border-bottom: 1px solid #f1f5f9; color: #16a34a; font-weight: 700;">✓</td><td style="text-align: center; border-bottom: 1px solid #f1f5f9; color: #16a34a; font-weight: 700;">✓</td></tr>
+        <tr><td style="padding: 4px 12px; border-bottom: 1px solid #f1f5f9;">Docker Desktop 4.28+ / 4.26</td><td style="text-align: center; border-bottom: 1px solid #f1f5f9; color: #16a34a; font-weight: 700;">✓</td><td style="text-align: center; border-bottom: 1px solid #f1f5f9; color: #16a34a; font-weight: 700;">✓</td></tr>
+        <tr><td style="padding: 4px 12px;"><strong>Bob updated CONTRIBUTING.md</strong></td><td style="text-align: center; color: #16a34a; font-weight: 700;">✓</td><td style="text-align: center; color: #dc2626; font-weight: 700;">✗</td></tr>
+      </tbody>
+    </table>
+    <p style="margin: 0 0 8px; color: #334155;">
+      <strong>Single cause: over-literal LIST discipline.</strong> The classifier tagged this LIST correctly. The user asked what issue Marcus <em>ran into</em> — the CONTRIBUTING.md update is the <em>resolution</em>, not the issue itself. Under <code style="background:#f1f5f9;padding:1px 5px;border-radius:3px;font-size:11px;">LIST_INSTRUCTIONS</code>' "quote verbatim, don't invent items" the model treats the follow-up action as out of scope. The chattier baseline prompt ("be concise and helpful") happens to pull it in as related context.
+    </p>
+
+    <h3 style="font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; color: #475569; margin: 22px 0 6px;">Common pattern &amp; suggested fixes</h3>
+    <p style="margin: 0 0 8px; color: #334155;">
+      Routed prompts are <em>more disciplined</em>, and that discipline is what recovers C2, H4, and B1 from baseline regressions. The same discipline over-tightens on <strong>multi-value or aftermath-adjacent</strong> facts — B3 and D3 are the price of that trade-off, not a failure of the routing mechanism.
+    </p>
+    <ul style="margin: 0 0 4px 22px; padding: 0; color: #334155;">
+      <li style="margin-bottom: 4px;">
+        <strong>B3 (high value):</strong> extend <code style="background:#f1f5f9;padding:1px 5px;border-radius:3px;font-size:11px;">classifyAnswerMode.js</code>' few-shot with plural-metric&nbsp;+&nbsp;quantified-condition examples so "results at N users" routes to LIST.
+      </li>
+      <li>
+        <strong>D3 (lower value):</strong> add a LIST rule such as "when the question is about an issue/problem/incident, include the resolution or follow-up action if it appears in the retrieved context." Watch precision on adjacent cases before shipping.
+      </li>
+    </ul>
+  </section>
+
   <div id="scrim"></div>
   <aside id="drawer">
     <button class="close" id="close-drawer" title="Close">×</button>
