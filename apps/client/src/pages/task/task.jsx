@@ -78,7 +78,7 @@ export default function Task() {
 
   function handleDelete() {
     deleteTask({ projectId, taskId }, {
-      onSuccess: () => navigate(-1),
+      onSuccess: () => navigate(`/projects/${projectId}/tasks`),
     });
   }
 

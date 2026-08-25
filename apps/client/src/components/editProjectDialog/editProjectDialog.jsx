@@ -31,6 +31,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { UpdateProjectSchema } from "@pm/schemas";
 import { useForm } from "react-hook-form";
 import { useEffect, useState } from "react";
+import { useNavigate, useLocation } from "react-router";
 import { useUpdateProject } from "@/hooks/useUpdateProject.hook.js";
 import { useDeleteProject } from "@/hooks/useDeleteProject.hook.js";
 import { useToast } from "@/hooks/use-toast.js";
@@ -39,6 +40,8 @@ import { Trash2 } from "lucide-react";
 export function EditProjectDialog({ open, onOpenChange, project }) {
   const [showDeleteAlert, setShowDeleteAlert] = useState(false);
   const { toast } = useToast();
+  const navigate = useNavigate();
+  const location = useLocation();
 
   const {
     mutate: updateProject,
@@ -89,6 +92,12 @@ export function EditProjectDialog({ open, onOpenChange, project }) {
       form.reset();
       onOpenChange(false);
       setShowDeleteAlert(false);
+      // If the current page is a sub-route of the deleted project (tasks
+      // view, task detail, etc.), it would 403 on the next fetch. Bounce
+      // out. If the user deleted from the /projects list, stay put.
+      if (project?._id && location.pathname.startsWith(`/projects/${project._id}`)) {
+        navigate("/projects");
+      }
     } else if (isDeleteError) {
       toast({
         title: "Project deletion failed",
@@ -96,7 +105,7 @@ export function EditProjectDialog({ open, onOpenChange, project }) {
         variant: "destructive",
       });
     }
-  }, [isDeleteSuccess, isDeleteError, toast, form, onOpenChange]);
+  }, [isDeleteSuccess, isDeleteError, toast, form, onOpenChange, project?._id, location.pathname, navigate]);
 
   const handleSubmit = (values) => {
     updateProject({ _id: project._id, ...values });
