@@ -1,22 +1,19 @@
-# Deps (root-level workspace install)
 node_modules/
-
-# OS / editor
 .DS_Store
-Thumbs.db
-.idea/
-.vscode/
-*.swp
-*.swo
-
-# Env
+*.log
 .env
 .env.local
-.env.*.local
+.vscode/
+.idea/
 
-# Logs
-*.log
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-pnpm-debug.log*
+# Claude Code local settings
+.claude/
+
+# Per-app .env variants live in apps/*/.gitignore but pin the common ones
+# at the root too so a stray .env at the workspace root can't leak in.
+.env.development
+.env.development.local
+.env.production
+.env.production.local
+.env.staging
+.env.test.local
