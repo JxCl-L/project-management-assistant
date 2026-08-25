@@ -14,53 +14,45 @@ function getOpenAIClient() {
   return openaiClient;
 }
 
-async function callAI(messages, maxTokens = 600) {
+const PRIMARY = { client: deepseekClient, model: "deepseek-chat" };
+const FALLBACK = {
+  get client() {
+    return getOpenAIClient();
+  },
+  model: "gpt-4o-mini",
+};
+
+// Try DeepSeek first, fall back to OpenAI on error.
+// For streaming (stream:true), fallback only fires if the initial request
+// throws BEFORE any tokens arrive — once tokens are flowing, mid-stream
+// errors propagate so the caller can emit a clean error event instead of
+// silently swapping providers.
+async function withFallback(makeRequest) {
   try {
-    const response = await deepseekClient.chat.completions.create({
-      model: "deepseek-chat",
-      messages,
-      max_tokens: maxTokens,
-    });
-    return response.choices[0].message.content;
-  } catch (deepseekError) {
-    const response = await getOpenAIClient().chat.completions.create({
-      model: "gpt-4o-mini",
-      messages,
-      max_tokens: maxTokens,
-    });
-    return response.choices[0].message.content;
+    return await makeRequest(PRIMARY);
+  } catch {
+    return await makeRequest(FALLBACK);
   }
-  // TEMP: using gpt-4o to test reasoning on H4 — revert to deepseek-chat after
-  // const response = await getOpenAIClient().chat.completions.create({
-  //   model: "gpt-4o",
-  //   messages,
-  //   max_tokens: maxTokens,
-  // });
-  // return response.choices[0].message.content;
+}
+
+async function callAI(messages, maxTokens = 600) {
+  const response = await withFallback(({ client, model }) =>
+    client.chat.completions.create({ model, messages, max_tokens: maxTokens }),
+  );
+  return response.choices[0].message.content;
 }
 
 // Streaming variant: yields token strings as the model produces them.
-// Use with `for await (const token of callAIStream(...))`. Falls back to
-// OpenAI if DeepSeek fails BEFORE the first token; once tokens have started
-// flowing, mid-stream errors propagate so the caller can emit a clean SSE
-// error event instead of silently swapping providers.
+// Use with `for await (const token of callAIStream(...))`.
 async function* callAIStream(messages, maxTokens = 600) {
-  let stream;
-  try {
-    stream = await deepseekClient.chat.completions.create({
-      model: "deepseek-chat",
+  const stream = await withFallback(({ client, model }) =>
+    client.chat.completions.create({
+      model,
       messages,
       max_tokens: maxTokens,
       stream: true,
-    });
-  } catch (deepseekError) {
-    stream = await getOpenAIClient().chat.completions.create({
-      model: "gpt-4o-mini",
-      messages,
-      max_tokens: maxTokens,
-      stream: true,
-    });
-  }
+    }),
+  );
   for await (const chunk of stream) {
     const token = chunk.choices?.[0]?.delta?.content;
     if (token) yield token;
