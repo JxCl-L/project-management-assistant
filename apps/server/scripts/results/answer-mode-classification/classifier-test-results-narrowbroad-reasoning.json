@@ -1,0 +1,262 @@
+[
+  {
+    "id": "A1",
+    "query": "What time did the January 15 outage start and how long did it last?",
+    "expected": "FACT",
+    "predicted": "FACT",
+    "reason": "Asks for two specific values (start time and duration) with precise date anchor.",
+    "correct": true,
+    "elapsedMs": 2482,
+    "error": null
+  },
+  {
+    "id": "A2",
+    "query": "When was the API rate limiting design review meeting held?",
+    "expected": "FACT",
+    "predicted": "FACT",
+    "reason": "The query asks for a specific date/time of a named meeting.",
+    "correct": true,
+    "elapsedMs": 1266,
+    "error": null
+  },
+  {
+    "id": "A3",
+    "query": "What date did the Stripe integration go live in production?",
+    "expected": "FACT",
+    "predicted": "FACT",
+    "reason": "Asks for a specific date.",
+    "correct": true,
+    "elapsedMs": 1329,
+    "error": null
+  },
+  {
+    "id": "A4",
+    "query": "When did Marcus Chen's first PR get merged?",
+    "expected": "FACT",
+    "predicted": "FACT",
+    "reason": "The query asks for a specific date/timestamp ('when') for a single event (first PR merge).",
+    "correct": true,
+    "elapsedMs": 1527,
+    "error": null
+  },
+  {
+    "id": "B1",
+    "query": "What was the P95 search latency before and after the fix in January?",
+    "expected": "FACT",
+    "predicted": "FACT",
+    "reason": "Asks for specific numeric values (P95 latency) for two defined time points.",
+    "correct": true,
+    "elapsedMs": 1443,
+    "error": null
+  },
+  {
+    "id": "B2",
+    "query": "How much did the Jenkins to GitHub Actions migration save per year?",
+    "expected": "FACT",
+    "predicted": "FACT",
+    "reason": "The query asks for a specific yearly cost saving number ('how much... per year').",
+    "correct": true,
+    "elapsedMs": 1366,
+    "error": null
+  },
+  {
+    "id": "B3",
+    "query": "What were the load test results at 500 concurrent users?",
+    "expected": "NARROW",
+    "predicted": "NARROW",
+    "reason": "The query is bounded to a specific named artifact (the load test) with a condition (at 500 concurrent users) and seeks a specific set of results.",
+    "correct": true,
+    "elapsedMs": 1600,
+    "error": null
+  },
+  {
+    "id": "B4",
+    "query": "How many subscriptions were created on the first day Stripe launched?",
+    "expected": "FACT",
+    "predicted": "FACT",
+    "reason": "The query asks for a specific numeric count (\"how many\") tied to a precise date (\"the first day Stripe launched\").",
+    "correct": true,
+    "elapsedMs": 1484,
+    "error": null
+  },
+  {
+    "id": "C1",
+    "query": "Who ran the load testing in February and what tool did they use?",
+    "expected": "FACT",
+    "predicted": "BROAD",
+    "reason": "The query asks for a person and a tool over a month-long period, which spans multiple potential sources beyond a single bounded artifact.",
+    "correct": false,
+    "elapsedMs": 1391,
+    "error": null
+  },
+  {
+    "id": "C2",
+    "query": "Who identified the root cause of the auth token expiry bug and when?",
+    "expected": "FACT",
+    "predicted": "FACT",
+    "reason": "Asks for a specific person and a specific date or time.",
+    "correct": true,
+    "elapsedMs": 1428,
+    "error": null
+  },
+  {
+    "id": "C3",
+    "query": "What was the root cause of the auth token expiry bug?",
+    "expected": "FACT",
+    "predicted": "NARROW",
+    "reason": "The query refers to a specific named bug, bounding the answer to that artifact.",
+    "correct": false,
+    "elapsedMs": 1280,
+    "error": null
+  },
+  {
+    "id": "D1",
+    "query": "Walk me through the full timeline of the January 15 outage from alert to full recovery.",
+    "expected": "NARROW",
+    "predicted": "BROAD",
+    "reason": "The query asks for a full timeline spanning the entire event without pinning to one specific value or narrow source.",
+    "correct": false,
+    "elapsedMs": 1587,
+    "error": null
+  },
+  {
+    "id": "D2",
+    "query": "What action items came out of the January 15 outage post-mortem?",
+    "expected": "NARROW",
+    "predicted": "NARROW",
+    "reason": "The query is anchored to a specific named event (the January 15 outage post-mortem).",
+    "correct": true,
+    "elapsedMs": 1456,
+    "error": null
+  },
+  {
+    "id": "D3",
+    "query": "What was Marcus Chen's schedule on his first day and what issue did he run into with Docker?",
+    "expected": "NARROW",
+    "predicted": "NARROW",
+    "reason": "The query is bounded to a specific named event (Marcus Chen's first day) and a specific artifact (the Docker issue).",
+    "correct": true,
+    "elapsedMs": 1616,
+    "error": null
+  },
+  {
+    "id": "D4",
+    "query": "What were the load test results and what bottlenecks were found?",
+    "expected": "NARROW",
+    "predicted": "BROAD",
+    "reason": "The query asks for both results and bottlenecks without a specific named anchor, spanning an entire activity.",
+    "correct": false,
+    "elapsedMs": 1416,
+    "error": null
+  },
+  {
+    "id": "F1",
+    "query": "Which tasks are currently in progress?",
+    "expected": "BROAD",
+    "predicted": "BROAD",
+    "reason": "Query asks for tasks by status with no named anchor, spanning the whole project.",
+    "correct": true,
+    "elapsedMs": 1476,
+    "error": null
+  },
+  {
+    "id": "F2",
+    "query": "What is the team's Figma file URL?",
+    "expected": "FACT",
+    "predicted": "FACT",
+    "reason": "The query asks for a single specific value (a URL).",
+    "correct": true,
+    "elapsedMs": 1406,
+    "error": null
+  },
+  {
+    "id": "F3",
+    "query": "Tell me about the project.",
+    "expected": "BROAD",
+    "predicted": "BROAD",
+    "reason": "The query has no named anchor and asks for a general description of the entire project.",
+    "correct": true,
+    "elapsedMs": 1535,
+    "error": null
+  },
+  {
+    "id": "F4",
+    "query": "How long was the January 15 outage?",
+    "expected": "FACT",
+    "predicted": "FACT",
+    "reason": "The query asks for a specific duration ('how long') tied to a named outage.",
+    "correct": true,
+    "elapsedMs": 1364,
+    "error": null
+  },
+  {
+    "id": "G1",
+    "query": "What performance improvements were made this quarter?",
+    "expected": "BROAD",
+    "predicted": "BROAD",
+    "reason": "The query spans an entire quarter, making it unbounded to a single specific task or artifact.",
+    "correct": true,
+    "elapsedMs": 1605,
+    "error": null
+  },
+  {
+    "id": "G2",
+    "query": "What did Bob Chen work on in February?",
+    "expected": "BROAD",
+    "predicted": "BROAD",
+    "reason": "The query spans a whole month and a person, with no single named anchor.",
+    "correct": true,
+    "elapsedMs": 1474,
+    "error": null
+  },
+  {
+    "id": "H1",
+    "query": "When was the Atlas Core service registry kickoff meeting and who attended?",
+    "expected": "FACT",
+    "predicted": "FACT",
+    "reason": "The query asks for specific values (date and names) and is pinned by 'when' and 'who'.",
+    "correct": true,
+    "elapsedMs": 1598,
+    "error": null
+  },
+  {
+    "id": "H2",
+    "query": "What is the Redis cache TTL and what is the maximum number of services that can be registered?",
+    "expected": "FACT",
+    "predicted": "FACT",
+    "reason": "The query asks for two specific values (TTL and a maximum count).",
+    "correct": true,
+    "elapsedMs": 1435,
+    "error": null
+  },
+  {
+    "id": "H3",
+    "query": "What is the estimated monthly cost of the service registry and who approved it?",
+    "expected": "FACT",
+    "predicted": "BROAD",
+    "reason": "The query asks for both a cost estimate and the approval authority, spanning two distinct pieces of information across different domains.",
+    "correct": false,
+    "elapsedMs": 1534,
+    "error": null
+  },
+  {
+    "id": "H4",
+    "query": "What technologies were evaluated and rejected for the service registry, and why?",
+    "expected": "NARROW",
+    "predicted": "NARROW",
+    "reason": "The query is bounded to a specific named artifact (the service registry) and asks for a list of technologies evaluated and their rejection reasons from that bounded source.",
+    "correct": true,
+    "elapsedMs": 1502,
+    "error": null
+  },
+  {
+    "id": "H5",
+    "query": "What are the three migration waves for onboarding existing services, and what are their dates?",
+    "expected": "NARROW",
+    "predicted": "FACT",
+    "reason": "The query asks for specific dates for each of the three named items ('migration waves').",
+    "correct": false,
+    "elapsedMs": 1369,
+    "error": null
+  }
+]

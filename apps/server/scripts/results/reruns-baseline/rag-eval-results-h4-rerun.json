@@ -1,0 +1,395 @@
+{
+  "generatedAt": "2026-06-03T13:06:32.457Z",
+  "projectId": "6a1eb986af94cb7d85867caa",
+  "cells": [
+    {
+      "caseId": "H4",
+      "category": "Long task — deep retrieval",
+      "behavior": "answerable",
+      "query": "What technologies were evaluated and rejected for the service registry, and why?",
+      "variantKey": "fullcontext",
+      "strategy": "fullcontext",
+      "chunkConfig": null,
+      "ms": 2980,
+      "error": null,
+      "answer": "For the Atlas Core service registry, two technologies were evaluated and rejected:\n\n1. **etcd** – rejected due to **operational complexity**.\n2. **Consul** – rejected due to **licensing cost at scale**.\n\nThe final decision was to use **MongoDB** as the primary datastore (with a Redis cache layer), which is consistent with the existing Atlas stack.",
+      "retrieved": [
+        {
+          "task": "Q1 Sprint Planning & Roadmap Review",
+          "words": 320
+        },
+        {
+          "task": "API Rate Limiting — Design & Implementation",
+          "words": 294
+        },
+        {
+          "task": "PostgreSQL Schema Migration — v2.3",
+          "words": 279
+        },
+        {
+          "task": "Auth Token Expiry Bug — Investigation & Fix",
+          "words": 317
+        },
+        {
+          "task": "Search Index Performance Optimization",
+          "words": 313
+        },
+        {
+          "task": "Code Review Standards & Team Guidelines",
+          "words": 304
+        },
+        {
+          "task": "GitHub Actions CI/CD Pipeline Upgrade",
+          "words": 296
+        },
+        {
+          "task": "Frontend Design System — Initial Setup",
+          "words": 304
+        },
+        {
+          "task": "Q1 Security Audit — External Review",
+          "words": 301
+        },
+        {
+          "task": "OpenAPI Documentation Rewrite",
+          "words": 292
+        },
+        {
+          "task": "Stripe Payment Integration — Developer Portal",
+          "words": 277
+        },
+        {
+          "task": "Load Testing Report — February 2026",
+          "words": 337
+        },
+        {
+          "task": "New Engineer Onboarding — Marcus Chen",
+          "words": 322
+        },
+        {
+          "task": "Q2 Stakeholder Demo Preparation",
+          "words": 356
+        },
+        {
+          "task": "Bug Triage Session — March 3, 2026",
+          "words": 338
+        },
+        {
+          "task": "Mobile Responsive Redesign — Dashboard",
+          "words": 326
+        },
+        {
+          "task": "Analytics Dashboard v2 — Design & Build",
+          "words": 333
+        },
+        {
+          "task": "Sentry Error Monitoring — Configuration & Alerting",
+          "words": 379
+        },
+        {
+          "task": "Production Deployment Runbook — Update",
+          "words": 375
+        },
+        {
+          "task": "Post-mortem: January 15, 2026 Production Outage",
+          "words": 447
+        },
+        {
+          "task": "Atlas Core Service Registry — Technical Design",
+          "words": 1428
+        }
+      ],
+      "hybrid": null
+    },
+    {
+      "caseId": "H4",
+      "category": "Long task — deep retrieval",
+      "behavior": "answerable",
+      "query": "What technologies were evaluated and rejected for the service registry, and why?",
+      "variantKey": "single",
+      "strategy": "single",
+      "chunkConfig": null,
+      "ms": 4602,
+      "error": null,
+      "answer": "Based on the provided context, two technologies were evaluated and rejected for the Atlas Core service registry:\n\n1.  **etcd**: Rejected due to **operational complexity**.\n2.  **Consul**: Rejected due to **licensing cost at scale**.\n\nThese evaluations were finalized during the design kickoff meeting on February 10, 2026.",
+      "retrieved": [
+        {
+          "task": "Atlas Core Service Registry — Technical Design",
+          "score": 0.7353757619857788,
+          "preview": "The Atlas Core service registry is the foundational component of the Atlas internal developer platform. A design kickoff meeting was..."
+        },
+        {
+          "task": "API Rate Limiting — Design & Implementation",
+          "score": 0.6558781266212463,
+          "preview": "A design review for the API rate limiting feature was held on February 3, 2026 at 11:00 AM PST. Attendees:..."
+        },
+        {
+          "task": "Mobile Responsive Redesign — Dashboard",
+          "score": 0.6406094431877136,
+          "preview": "The mobile responsive redesign was initiated following a user survey conducted February 10–14, 2026 (87 respondents). 34% of respondents reported..."
+        }
+      ],
+      "hybrid": null
+    },
+    {
+      "caseId": "H4",
+      "category": "Long task — deep retrieval",
+      "behavior": "answerable",
+      "query": "What technologies were evaluated and rejected for the service registry, and why?",
+      "variantKey": "chunked@150/50",
+      "strategy": "chunked",
+      "chunkConfig": "150:50",
+      "ms": 4135,
+      "error": null,
+      "answer": "Based on the provided context, two technologies were evaluated and rejected for the service registry:\n\n1. **etcd** — Rejected due to **operational complexity**.\n2. **Consul** — Rejected due to **licensing cost at scale**.\n\nAdditionally, **gRPC** was evaluated for the communication protocol and rejected because the majority of Atlas services are Node.js-based, and the Node.js gRPC ecosystem requires native bindings that complicate Docker builds. REST over HTTPS was chosen instead.",
+      "retrieved": [
+        {
+          "task": "Atlas Core Service Registry — Technical Design",
+          "chunkIndex": 2,
+          "score": 0.7694864869117737,
+          "preview": "was finalised on February 10, 2026 after evaluating etcd (rejected: operational complexity) and Consul (rejected: licensing cost at scale). Architecture..."
+        },
+        {
+          "task": "Atlas Core Service Registry — Technical Design",
+          "chunkIndex": 1,
+          "score": 0.7690348625183105,
+          "preview": "services exist, what versions are deployed, which teams own them, or whether they are healthy. Engineers discover service endpoints through..."
+        },
+        {
+          "task": "Atlas Core Service Registry — Technical Design",
+          "chunkIndex": 8,
+          "score": 0.7674713134765625,
+          "preview": "at 10:00 AM PST during the standard maintenance window. A rollback plan (drop the `serviceregistrations` collection and remove the API..."
+        },
+        {
+          "task": "Atlas Core Service Registry — Technical Design",
+          "chunkIndex": 10,
+          "score": 0.7502106428146362,
+          "preview": "(SLA: under 50ms); (3) Service health overview — count of healthy vs degraded vs unreachable services over time. PagerDuty alerts..."
+        },
+        {
+          "task": "Atlas Core Service Registry — Technical Design",
+          "chunkIndex": 9,
+          "score": 0.7479361295700073,
+          "preview": "the registry expose a WebSocket stream for real-time status updates, or is polling (every 30 seconds from the dashboard) sufficient..."
+        },
+        {
+          "task": "Atlas Core Service Registry — Technical Design",
+          "chunkIndex": 7,
+          "score": 0.7479358911514282,
+          "preview": "(service list, health status badges, team filter). Bob sets up the production MongoDB indexes: `{ serviceId: 1 }` unique, `{..."
+        },
+        {
+          "task": "Atlas Core Service Registry — Technical Design",
+          "chunkIndex": 12,
+          "score": 0.7466068863868713,
+          "preview": "This is achieved through: (1) two app server replicas behind the Atlas load balancer with automatic failover under 10 seconds;..."
+        },
+        {
+          "task": "Atlas Core Service Registry — Technical Design",
+          "chunkIndex": 11,
+          "score": 0.7447704076766968,
+          "preview": "Developer Experience, Data Pipelines, Payments, Identity — covering 18 services total. Wave 2 (April 15–30, 2026): the next 19 highest-traffic..."
+        }
+      ],
+      "hybrid": null
+    },
+    {
+      "caseId": "H4",
+      "category": "Long task — deep retrieval",
+      "behavior": "answerable",
+      "query": "What technologies were evaluated and rejected for the service registry, and why?",
+      "variantKey": "chunked@150/25",
+      "strategy": "chunked",
+      "chunkConfig": "150:25",
+      "ms": 2150,
+      "error": null,
+      "answer": "Two technologies were evaluated and rejected for the Atlas Core service registry:\n\n1. **etcd** — rejected due to operational complexity.\n2. **Consul** — rejected due to licensing cost at scale.\n\nThese decisions were finalised on February 10, 2026.",
+      "retrieved": [
+        {
+          "task": "Atlas Core Service Registry — Technical Design",
+          "chunkIndex": 1,
+          "score": 0.7685085535049438,
+          "preview": "pages. The registry will provide a single source of truth for service discovery, health status, and ownership metadata. Architecture decision..."
+        },
+        {
+          "task": "Atlas Core Service Registry — Technical Design",
+          "chunkIndex": 6,
+          "score": 0.7600997686386108,
+          "preview": "– March 31, 2026): end-to-end testing with 5 pilot teams (Platform Infrastructure, Developer Experience, Data Pipelines, Payments, and Identity). Each..."
+        },
+        {
+          "task": "Atlas Core Service Registry — Technical Design",
+          "chunkIndex": 7,
+          "score": 0.7564566135406494,
+          "preview": "favours strict semver for queryability; Bob prefers free-form to avoid blocking teams with non-standard versioning. Decision deferred to the February..."
+        },
+        {
+          "task": "Atlas Core Service Registry — Technical Design",
+          "chunkIndex": 8,
+          "score": 0.7502106428146362,
+          "preview": "(SLA: under 50ms); (3) Service health overview — count of healthy vs degraded vs unreachable services over time. PagerDuty alerts..."
+        },
+        {
+          "task": "Atlas Core Service Registry — Technical Design",
+          "chunkIndex": 3,
+          "score": 0.7443529963493347,
+          "preview": "maximum 2KB for the metadata object, maximum 80 characters for service name, heartbeat interval must be between 10 seconds and..."
+        },
+        {
+          "task": "Atlas Core Service Registry — Technical Design",
+          "chunkIndex": 0,
+          "score": 0.7443267703056335,
+          "preview": "The Atlas Core service registry is the foundational component of the Atlas internal developer platform. A design kickoff meeting was..."
+        },
+        {
+          "task": "Atlas Core Service Registry — Technical Design",
+          "chunkIndex": 9,
+          "score": 0.7418906688690186,
+          "preview": "from load balancer logs. Wave 3 (May 1–15, 2026): remaining 10 services including legacy systems. Each team is responsible for..."
+        },
+        {
+          "task": "Atlas Core Service Registry — Technical Design",
+          "chunkIndex": 10,
+          "score": 0.7354491949081421,
+          "preview": "client will open after 5 consecutive connection failures and remain open for 30 seconds before retrying, during which the registry..."
+        }
+      ],
+      "hybrid": null
+    },
+    {
+      "caseId": "H4",
+      "category": "Long task — deep retrieval",
+      "behavior": "answerable",
+      "query": "What technologies were evaluated and rejected for the service registry, and why?",
+      "variantKey": "hybrid@150/50",
+      "strategy": "hybrid",
+      "chunkConfig": "150:50",
+      "ms": 2283,
+      "error": null,
+      "answer": "Based on the context, two technologies were evaluated and rejected:\n\n1. **etcd** — Rejected due to **operational complexity**.\n2. **Consul** — Rejected due to **licensing cost at scale**.\n\nBoth decisions were finalized on February 10, 2026. The final choices were MongoDB (with Redis cache) for storage and REST over HTTPS for the communication protocol.",
+      "retrieved": [
+        {
+          "task": "Atlas Core Service Registry — Technical Design",
+          "chunkIndex": 2,
+          "rrfScore": 0.0325,
+          "preview": "was finalised on February 10, 2026 after evaluating etcd (rejected: operational complexity) and Consul (rejected: licensing cost at scale). Architecture..."
+        },
+        {
+          "task": "Atlas Core Service Registry — Technical Design",
+          "chunkIndex": 1,
+          "rrfScore": 0.0325,
+          "preview": "services exist, what versions are deployed, which teams own them, or whether they are healthy. Engineers discover service endpoints through..."
+        },
+        {
+          "task": "Atlas Core Service Registry — Technical Design",
+          "chunkIndex": 8,
+          "rrfScore": 0.0304,
+          "preview": "at 10:00 AM PST during the standard maintenance window. A rollback plan (drop the `serviceregistrations` collection and remove the API..."
+        },
+        {
+          "task": "Atlas Core Service Registry — Technical Design",
+          "chunkIndex": 0,
+          "rrfScore": 0.0304,
+          "preview": "The Atlas Core service registry is the foundational component of the Atlas internal developer platform. A design kickoff meeting was..."
+        },
+        {
+          "task": "Atlas Core Service Registry — Technical Design",
+          "chunkIndex": 9,
+          "rrfScore": 0.0301,
+          "preview": "the registry expose a WebSocket stream for real-time status updates, or is polling (every 30 seconds from the dashboard) sufficient..."
+        },
+        {
+          "task": "Atlas Core Service Registry — Technical Design",
+          "chunkIndex": 12,
+          "rrfScore": 0.0301,
+          "preview": "This is achieved through: (1) two app server replicas behind the Atlas load balancer with automatic failover under 10 seconds;..."
+        },
+        {
+          "task": "Atlas Core Service Registry — Technical Design",
+          "chunkIndex": 11,
+          "rrfScore": 0.0286,
+          "preview": "Developer Experience, Data Pipelines, Payments, Identity — covering 18 services total. Wave 2 (April 15–30, 2026): the next 19 highest-traffic..."
+        },
+        {
+          "task": "Atlas Core Service Registry — Technical Design",
+          "chunkIndex": 13,
+          "rrfScore": 0.0286,
+          "preview": "— external customer impact is indirect. Cost analysis (prepared by Bob Chen on February 12, 2026): the service registry requires..."
+        }
+      ],
+      "hybrid": {
+        "vectorCount": 20,
+        "bm25Count": 20,
+        "bm25Errored": false
+      }
+    },
+    {
+      "caseId": "H4",
+      "category": "Long task — deep retrieval",
+      "behavior": "answerable",
+      "query": "What technologies were evaluated and rejected for the service registry, and why?",
+      "variantKey": "hybrid@150/25",
+      "strategy": "hybrid",
+      "chunkConfig": "150:25",
+      "ms": 2512,
+      "error": null,
+      "answer": "Two technologies were evaluated and rejected for the service registry:\n\n1. **etcd** — Rejected due to operational complexity.\n2. **Consul** — Rejected due to licensing cost at scale.\n\nThese decisions were finalized on February 10, 2026. (REST over HTTPS was ultimately chosen as the communication protocol; gRPC was also evaluated and rejected because the Node.js gRPC ecosystem requires native bindings that complicate Docker builds.)",
+      "retrieved": [
+        {
+          "task": "Atlas Core Service Registry — Technical Design",
+          "chunkIndex": 1,
+          "rrfScore": 0.0328,
+          "preview": "pages. The registry will provide a single source of truth for service discovery, health status, and ownership metadata. Architecture decision..."
+        },
+        {
+          "task": "Atlas Core Service Registry — Technical Design",
+          "chunkIndex": 0,
+          "rrfScore": 0.0313,
+          "preview": "The Atlas Core service registry is the foundational component of the Atlas internal developer platform. A design kickoff meeting was..."
+        },
+        {
+          "task": "Atlas Core Service Registry — Technical Design",
+          "chunkIndex": 7,
+          "rrfScore": 0.0308,
+          "preview": "favours strict semver for queryability; Bob prefers free-form to avoid blocking teams with non-standard versioning. Decision deferred to the February..."
+        },
+        {
+          "task": "Atlas Core Service Registry — Technical Design",
+          "chunkIndex": 10,
+          "rrfScore": 0.0301,
+          "preview": "client will open after 5 consecutive connection failures and remain open for 30 seconds before retrying, during which the registry..."
+        },
+        {
+          "task": "Atlas Core Service Registry — Technical Design",
+          "chunkIndex": 9,
+          "rrfScore": 0.0296,
+          "preview": "from load balancer logs. Wave 3 (May 1–15, 2026): remaining 10 services including legacy systems. Each team is responsible for..."
+        },
+        {
+          "task": "Atlas Core Service Registry — Technical Design",
+          "chunkIndex": 6,
+          "rrfScore": 0.0293,
+          "preview": "– March 31, 2026): end-to-end testing with 5 pilot teams (Platform Infrastructure, Developer Experience, Data Pipelines, Payments, and Identity). Each..."
+        },
+        {
+          "task": "Atlas Core Service Registry — Technical Design",
+          "chunkIndex": 8,
+          "rrfScore": 0.0291,
+          "preview": "(SLA: under 50ms); (3) Service health overview — count of healthy vs degraded vs unreachable services over time. PagerDuty alerts..."
+        },
+        {
+          "task": "Atlas Core Service Registry — Technical Design",
+          "chunkIndex": 4,
+          "rrfScore": 0.0282,
+          "preview": "(filter by owner), `status` (filter by health status), `tag` (filter by tag, supports multiple), `page` and `limit` (pagination, default limit..."
+        }
+      ],
+      "hybrid": {
+        "vectorCount": 20,
+        "bm25Count": 20,
+        "bm25Errored": false
+      }
+    }
+  ]
+}

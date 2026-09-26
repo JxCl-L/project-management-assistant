@@ -255,9 +255,9 @@ scripts/
 │   └── answer-mode-classification/
 │       └── rag-test-classifier.js   #   Standalone classifier validation
 │
-├── results/                         # gitignored — eval outputs JSON + classifier results + reruns
-├── reports/                         # gitignored — curated MD reports (manual analysis notes tracked via exception)
-└── viewers/                         # gitignored — generated HTML viewers
+├── results/                         # eval outputs JSON + classifier results + reruns
+├── reports/                         # hand-graded review reports + manual analysis notes
+└── viewers/                         # generated HTML viewers
 ```
 
 ### RAG quality evaluation pipeline
@@ -274,7 +274,7 @@ analyzers/rag-quality-html.js    → matrix viewer per run
 analyzers/rag-quality-compare-html.js  → side-by-side viewer comparing two runs
 ```
 
-Diagnoses produced: `success`, `boundary_split` (Type 2), `generation_miss/partial` (Type 1/5), `retrieval_miss_task` (Type 3), `metadata_hallucination` (Type 4), `metadata_only`, `open_ended`, `unanswerable`. Output files are gitignored — regenerable from the scripts.
+Diagnoses produced: `success`, `boundary_split` (Type 2), `generation_miss/partial` (Type 1/5), `retrieval_miss_task` (Type 3), `metadata_hallucination` (Type 4), `metadata_only`, `open_ended`, `unanswerable`. Outputs are committed as a record of each run and can be regenerated from the scripts.
 
 ## Role-Based Access
 

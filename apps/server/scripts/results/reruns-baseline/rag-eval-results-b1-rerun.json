@@ -1,0 +1,395 @@
+{
+  "generatedAt": "2026-06-03T13:52:00.736Z",
+  "projectId": "6a1eb986af94cb7d85867caa",
+  "cells": [
+    {
+      "caseId": "B1",
+      "category": "Specific numbers and metrics",
+      "behavior": "answerable",
+      "query": "What was the P95 search latency before and after the fix in January?",
+      "variantKey": "fullcontext",
+      "strategy": "fullcontext",
+      "chunkConfig": null,
+      "ms": 2117,
+      "error": null,
+      "answer": "Before the fix, the P95 search latency was **850ms**. After the fix (recreating the GIN index on January 24), the P95 dropped to **115ms**, which was back within the baseline range.",
+      "retrieved": [
+        {
+          "task": "Q1 Sprint Planning & Roadmap Review",
+          "words": 320
+        },
+        {
+          "task": "API Rate Limiting — Design & Implementation",
+          "words": 294
+        },
+        {
+          "task": "PostgreSQL Schema Migration — v2.3",
+          "words": 279
+        },
+        {
+          "task": "Auth Token Expiry Bug — Investigation & Fix",
+          "words": 317
+        },
+        {
+          "task": "Search Index Performance Optimization",
+          "words": 313
+        },
+        {
+          "task": "Code Review Standards & Team Guidelines",
+          "words": 304
+        },
+        {
+          "task": "GitHub Actions CI/CD Pipeline Upgrade",
+          "words": 296
+        },
+        {
+          "task": "Frontend Design System — Initial Setup",
+          "words": 304
+        },
+        {
+          "task": "Q1 Security Audit — External Review",
+          "words": 301
+        },
+        {
+          "task": "OpenAPI Documentation Rewrite",
+          "words": 292
+        },
+        {
+          "task": "Stripe Payment Integration — Developer Portal",
+          "words": 277
+        },
+        {
+          "task": "Load Testing Report — February 2026",
+          "words": 337
+        },
+        {
+          "task": "New Engineer Onboarding — Marcus Chen",
+          "words": 322
+        },
+        {
+          "task": "Q2 Stakeholder Demo Preparation",
+          "words": 356
+        },
+        {
+          "task": "Bug Triage Session — March 3, 2026",
+          "words": 338
+        },
+        {
+          "task": "Mobile Responsive Redesign — Dashboard",
+          "words": 326
+        },
+        {
+          "task": "Analytics Dashboard v2 — Design & Build",
+          "words": 333
+        },
+        {
+          "task": "Sentry Error Monitoring — Configuration & Alerting",
+          "words": 379
+        },
+        {
+          "task": "Production Deployment Runbook — Update",
+          "words": 375
+        },
+        {
+          "task": "Post-mortem: January 15, 2026 Production Outage",
+          "words": 447
+        },
+        {
+          "task": "Atlas Core Service Registry — Technical Design",
+          "words": 1428
+        }
+      ],
+      "hybrid": null
+    },
+    {
+      "caseId": "B1",
+      "category": "Specific numbers and metrics",
+      "behavior": "answerable",
+      "query": "What was the P95 search latency before and after the fix in January?",
+      "variantKey": "single",
+      "strategy": "single",
+      "chunkConfig": null,
+      "ms": 5476,
+      "error": null,
+      "answer": "Based on the \"Search Index Performance Optimization\" task details:\n\n- **Before fix (January 22 benchmark):** P95 = **870ms** (regressed from a baseline of 120ms)\n- **After fix (January 24 benchmark):** P95 = **115ms** (back within the baseline range of 120ms)",
+      "retrieved": [
+        {
+          "task": "Search Index Performance Optimization",
+          "score": 0.8213435411453247,
+          "preview": "A search latency regression was detected on January 17, 2026 via the Grafana dashboard. The P95 response time for the..."
+        },
+        {
+          "task": "Post-mortem: January 15, 2026 Production Outage",
+          "score": 0.6920920610427856,
+          "preview": "On January 15, 2026, the Atlas API was unavailable for 2 hours and 40 minutes (10:12 AM – 12:52 PM..."
+        },
+        {
+          "task": "Load Testing Report — February 2026",
+          "score": 0.6790288090705872,
+          "preview": "Load testing was conducted on February 12, 2026 against the staging environment (`staging.atlas.internal`), which mirrors production infrastructure (2x t3.large app..."
+        }
+      ],
+      "hybrid": null
+    },
+    {
+      "caseId": "B1",
+      "category": "Specific numbers and metrics",
+      "behavior": "answerable",
+      "query": "What was the P95 search latency before and after the fix in January?",
+      "variantKey": "chunked@150/50",
+      "strategy": "chunked",
+      "chunkConfig": "150:50",
+      "ms": 5498,
+      "error": null,
+      "answer": "Before the fix: **120ms** (baseline).  \nAfter the fix (January 24): **115ms** (P95 returned to baseline).",
+      "retrieved": [
+        {
+          "task": "Search Index Performance Optimization",
+          "chunkIndex": 2,
+          "score": 0.8363947868347168,
+          "preview": "= 88ms, P95 = 115ms, P99 = 178ms — back within baseline range. The Grafana alert was cleared at 7:15..."
+        },
+        {
+          "task": "Search Index Performance Optimization",
+          "chunkIndex": 0,
+          "score": 0.8262814283370972,
+          "preview": "A search latency regression was detected on January 17, 2026 via the Grafana dashboard. The P95 response time for the..."
+        },
+        {
+          "task": "Search Index Performance Optimization",
+          "chunkIndex": 1,
+          "score": 0.802851140499115,
+          "preview": "query showed a full table scan on the `documents` table (1.2M rows) despite an index on `content_tsv`. (2) The index..."
+        },
+        {
+          "task": "Post-mortem: January 15, 2026 Production Outage",
+          "chunkIndex": 2,
+          "score": 0.713289737701416,
+          "preview": "not recover because the Kubernetes readiness probes were still failing for old pods. Bob joined at 10:40 AM and identified..."
+        },
+        {
+          "task": "Post-mortem: January 15, 2026 Production Outage",
+          "chunkIndex": 1,
+          "score": 0.6950281858444214,
+          "preview": "that the January 15 deploy (released at 10:05 AM) included a file rename that was not reflected in the import..."
+        },
+        {
+          "task": "Load Testing Report — February 2026",
+          "chunkIndex": 1,
+          "score": 0.6814993023872375,
+          "preview": "rate: 0.02%. CPU on app servers: avg 34%, peak 51%. RDS CPU: avg 18%, peak 27%. All metrics within acceptable..."
+        },
+        {
+          "task": "Post-mortem: January 15, 2026 Production Outage",
+          "chunkIndex": 3,
+          "score": 0.675974428653717,
+          "preview": "factors: (1) the test environment does not start the metrics collector worker — the broken import was not caught by..."
+        },
+        {
+          "task": "Post-mortem: January 15, 2026 Production Outage",
+          "chunkIndex": 0,
+          "score": 0.6736100316047668,
+          "preview": "On January 15, 2026, the Atlas API was unavailable for 2 hours and 40 minutes (10:12 AM – 12:52 PM..."
+        }
+      ],
+      "hybrid": null
+    },
+    {
+      "caseId": "B1",
+      "category": "Specific numbers and metrics",
+      "behavior": "answerable",
+      "query": "What was the P95 search latency before and after the fix in January?",
+      "variantKey": "chunked@150/25",
+      "strategy": "chunked",
+      "chunkConfig": "150:25",
+      "ms": 3922,
+      "error": null,
+      "answer": "Based on the context, the P95 search latency **before the fix** (baseline) was **120ms**. After the fix on January 24, it returned to **115ms**, and with the additional Redis cache optimization on February 3, it was further reduced for cached queries.",
+      "retrieved": [
+        {
+          "task": "Search Index Performance Optimization",
+          "chunkIndex": 2,
+          "score": 0.8476454615592957,
+          "preview": "to 12ms for cached queries and brought average database load down by 31%. Action items from the fix: (1) add..."
+        },
+        {
+          "task": "Search Index Performance Optimization",
+          "chunkIndex": 0,
+          "score": 0.8262840509414673,
+          "preview": "A search latency regression was detected on January 17, 2026 via the Grafana dashboard. The P95 response time for the..."
+        },
+        {
+          "task": "Search Index Performance Optimization",
+          "chunkIndex": 1,
+          "score": 0.8116995096206665,
+          "preview": "— it had been created concurrently during the January 15 migration and failed partway through due to a lock timeout...."
+        },
+        {
+          "task": "Post-mortem: January 15, 2026 Production Outage",
+          "chunkIndex": 2,
+          "score": 0.7335284948348999,
+          "preview": "12:52 PM PST, P95 latency returned to baseline (< 200ms) as caches warmed. The metrics collector fix (PR #181) was..."
+        },
+        {
+          "task": "Post-mortem: January 15, 2026 Production Outage",
+          "chunkIndex": 1,
+          "score": 0.708612322807312,
+          "preview": "refactor in PR #178, the file `src/config/database.js` was renamed to `src/config/db.js`. The import in `src/app.js` was updated, but the import..."
+        },
+        {
+          "task": "Load Testing Report — February 2026",
+          "chunkIndex": 1,
+          "score": 0.6932651996612549,
+          "preview": "P50 = 88ms, P95 = 410ms, P99 = 780ms. Throughput: 2,890 requests/second. Error rate: 0.08%. App server CPU peaked at..."
+        },
+        {
+          "task": "Post-mortem: January 15, 2026 Production Outage",
+          "chunkIndex": 3,
+          "score": 0.685565710067749,
+          "preview": "pipeline for all entry point files (done January 16, PR #182); (2) Bob — add the metrics collector to the..."
+        },
+        {
+          "task": "Post-mortem: January 15, 2026 Production Outage",
+          "chunkIndex": 0,
+          "score": 0.6736176013946533,
+          "preview": "On January 15, 2026, the Atlas API was unavailable for 2 hours and 40 minutes (10:12 AM – 12:52 PM..."
+        }
+      ],
+      "hybrid": null
+    },
+    {
+      "caseId": "B1",
+      "category": "Specific numbers and metrics",
+      "behavior": "answerable",
+      "query": "What was the P95 search latency before and after the fix in January?",
+      "variantKey": "hybrid@150/50",
+      "strategy": "hybrid",
+      "chunkConfig": "150:50",
+      "ms": 1924,
+      "error": null,
+      "answer": "Based on the task details, the P95 search latency before the fix was **870ms** (measured January 22, 2026). After the fix (post-index recreation on January 24, 2026), the P95 returned to **115ms**, which was back within the baseline range.",
+      "retrieved": [
+        {
+          "task": "Search Index Performance Optimization",
+          "chunkIndex": 2,
+          "rrfScore": 0.0325,
+          "preview": "= 88ms, P95 = 115ms, P99 = 178ms — back within baseline range. The Grafana alert was cleared at 7:15..."
+        },
+        {
+          "task": "Search Index Performance Optimization",
+          "chunkIndex": 0,
+          "rrfScore": 0.0325,
+          "preview": "A search latency regression was detected on January 17, 2026 via the Grafana dashboard. The P95 response time for the..."
+        },
+        {
+          "task": "Search Index Performance Optimization",
+          "chunkIndex": 1,
+          "rrfScore": 0.0315,
+          "preview": "query showed a full table scan on the `documents` table (1.2M rows) despite an index on `content_tsv`. (2) The index..."
+        },
+        {
+          "task": "Post-mortem: January 15, 2026 Production Outage",
+          "chunkIndex": 2,
+          "rrfScore": 0.0306,
+          "preview": "not recover because the Kubernetes readiness probes were still failing for old pods. Bob joined at 10:40 AM and identified..."
+        },
+        {
+          "task": "Load Testing Report — February 2026",
+          "chunkIndex": 1,
+          "rrfScore": 0.0296,
+          "preview": "rate: 0.02%. CPU on app servers: avg 34%, peak 51%. RDS CPU: avg 18%, peak 27%. All metrics within acceptable..."
+        },
+        {
+          "task": "Bug Triage Session — March 3, 2026",
+          "chunkIndex": 0,
+          "rrfScore": 0.0295,
+          "preview": "The weekly bug triage session was held on March 3, 2026 at 10:00 AM PST. Attendees: Charlie Li (facilitator), Alice..."
+        },
+        {
+          "task": "Post-mortem: January 15, 2026 Production Outage",
+          "chunkIndex": 1,
+          "rrfScore": 0.0293,
+          "preview": "that the January 15 deploy (released at 10:05 AM) included a file rename that was not reflected in the import..."
+        },
+        {
+          "task": "Auth Token Expiry Bug — Investigation & Fix",
+          "chunkIndex": 1,
+          "rrfScore": 0.0277,
+          "preview": "hours (14400 seconds). Root cause identified on January 19, 2026: during the v2.1 deployment on December 14, 2025, an environment..."
+        }
+      ],
+      "hybrid": {
+        "vectorCount": 20,
+        "bm25Count": 20,
+        "bm25Errored": false
+      }
+    },
+    {
+      "caseId": "B1",
+      "category": "Specific numbers and metrics",
+      "behavior": "answerable",
+      "query": "What was the P95 search latency before and after the fix in January?",
+      "variantKey": "hybrid@150/25",
+      "strategy": "hybrid",
+      "chunkConfig": "150:25",
+      "ms": 2203,
+      "error": null,
+      "answer": "Based on the context, here are the P95 search latency figures for the Search Index Performance Optimization fix:\n\n**Before the fix (January 17, 2026):**\n- Baseline: **120ms**\n- At peak regression: **850ms** (from Grafana dashboard)  \n- Benchmark on January 22 (50 concurrent users): **870ms**\n\n**After the fix (January 24, 2026):**\n- Post-fix benchmark (7:00 AM PST): **115ms** (back within baseline range)\n- The Grafana alert was cleared at 7:15 AM PST",
+      "retrieved": [
+        {
+          "task": "Search Index Performance Optimization",
+          "chunkIndex": 2,
+          "rrfScore": 0.0325,
+          "preview": "to 12ms for cached queries and brought average database load down by 31%. Action items from the fix: (1) add..."
+        },
+        {
+          "task": "Search Index Performance Optimization",
+          "chunkIndex": 0,
+          "rrfScore": 0.0325,
+          "preview": "A search latency regression was detected on January 17, 2026 via the Grafana dashboard. The P95 response time for the..."
+        },
+        {
+          "task": "Search Index Performance Optimization",
+          "chunkIndex": 1,
+          "rrfScore": 0.0313,
+          "preview": "— it had been created concurrently during the January 15 migration and failed partway through due to a lock timeout...."
+        },
+        {
+          "task": "Post-mortem: January 15, 2026 Production Outage",
+          "chunkIndex": 1,
+          "rrfScore": 0.031,
+          "preview": "refactor in PR #178, the file `src/config/database.js` was renamed to `src/config/db.js`. The import in `src/app.js` was updated, but the import..."
+        },
+        {
+          "task": "Post-mortem: January 15, 2026 Production Outage",
+          "chunkIndex": 2,
+          "rrfScore": 0.0308,
+          "preview": "12:52 PM PST, P95 latency returned to baseline (< 200ms) as caches warmed. The metrics collector fix (PR #181) was..."
+        },
+        {
+          "task": "Load Testing Report — February 2026",
+          "chunkIndex": 1,
+          "rrfScore": 0.0299,
+          "preview": "P50 = 88ms, P95 = 410ms, P99 = 780ms. Throughput: 2,890 requests/second. Error rate: 0.08%. App server CPU peaked at..."
+        },
+        {
+          "task": "Bug Triage Session — March 3, 2026",
+          "chunkIndex": 0,
+          "rrfScore": 0.0294,
+          "preview": "The weekly bug triage session was held on March 3, 2026 at 10:00 AM PST. Attendees: Charlie Li (facilitator), Alice..."
+        },
+        {
+          "task": "Auth Token Expiry Bug — Investigation & Fix",
+          "chunkIndex": 1,
+          "rrfScore": 0.0284,
+          "preview": "TTL config. `JWT_ACCESS_TTL_SECONDS` was renamed to `JWT_ACCESS_EXPIRATION_TTL` in the codebase but the production environment was not updated. The token generation..."
+        }
+      ],
+      "hybrid": {
+        "vectorCount": 20,
+        "bm25Count": 20,
+        "bm25Errored": false
+      }
+    }
+  ]
+}
