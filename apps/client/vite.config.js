@@ -27,6 +27,15 @@ export default defineConfig({
   optimizeDeps: {
     include: ["@pm/schemas", "@pm/permissions"],
   },
+  // optimizeDeps only applies to the dev server. In production builds the
+  // CommonJS plugin only converts files under node_modules by default, and
+  // workspace packages resolve to their real path (packages/...), so their
+  // CJS would be left unconverted and the ESM facades' default import fails.
+  build: {
+    commonjsOptions: {
+      include: [/node_modules/, /packages\//],
+    },
+  },
   test: {
     environment: "jsdom",
     globals: true,
