@@ -284,11 +284,31 @@ function TaskList({ title, tasks, emptyMessage, onNavigate, maxHeight = 320 }) {
   );
 }
 
+// "relative": bar length is proportional to the project's task count, so
+// bigger projects get longer bars. "fill": every bar spans the full width and
+// shows each project's status mix as percentages.
+const SUMMARY_SCALES = [
+  { key: "relative", label: "Relative", title: "Bar length reflects task count" },
+  { key: "fill",     label: "100%",     title: "Every bar filled — compare status mix" },
+];
+
 function TaskSummaryChart({ taskCounts, onNavigate }) {
+  const [scale, setScale] = useState(() =>
+    localStorage.getItem("summaryScale") === "fill" ? "fill" : "relative"
+  );
+
+  const changeScale = (next) => {
+    setScale(next);
+    localStorage.setItem("summaryScale", next);
+  };
+
   const entries = Object.entries(taskCounts);
   if (entries.length === 0) return null;
 
   const maxTotal = Math.max(...entries.map(([, c]) => c.total));
+  // Full-width bars are a lot of saturated colour at once, so soften them in
+  // fill mode and bring back the full colour on the hovered segment.
+  const fillDim = scale === "fill" ? "opacity-70 hover:opacity-100" : "";
 
   const segments = [
     { key: "todo",       status: "todo",       color: "hsl(var(--status-todo))",        label: "Todo" },
@@ -299,13 +319,31 @@ function TaskSummaryChart({ taskCounts, onNavigate }) {
   return (
     <div className="mb-8">
       <div className="flex items-center justify-between mb-4">
-        <h2 className="text-sm font-medium text-foreground flex items-center gap-2">
-          Summary
-        </h2>
+        <div className="flex items-center gap-3">
+          <h2 className="text-sm font-medium text-foreground">Summary</h2>
+          <div className="flex rounded-md bg-muted p-0.5" role="group" aria-label="Bar scale">
+            {SUMMARY_SCALES.map(({ key, label, title }) => (
+              <button
+                key={key}
+                type="button"
+                title={title}
+                aria-pressed={scale === key}
+                onClick={() => changeScale(key)}
+                className={`px-2 py-0.5 rounded text-xs transition-colors ${
+                  scale === key
+                    ? "bg-background text-foreground shadow-sm"
+                    : "text-muted-foreground hover:text-foreground"
+                }`}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+        </div>
         <div className="flex gap-4">
           {segments.map(({ key, color, label }) => (
             <div key={key} className="flex items-center gap-1.5">
-              <span className="inline-block w-2.5 h-2.5 rounded-sm" style={{ backgroundColor: color }} />
+              <span className={`inline-block w-2.5 h-2.5 rounded-sm transition-opacity ${scale === "fill" ? "opacity-70" : ""}`} style={{ backgroundColor: color }} />
               <span className="text-xs text-muted-foreground">{label}</span>
             </div>
           ))}
@@ -326,10 +364,13 @@ function TaskSummaryChart({ taskCounts, onNavigate }) {
                   return (
                     <button
                       key={key}
-                      title={`${counts[key]} ${key}`}
+                      title={`${counts[key]} ${key} (${Math.round((counts[key] / counts.total) * 100)}%)`}
                       onClick={() => onNavigate(projectId, status)}
-                      className={`h-2.5 hover:h-4 transition-all duration-150 cursor-pointer ${radius}`}
-                      style={{ width: `${(counts[key] / maxTotal) * 100}%`, backgroundColor: color }}
+                      className={`h-2.5 hover:h-4 transition-all duration-150 cursor-pointer ${radius} ${fillDim}`}
+                      style={{
+                        width: `${(counts[key] / (scale === "fill" ? counts.total : maxTotal)) * 100}%`,
+                        backgroundColor: color,
+                      }}
                     />
                   );
                 });
