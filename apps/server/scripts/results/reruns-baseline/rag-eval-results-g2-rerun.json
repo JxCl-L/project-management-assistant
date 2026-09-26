@@ -1,0 +1,395 @@
+{
+  "generatedAt": "2026-06-03T15:57:34.065Z",
+  "projectId": "6a1eb986af94cb7d85867caa",
+  "cells": [
+    {
+      "caseId": "G2",
+      "category": "Cross-task synthesis",
+      "behavior": "multi_task_synthesis",
+      "query": "What did Bob Chen work on in February?",
+      "variantKey": "fullcontext",
+      "strategy": "fullcontext",
+      "chunkConfig": null,
+      "ms": 4440,
+      "error": null,
+      "answer": "Based on the provided context, here is what Bob Chen worked on in February 2026:\n\n1.  **API Rate Limiting — Design & Implementation**: Bob was the lead for this feature. He attended the design review on February 3, opened a draft PR (#214) on February 5, and was responsible for code review and the implementation plan (staging deploy Feb 13, production Feb 20).\n2.  **GitHub Actions CI/CD Pipeline Upgrade**: Bob was the migration lead. He completed Phase 2 (staging deploy pipeline) on February 5 and Phase 3 (production deploy pipeline) on February 24, four days ahead of schedule.\n3.  **Auth Token Expiry Bug**: Bob was the primary investigator for this bug and identified the root cause (environment variable rename) on January 19, with the fix applied January 20. While the fix was in January, he was actively working on it at the start of the month.\n4.  **OpenAPI Documentation Rewrite**: Bob contributed endpoint descriptions for the rate-limiting and auth sections.\n5.  **Frontend Design System — Initial Setup**: Bob was not directly responsible for implementation, but attended the review meetings. He was not assigned components to build (Marcus and Alice were).\n6.  **Load Testing**: Bob was not the lead (Charlie Li was), but he likely attended the review of the results and may have contributed to the recommendations.\n7.  **Bug Triage**: Bob attended the March 3 triage session. While this is March, the triage covered issues from February.\n\n**Key takeaway**: Bob's primary focus in February was on the **API Rate Limiting** implementation and leading the **GitHub Actions CI/CD migration** (which he completed ahead of schedule).",
+      "retrieved": [
+        {
+          "task": "Q1 Sprint Planning & Roadmap Review",
+          "words": 320
+        },
+        {
+          "task": "API Rate Limiting — Design & Implementation",
+          "words": 294
+        },
+        {
+          "task": "PostgreSQL Schema Migration — v2.3",
+          "words": 279
+        },
+        {
+          "task": "Auth Token Expiry Bug — Investigation & Fix",
+          "words": 317
+        },
+        {
+          "task": "Search Index Performance Optimization",
+          "words": 313
+        },
+        {
+          "task": "Code Review Standards & Team Guidelines",
+          "words": 304
+        },
+        {
+          "task": "GitHub Actions CI/CD Pipeline Upgrade",
+          "words": 296
+        },
+        {
+          "task": "Frontend Design System — Initial Setup",
+          "words": 304
+        },
+        {
+          "task": "Q1 Security Audit — External Review",
+          "words": 301
+        },
+        {
+          "task": "OpenAPI Documentation Rewrite",
+          "words": 292
+        },
+        {
+          "task": "Stripe Payment Integration — Developer Portal",
+          "words": 277
+        },
+        {
+          "task": "Load Testing Report — February 2026",
+          "words": 337
+        },
+        {
+          "task": "New Engineer Onboarding — Marcus Chen",
+          "words": 322
+        },
+        {
+          "task": "Q2 Stakeholder Demo Preparation",
+          "words": 356
+        },
+        {
+          "task": "Bug Triage Session — March 3, 2026",
+          "words": 338
+        },
+        {
+          "task": "Mobile Responsive Redesign — Dashboard",
+          "words": 326
+        },
+        {
+          "task": "Analytics Dashboard v2 — Design & Build",
+          "words": 333
+        },
+        {
+          "task": "Sentry Error Monitoring — Configuration & Alerting",
+          "words": 379
+        },
+        {
+          "task": "Production Deployment Runbook — Update",
+          "words": 375
+        },
+        {
+          "task": "Post-mortem: January 15, 2026 Production Outage",
+          "words": 447
+        },
+        {
+          "task": "Atlas Core Service Registry — Technical Design",
+          "words": 1428
+        }
+      ],
+      "hybrid": null
+    },
+    {
+      "caseId": "G2",
+      "category": "Cross-task synthesis",
+      "behavior": "multi_task_synthesis",
+      "query": "What did Bob Chen work on in February?",
+      "variantKey": "single",
+      "strategy": "single",
+      "chunkConfig": null,
+      "ms": 5563,
+      "error": null,
+      "answer": "Based on the context, Bob Chen worked on the following in February 2026:\n\n- **Q1 Security Audit — External Review** (high priority, due March 20) — The project was in progress from the start of the quarter.\n- **Frontend Design System — Initial Setup** (normal priority, due March 15) — This task was also in progress during February.\n- **Mobile Responsive Redesign — Dashboard** (normal priority, due April 1) — Work began in this period.\n- **Analytics Dashboard v2 — Design & Build** (normal priority, due May 1) — Bob is the lead engineer. He completed the API backend on February 28, 2026.\n- **Bug Triage Session — March 3, 2026** — Bob attended this session, but it took place in March.",
+      "retrieved": [
+        {
+          "task": "New Engineer Onboarding — Marcus Chen",
+          "score": 0.7278971076011658,
+          "preview": "Marcus Chen joined the Atlas team as a full-stack engineer on February 1, 2026, reporting to Alice Wang. Marcus was..."
+        },
+        {
+          "task": "Bug Triage Session — March 3, 2026",
+          "score": 0.7077288031578064,
+          "preview": "The weekly bug triage session was held on March 3, 2026 at 10:00 AM PST. Attendees: Charlie Li (facilitator), Alice..."
+        },
+        {
+          "task": "Analytics Dashboard v2 — Design & Build",
+          "score": 0.6841450929641724,
+          "preview": "The Analytics Dashboard v2 was added to the Q1 roadmap on January 6, 2026, targeting a May 1, 2026 launch..."
+        }
+      ],
+      "hybrid": null
+    },
+    {
+      "caseId": "G2",
+      "category": "Cross-task synthesis",
+      "behavior": "multi_task_synthesis",
+      "query": "What did Bob Chen work on in February?",
+      "variantKey": "chunked@150/50",
+      "strategy": "chunked",
+      "chunkConfig": "150:50",
+      "ms": 2703,
+      "error": null,
+      "answer": "Based on the provided context, Bob Chen worked on the following in February 2026:\n\n- **GitHub Actions CI/CD Pipeline Upgrade**: Migrated all build, test, and deploy pipelines from Jenkins to GitHub Actions. (Target completion: February 28, 2026; task is **completed**.)\n\nThe context also mentions that Bob updated the `CONTRIBUTING.md` file on February 1st to add a minimum Docker Desktop version requirement during Marcus Chen's onboarding, but this appears to be a minor ad-hoc task rather than a primary work item assigned to him.",
+      "retrieved": [
+        {
+          "task": "New Engineer Onboarding — Marcus Chen",
+          "chunkIndex": 2,
+          "score": 0.7468728423118591,
+          "preview": "invalidation flow (completed February 5); (3) attend the code review standards meeting on January 27 notes review session (completed February..."
+        },
+        {
+          "task": "New Engineer Onboarding — Marcus Chen",
+          "chunkIndex": 1,
+          "score": 0.7409685254096985,
+          "preview": "11:00 AM — dev environment setup session with Bob (estimated 2 hours); 2:00 PM — codebase walkthrough with Charlie; 4:00..."
+        },
+        {
+          "task": "Bug Triage Session — March 3, 2026",
+          "chunkIndex": 1,
+          "score": 0.7268730401992798,
+          "preview": "tester). Assigned to Marcus Chen, target fix March 7. (2) Issue #222 — the Stripe webhook handler fails silently when..."
+        },
+        {
+          "task": "Bug Triage Session — March 3, 2026",
+          "chunkIndex": 0,
+          "score": 0.7177007794380188,
+          "preview": "The weekly bug triage session was held on March 3, 2026 at 10:00 AM PST. Attendees: Charlie Li (facilitator), Alice..."
+        },
+        {
+          "task": "New Engineer Onboarding — Marcus Chen",
+          "chunkIndex": 0,
+          "score": 0.7170968651771545,
+          "preview": "Marcus Chen joined the Atlas team as a full-stack engineer on February 1, 2026, reporting to Alice Wang. Marcus was..."
+        },
+        {
+          "task": "Bug Triage Session — March 3, 2026",
+          "chunkIndex": 2,
+          "score": 0.6791773438453674,
+          "preview": "as won't fix. Issue #201 (request to support XML response format) was closed — the team confirmed the Atlas API..."
+        },
+        {
+          "task": "Atlas Core Service Registry — Technical Design",
+          "chunkIndex": 6,
+          "score": 0.6697489619255066,
+          "preview": "Rate limits: write endpoints are limited to 60 requests per minute per API key; read endpoints are limited to 600..."
+        },
+        {
+          "task": "Production Deployment Runbook — Update",
+          "chunkIndex": 0,
+          "score": 0.6695736646652222,
+          "preview": "The production deployment runbook was last updated on October 15, 2025 and no longer reflected the current deploy process (GitHub..."
+        }
+      ],
+      "hybrid": null
+    },
+    {
+      "caseId": "G2",
+      "category": "Cross-task synthesis",
+      "behavior": "multi_task_synthesis",
+      "query": "What did Bob Chen work on in February?",
+      "variantKey": "chunked@150/25",
+      "strategy": "chunked",
+      "chunkConfig": "150:25",
+      "ms": 3053,
+      "error": null,
+      "answer": "Based on the context, here's what Bob Chen worked on in February 2026:\n\n1. **Auth Token Expiry Bug — Investigation & Fix** (completed, due Feb 5): Assigned to Bob at the Q1 sprint planning review.\n2. **GitHub Actions CI/CD Pipeline Upgrade** (completed, due Feb 28): Migrated build, test, and deploy pipelines from Jenkins to GitHub Actions.\n3. **Sentry Error Monitoring — Configuration & Alerting** (completed, due Feb 1): Configured Sentry for Atlas services, defined alert policies, and set up team inboxes.\n4. **Updated CONTRIBUTING.md** (during first week of February): Added the minimum Docker Desktop version requirement after Marcus Chen ran into a setup issue.\n\nLater in March, Bob also worked on:\n- **Bug #222** (Stripe webhook handling issue, assigned March 2, target fix March 5)\n- **Bug #218** (API returns 500 on malformed JSON, target March 10)\n- **Atlas Core Service Registry** — Provisioned MongoDB collection and Redis key namespace on staging (Phase 1, Feb 17–March 7)",
+      "retrieved": [
+        {
+          "task": "New Engineer Onboarding — Marcus Chen",
+          "chunkIndex": 2,
+          "score": 0.7478952407836914,
+          "preview": "bug fixes; weeks 3–4, take ownership of the design system checkbox and modal components (target completion February 28); by March..."
+        },
+        {
+          "task": "New Engineer Onboarding — Marcus Chen",
+          "chunkIndex": 1,
+          "score": 0.7404851913452148,
+          "preview": "Alice. Dev environment setup was completed by 1:15 PM on February 1. Marcus ran into one issue: the local Docker..."
+        },
+        {
+          "task": "Bug Triage Session — March 3, 2026",
+          "chunkIndex": 0,
+          "score": 0.7177007794380188,
+          "preview": "The weekly bug triage session was held on March 3, 2026 at 10:00 AM PST. Attendees: Charlie Li (facilitator), Alice..."
+        },
+        {
+          "task": "New Engineer Onboarding — Marcus Chen",
+          "chunkIndex": 0,
+          "score": 0.7170968651771545,
+          "preview": "Marcus Chen joined the Atlas team as a full-stack engineer on February 1, 2026, reporting to Alice Wang. Marcus was..."
+        },
+        {
+          "task": "Bug Triage Session — March 3, 2026",
+          "chunkIndex": 1,
+          "score": 0.7122670412063599,
+          "preview": "type instead of returning 200 (reported March 2). Assigned to Bob Chen, target fix March 5. Normal priority issues: 11..."
+        },
+        {
+          "task": "Atlas Core Service Registry — Technical Design",
+          "chunkIndex": 5,
+          "score": 0.6797376871109009,
+          "preview": "Implementation plan — Phase 1 (February 17 – March 7, 2026): Charlie Li implements the MongoDB schema, the registration and..."
+        },
+        {
+          "task": "Bug Triage Session — March 3, 2026",
+          "chunkIndex": 2,
+          "score": 0.6762348413467407,
+          "preview": "had no activity for 30+ days and were not reproducible on the current version. They were closed with the label..."
+        },
+        {
+          "task": "Q1 Sprint Planning & Roadmap Review",
+          "chunkIndex": 2,
+          "score": 0.6740497946739197,
+          "preview": "new tooling is in place. Three high-priority carryovers from Q4 2025 were reviewed: the auth token expiry bug (critical, assigned..."
+        }
+      ],
+      "hybrid": null
+    },
+    {
+      "caseId": "G2",
+      "category": "Cross-task synthesis",
+      "behavior": "multi_task_synthesis",
+      "query": "What did Bob Chen work on in February?",
+      "variantKey": "hybrid@150/50",
+      "strategy": "hybrid",
+      "chunkConfig": "150:50",
+      "ms": 2554,
+      "error": null,
+      "answer": "Based on the provided context, Bob Chen worked on the following in February:\n\n- **GitHub Actions CI/CD Pipeline Upgrade** (due Feb 28): Migrated build, test, and deploy pipelines from Jenkins to GitHub Actions.\n- **Load Testing Report — February 2026** (due Feb 20): Ran load tests against the Atlas API and established production capacity baselines.\n- **Sentry Error Monitoring — Configuration & Alerting** (completed Feb 1): Configured Sentry for all Atlas services, defined alert policies, and established an on-call rotation (he was secondary for the week of Jan 25, alternating weekly).\n- **Code Review Standards & Team Guidelines** (completed Feb 1): Participated in the working group to define team-wide code review policies.",
+      "retrieved": [
+        {
+          "task": "Bug Triage Session — March 3, 2026",
+          "chunkIndex": 0,
+          "rrfScore": 0.0297,
+          "preview": "The weekly bug triage session was held on March 3, 2026 at 10:00 AM PST. Attendees: Charlie Li (facilitator), Alice..."
+        },
+        {
+          "task": "Post-mortem: January 15, 2026 Production Outage",
+          "chunkIndex": 1,
+          "rrfScore": 0.0297,
+          "preview": "that the January 15 deploy (released at 10:05 AM) included a file rename that was not reflected in the import..."
+        },
+        {
+          "task": "New Engineer Onboarding — Marcus Chen",
+          "chunkIndex": 0,
+          "rrfScore": 0.0297,
+          "preview": "Marcus Chen joined the Atlas team as a full-stack engineer on February 1, 2026, reporting to Alice Wang. Marcus was..."
+        },
+        {
+          "task": "Production Deployment Runbook — Update",
+          "chunkIndex": 0,
+          "rrfScore": 0.0292,
+          "preview": "The production deployment runbook was last updated on October 15, 2025 and no longer reflected the current deploy process (GitHub..."
+        },
+        {
+          "task": "Bug Triage Session — March 3, 2026",
+          "chunkIndex": 1,
+          "rrfScore": 0.029,
+          "preview": "tester). Assigned to Marcus Chen, target fix March 7. (2) Issue #222 — the Stripe webhook handler fails silently when..."
+        },
+        {
+          "task": "Code Review Standards & Team Guidelines",
+          "chunkIndex": 0,
+          "rrfScore": 0.0287,
+          "preview": "A working group was formed on January 27, 2026 to define code review standards for the Atlas team. Members: Alice..."
+        },
+        {
+          "task": "Sentry Error Monitoring — Configuration & Alerting",
+          "chunkIndex": 2,
+          "rrfScore": 0.0286,
+          "preview": "calls to Stripe and AWS. On-call rotation established: Alice Wang (primary) and Bob Chen (secondary) for the week of January..."
+        },
+        {
+          "task": "Atlas Core Service Registry — Technical Design",
+          "chunkIndex": 6,
+          "rrfScore": 0.0274,
+          "preview": "Rate limits: write endpoints are limited to 60 requests per minute per API key; read endpoints are limited to 600..."
+        }
+      ],
+      "hybrid": {
+        "vectorCount": 20,
+        "bm25Count": 20,
+        "bm25Errored": false
+      }
+    },
+    {
+      "caseId": "G2",
+      "category": "Cross-task synthesis",
+      "behavior": "multi_task_synthesis",
+      "query": "What did Bob Chen work on in February?",
+      "variantKey": "hybrid@150/25",
+      "strategy": "hybrid",
+      "chunkConfig": "150:25",
+      "ms": 1825,
+      "error": null,
+      "answer": "Based on the provided context, Bob Chen's work in February 2026 included:\n\n- **Code Review Standards & Team Guidelines** — Participated in the working group (alongside Alice, Charlie, and Marcus) that defined the new code review policy and SLAs.",
+      "retrieved": [
+        {
+          "task": "New Engineer Onboarding — Marcus Chen",
+          "chunkIndex": 0,
+          "rrfScore": 0.0303,
+          "preview": "Marcus Chen joined the Atlas team as a full-stack engineer on February 1, 2026, reporting to Alice Wang. Marcus was..."
+        },
+        {
+          "task": "Bug Triage Session — March 3, 2026",
+          "chunkIndex": 0,
+          "rrfScore": 0.0302,
+          "preview": "The weekly bug triage session was held on March 3, 2026 at 10:00 AM PST. Attendees: Charlie Li (facilitator), Alice..."
+        },
+        {
+          "task": "Production Deployment Runbook — Update",
+          "chunkIndex": 0,
+          "rrfScore": 0.0294,
+          "preview": "The production deployment runbook was last updated on October 15, 2025 and no longer reflected the current deploy process (GitHub..."
+        },
+        {
+          "task": "New Engineer Onboarding — Marcus Chen",
+          "chunkIndex": 2,
+          "rrfScore": 0.0292,
+          "preview": "bug fixes; weeks 3–4, take ownership of the design system checkbox and modal components (target completion February 28); by March..."
+        },
+        {
+          "task": "Post-mortem: January 15, 2026 Production Outage",
+          "chunkIndex": 1,
+          "rrfScore": 0.029,
+          "preview": "refactor in PR #178, the file `src/config/database.js` was renamed to `src/config/db.js`. The import in `src/app.js` was updated, but the import..."
+        },
+        {
+          "task": "Code Review Standards & Team Guidelines",
+          "chunkIndex": 0,
+          "rrfScore": 0.0285,
+          "preview": "A working group was formed on January 27, 2026 to define code review standards for the Atlas team. Members: Alice..."
+        },
+        {
+          "task": "Atlas Core Service Registry — Technical Design",
+          "chunkIndex": 5,
+          "rrfScore": 0.0285,
+          "preview": "Implementation plan — Phase 1 (February 17 – March 7, 2026): Charlie Li implements the MongoDB schema, the registration and..."
+        },
+        {
+          "task": "Bug Triage Session — March 3, 2026",
+          "chunkIndex": 1,
+          "rrfScore": 0.0284,
+          "preview": "type instead of returning 200 (reported March 2). Assigned to Bob Chen, target fix March 5. Normal priority issues: 11..."
+        }
+      ],
+      "hybrid": {
+        "vectorCount": 20,
+        "bm25Count": 20,
+        "bm25Errored": false
+      }
+    }
+  ]
+}

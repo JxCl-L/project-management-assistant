@@ -224,13 +224,13 @@ $RECYCLE.BIN/
 src/ai/chat/chat-rag-test-result.http
 src/ai/chat/rag-performance-report.md
 
-# RAG eval — ignore everything under results/reports/viewers. All
-# regenerable from source in scripts/analyzers/.
-scripts/results/
-scripts/reports/
-scripts/viewers/
-# RAG analyzer source — ignored for now; remove this line to track.
-scripts/analyzers/
+# RAG eval directories are tracked on this branch (eval-archive) — this
+# branch is the archive snapshot for reports, viewers, analyzers, and
+# results. On main these live outside version control; here they don't.
+# scripts/results/
+# scripts/reports/
+# scripts/viewers/
+# scripts/analyzers/
 
 # End of custom rules
 src/ai/chat/http-client.private.env.json

@@ -1,0 +1,69 @@
+{
+  "generatedAt": "2026-06-03T16:16:33.033Z",
+  "projectId": "6a1eb986af94cb7d85867caa",
+  "cells": [
+    {
+      "caseId": "H2",
+      "category": "Long task — middle facts",
+      "behavior": "answerable",
+      "query": "What is the Redis cache TTL and what is the maximum number of services that can be registered?",
+      "variantKey": "chunked@150/50",
+      "strategy": "chunked",
+      "chunkConfig": "150:50",
+      "ms": 3776,
+      "error": null,
+      "answer": "Based on the context, the Redis cache TTL is **60 seconds**. The maximum number of services mentioned is 500, as the cost analysis assumed \"500 service documents at approximately 5KB each.\" However, the technical design does not explicitly state a hard maximum limit for registered services.",
+      "retrieved": [
+        {
+          "task": "Atlas Core Service Registry — Technical Design",
+          "chunkIndex": 12,
+          "score": 0.7307818531990051,
+          "preview": "This is achieved through: (1) two app server replicas behind the Atlas load balancer with automatic failover under 10 seconds;..."
+        },
+        {
+          "task": "API Rate Limiting — Design & Implementation",
+          "chunkIndex": 1,
+          "score": 0.72011798620224,
+          "preview": "unlimited (IP allowlist). All limits apply per API key, not per IP, to handle clients behind NAT. When a client..."
+        },
+        {
+          "task": "Atlas Core Service Registry — Technical Design",
+          "chunkIndex": 13,
+          "score": 0.7120247483253479,
+          "preview": "— external customer impact is indirect. Cost analysis (prepared by Bob Chen on February 12, 2026): the service registry requires..."
+        },
+        {
+          "task": "Atlas Core Service Registry — Technical Design",
+          "chunkIndex": 11,
+          "score": 0.6997710466384888,
+          "preview": "Developer Experience, Data Pipelines, Payments, Identity — covering 18 services total. Wave 2 (April 15–30, 2026): the next 19 highest-traffic..."
+        },
+        {
+          "task": "Atlas Core Service Registry — Technical Design",
+          "chunkIndex": 1,
+          "score": 0.699308454990387,
+          "preview": "services exist, what versions are deployed, which teams own them, or whether they are healthy. Engineers discover service endpoints through..."
+        },
+        {
+          "task": "Atlas Core Service Registry — Technical Design",
+          "chunkIndex": 4,
+          "score": 0.6984260082244873,
+          "preview": "Services that miss 3 consecutive heartbeats (configurable, default: 3) are automatically marked `unreachable`. Services marked `unreachable` for more than 7..."
+        },
+        {
+          "task": "Atlas Core Service Registry — Technical Design",
+          "chunkIndex": 5,
+          "score": 0.6950476169586182,
+          "preview": "(filter by owner), `status` (filter by health status), `tag` (filter by tag, supports multiple), `page` and `limit` (pagination, default limit..."
+        },
+        {
+          "task": "Atlas Core Service Registry — Technical Design",
+          "chunkIndex": 6,
+          "score": 0.6937549114227295,
+          "preview": "Rate limits: write endpoints are limited to 60 requests per minute per API key; read endpoints are limited to 600..."
+        }
+      ],
+      "hybrid": null
+    }
+  ]
+}
