@@ -101,7 +101,7 @@
         }
       ],
       "hybrid": null,
-      "retrievalClass": "FACT",
+      "answerMode": "FACT",
       "classifyMs": 759,
       "promptClass": "FACT"
     },
@@ -135,7 +135,7 @@
         }
       ],
       "hybrid": null,
-      "retrievalClass": "FACT",
+      "answerMode": "FACT",
       "classifyMs": 879,
       "promptClass": "FACT"
     },
@@ -202,7 +202,7 @@
         }
       ],
       "hybrid": null,
-      "retrievalClass": "FACT",
+      "answerMode": "FACT",
       "classifyMs": 1041,
       "promptClass": "FACT"
     },
@@ -269,7 +269,7 @@
         }
       ],
       "hybrid": null,
-      "retrievalClass": "FACT",
+      "answerMode": "FACT",
       "classifyMs": 961,
       "promptClass": "FACT"
     },
@@ -340,7 +340,7 @@
         "bm25Count": 20,
         "bm25Errored": false
       },
-      "retrievalClass": "FACT",
+      "answerMode": "FACT",
       "classifyMs": 1010,
       "promptClass": "FACT"
     },
@@ -411,7 +411,7 @@
         "bm25Count": 20,
         "bm25Errored": false
       },
-      "retrievalClass": "FACT",
+      "answerMode": "FACT",
       "classifyMs": 966,
       "promptClass": "FACT"
     },
@@ -514,7 +514,7 @@
         }
       ],
       "hybrid": null,
-      "retrievalClass": "FACT",
+      "answerMode": "FACT",
       "classifyMs": 748,
       "promptClass": "FACT"
     },
@@ -548,7 +548,7 @@
         }
       ],
       "hybrid": null,
-      "retrievalClass": "FACT",
+      "answerMode": "FACT",
       "classifyMs": 1241,
       "promptClass": "FACT"
     },
@@ -615,7 +615,7 @@
         }
       ],
       "hybrid": null,
-      "retrievalClass": "FACT",
+      "answerMode": "FACT",
       "classifyMs": 760,
       "promptClass": "FACT"
     },
@@ -682,7 +682,7 @@
         }
       ],
       "hybrid": null,
-      "retrievalClass": "FACT",
+      "answerMode": "FACT",
       "classifyMs": 749,
       "promptClass": "FACT"
     },
@@ -753,7 +753,7 @@
         "bm25Count": 20,
         "bm25Errored": false
       },
-      "retrievalClass": "FACT",
+      "answerMode": "FACT",
       "classifyMs": 1540,
       "promptClass": "FACT"
     },
@@ -824,7 +824,7 @@
         "bm25Count": 20,
         "bm25Errored": false
       },
-      "retrievalClass": "FACT",
+      "answerMode": "FACT",
       "classifyMs": 763,
       "promptClass": "FACT"
     },
@@ -927,7 +927,7 @@
         }
       ],
       "hybrid": null,
-      "retrievalClass": "FACT",
+      "answerMode": "FACT",
       "classifyMs": 834,
       "promptClass": "FACT"
     },
@@ -961,7 +961,7 @@
         }
       ],
       "hybrid": null,
-      "retrievalClass": "FACT",
+      "answerMode": "FACT",
       "classifyMs": 785,
       "promptClass": "FACT"
     },
@@ -1028,7 +1028,7 @@
         }
       ],
       "hybrid": null,
-      "retrievalClass": "FACT",
+      "answerMode": "FACT",
       "classifyMs": 937,
       "promptClass": "FACT"
     },
@@ -1095,7 +1095,7 @@
         }
       ],
       "hybrid": null,
-      "retrievalClass": "FACT",
+      "answerMode": "FACT",
       "classifyMs": 1048,
       "promptClass": "FACT"
     },
@@ -1166,7 +1166,7 @@
         "bm25Count": 20,
         "bm25Errored": false
       },
-      "retrievalClass": "FACT",
+      "answerMode": "FACT",
       "classifyMs": 855,
       "promptClass": "FACT"
     },
@@ -1237,7 +1237,7 @@
         "bm25Count": 20,
         "bm25Errored": false
       },
-      "retrievalClass": "FACT",
+      "answerMode": "FACT",
       "classifyMs": 854,
       "promptClass": "FACT"
     },
@@ -1340,7 +1340,7 @@
         }
       ],
       "hybrid": null,
-      "retrievalClass": "FACT",
+      "answerMode": "FACT",
       "classifyMs": 774,
       "promptClass": "FACT"
     },
@@ -1374,7 +1374,7 @@
         }
       ],
       "hybrid": null,
-      "retrievalClass": "FACT",
+      "answerMode": "FACT",
       "classifyMs": 1004,
       "promptClass": "FACT"
     },
@@ -1441,7 +1441,7 @@
         }
       ],
       "hybrid": null,
-      "retrievalClass": "FACT",
+      "answerMode": "FACT",
       "classifyMs": 718,
       "promptClass": "FACT"
     },
@@ -1508,7 +1508,7 @@
         }
       ],
       "hybrid": null,
-      "retrievalClass": "FACT",
+      "answerMode": "FACT",
       "classifyMs": 904,
       "promptClass": "FACT"
     },
@@ -1579,7 +1579,7 @@
         "bm25Count": 20,
         "bm25Errored": false
       },
-      "retrievalClass": "FACT",
+      "answerMode": "FACT",
       "classifyMs": 763,
       "promptClass": "FACT"
     },
@@ -1650,7 +1650,7 @@
         "bm25Count": 20,
         "bm25Errored": false
       },
-      "retrievalClass": "FACT",
+      "answerMode": "FACT",
       "classifyMs": 1074,
       "promptClass": "FACT"
     },
@@ -1753,7 +1753,7 @@
         }
       ],
       "hybrid": null,
-      "retrievalClass": "FACT",
+      "answerMode": "FACT",
       "classifyMs": 793,
       "promptClass": "FACT"
     },
@@ -1787,7 +1787,7 @@
         }
       ],
       "hybrid": null,
-      "retrievalClass": "FACT",
+      "answerMode": "FACT",
       "classifyMs": 1048,
       "promptClass": "FACT"
     },
@@ -1854,7 +1854,7 @@
         }
       ],
       "hybrid": null,
-      "retrievalClass": "FACT",
+      "answerMode": "FACT",
       "classifyMs": 1038,
       "promptClass": "FACT"
     },
@@ -1921,7 +1921,7 @@
         }
       ],
       "hybrid": null,
-      "retrievalClass": "FACT",
+      "answerMode": "FACT",
       "classifyMs": 815,
       "promptClass": "FACT"
     },
@@ -1992,7 +1992,7 @@
         "bm25Count": 20,
         "bm25Errored": false
       },
-      "retrievalClass": "FACT",
+      "answerMode": "FACT",
       "classifyMs": 1022,
       "promptClass": "FACT"
     },
@@ -2063,7 +2063,7 @@
         "bm25Count": 20,
         "bm25Errored": false
       },
-      "retrievalClass": "FACT",
+      "answerMode": "FACT",
       "classifyMs": 736,
       "promptClass": "FACT"
     },
@@ -2166,7 +2166,7 @@
         }
       ],
       "hybrid": null,
-      "retrievalClass": "FACT",
+      "answerMode": "FACT",
       "classifyMs": 693,
       "promptClass": "FACT"
     },
@@ -2200,7 +2200,7 @@
         }
       ],
       "hybrid": null,
-      "retrievalClass": "FACT",
+      "answerMode": "FACT",
       "classifyMs": 827,
       "promptClass": "FACT"
     },
@@ -2267,7 +2267,7 @@
         }
       ],
       "hybrid": null,
-      "retrievalClass": "FACT",
+      "answerMode": "FACT",
       "classifyMs": 966,
       "promptClass": "FACT"
     },
@@ -2334,7 +2334,7 @@
         }
       ],
       "hybrid": null,
-      "retrievalClass": "FACT",
+      "answerMode": "FACT",
       "classifyMs": 748,
       "promptClass": "FACT"
     },
@@ -2405,7 +2405,7 @@
         "bm25Count": 20,
         "bm25Errored": false
       },
-      "retrievalClass": "FACT",
+      "answerMode": "FACT",
       "classifyMs": 921,
       "promptClass": "FACT"
     },
@@ -2476,7 +2476,7 @@
         "bm25Count": 20,
         "bm25Errored": false
       },
-      "retrievalClass": "FACT",
+      "answerMode": "FACT",
       "classifyMs": 847,
       "promptClass": "FACT"
     },
@@ -2579,7 +2579,7 @@
         }
       ],
       "hybrid": null,
-      "retrievalClass": "FACT",
+      "answerMode": "FACT",
       "classifyMs": 900,
       "promptClass": "FACT"
     },
@@ -2613,7 +2613,7 @@
         }
       ],
       "hybrid": null,
-      "retrievalClass": "FACT",
+      "answerMode": "FACT",
       "classifyMs": 886,
       "promptClass": "FACT"
     },
@@ -2680,7 +2680,7 @@
         }
       ],
       "hybrid": null,
-      "retrievalClass": "LIST",
+      "answerMode": "LIST",
       "classifyMs": 868,
       "promptClass": "LIST"
     },
@@ -2747,7 +2747,7 @@
         }
       ],
       "hybrid": null,
-      "retrievalClass": "FACT",
+      "answerMode": "FACT",
       "classifyMs": 791,
       "promptClass": "FACT"
     },
@@ -2818,7 +2818,7 @@
         "bm25Count": 20,
         "bm25Errored": false
       },
-      "retrievalClass": "LIST",
+      "answerMode": "LIST",
       "classifyMs": 792,
       "promptClass": "LIST"
     },
@@ -2889,7 +2889,7 @@
         "bm25Count": 20,
         "bm25Errored": false
       },
-      "retrievalClass": "FACT",
+      "answerMode": "FACT",
       "classifyMs": 979,
       "promptClass": "FACT"
     },
@@ -2992,7 +2992,7 @@
         }
       ],
       "hybrid": null,
-      "retrievalClass": "FACT",
+      "answerMode": "FACT",
       "classifyMs": 767,
       "promptClass": "FACT"
     },
@@ -3026,7 +3026,7 @@
         }
       ],
       "hybrid": null,
-      "retrievalClass": "FACT",
+      "answerMode": "FACT",
       "classifyMs": 1055,
       "promptClass": "FACT"
     },
@@ -3093,7 +3093,7 @@
         }
       ],
       "hybrid": null,
-      "retrievalClass": "FACT",
+      "answerMode": "FACT",
       "classifyMs": 757,
       "promptClass": "FACT"
     },
@@ -3160,7 +3160,7 @@
         }
       ],
       "hybrid": null,
-      "retrievalClass": "FACT",
+      "answerMode": "FACT",
       "classifyMs": 760,
       "promptClass": "FACT"
     },
@@ -3231,7 +3231,7 @@
         "bm25Count": 20,
         "bm25Errored": false
       },
-      "retrievalClass": "FACT",
+      "answerMode": "FACT",
       "classifyMs": 893,
       "promptClass": "FACT"
     },
@@ -3302,7 +3302,7 @@
         "bm25Count": 20,
         "bm25Errored": false
       },
-      "retrievalClass": "FACT",
+      "answerMode": "FACT",
       "classifyMs": 962,
       "promptClass": "FACT"
     },
@@ -3405,7 +3405,7 @@
         }
       ],
       "hybrid": null,
-      "retrievalClass": "FACT",
+      "answerMode": "FACT",
       "classifyMs": 787,
       "promptClass": "FACT"
     },
@@ -3439,7 +3439,7 @@
         }
       ],
       "hybrid": null,
-      "retrievalClass": "FACT",
+      "answerMode": "FACT",
       "classifyMs": 1033,
       "promptClass": "FACT"
     },
@@ -3506,7 +3506,7 @@
         }
       ],
       "hybrid": null,
-      "retrievalClass": "FACT",
+      "answerMode": "FACT",
       "classifyMs": 737,
       "promptClass": "FACT"
     },
@@ -3573,7 +3573,7 @@
         }
       ],
       "hybrid": null,
-      "retrievalClass": "FACT",
+      "answerMode": "FACT",
       "classifyMs": 976,
       "promptClass": "FACT"
     },
@@ -3644,7 +3644,7 @@
         "bm25Count": 20,
         "bm25Errored": false
       },
-      "retrievalClass": "FACT",
+      "answerMode": "FACT",
       "classifyMs": 817,
       "promptClass": "FACT"
     },
@@ -3715,7 +3715,7 @@
         "bm25Count": 20,
         "bm25Errored": false
       },
-      "retrievalClass": "FACT",
+      "answerMode": "FACT",
       "classifyMs": 906,
       "promptClass": "FACT"
     },
@@ -3818,7 +3818,7 @@
         }
       ],
       "hybrid": null,
-      "retrievalClass": "FACT",
+      "answerMode": "FACT",
       "classifyMs": 825,
       "promptClass": "FACT"
     },
@@ -3852,7 +3852,7 @@
         }
       ],
       "hybrid": null,
-      "retrievalClass": "FACT",
+      "answerMode": "FACT",
       "classifyMs": 940,
       "promptClass": "FACT"
     },
@@ -3919,7 +3919,7 @@
         }
       ],
       "hybrid": null,
-      "retrievalClass": "FACT",
+      "answerMode": "FACT",
       "classifyMs": 710,
       "promptClass": "FACT"
     },
@@ -3986,7 +3986,7 @@
         }
       ],
       "hybrid": null,
-      "retrievalClass": "FACT",
+      "answerMode": "FACT",
       "classifyMs": 817,
       "promptClass": "FACT"
     },
@@ -4057,7 +4057,7 @@
         "bm25Count": 20,
         "bm25Errored": false
       },
-      "retrievalClass": "FACT",
+      "answerMode": "FACT",
       "classifyMs": 1132,
       "promptClass": "FACT"
     },
@@ -4128,7 +4128,7 @@
         "bm25Count": 20,
         "bm25Errored": false
       },
-      "retrievalClass": "FACT",
+      "answerMode": "FACT",
       "classifyMs": 915,
       "promptClass": "FACT"
     },
@@ -4231,7 +4231,7 @@
         }
       ],
       "hybrid": null,
-      "retrievalClass": "FACT",
+      "answerMode": "FACT",
       "classifyMs": 869,
       "promptClass": "FACT"
     },
@@ -4265,7 +4265,7 @@
         }
       ],
       "hybrid": null,
-      "retrievalClass": "FACT",
+      "answerMode": "FACT",
       "classifyMs": 1012,
       "promptClass": "FACT"
     },
@@ -4332,7 +4332,7 @@
         }
       ],
       "hybrid": null,
-      "retrievalClass": "FACT",
+      "answerMode": "FACT",
       "classifyMs": 908,
       "promptClass": "FACT"
     },
@@ -4399,7 +4399,7 @@
         }
       ],
       "hybrid": null,
-      "retrievalClass": "FACT",
+      "answerMode": "FACT",
       "classifyMs": 962,
       "promptClass": "FACT"
     },
@@ -4470,7 +4470,7 @@
         "bm25Count": 20,
         "bm25Errored": false
       },
-      "retrievalClass": "FACT",
+      "answerMode": "FACT",
       "classifyMs": 1179,
       "promptClass": "FACT"
     },
@@ -4541,7 +4541,7 @@
         "bm25Count": 20,
         "bm25Errored": false
       },
-      "retrievalClass": "FACT",
+      "answerMode": "FACT",
       "classifyMs": 866,
       "promptClass": "FACT"
     },
@@ -4644,7 +4644,7 @@
         }
       ],
       "hybrid": null,
-      "retrievalClass": "LIST",
+      "answerMode": "LIST",
       "classifyMs": 776,
       "promptClass": "LIST"
     },
@@ -4678,7 +4678,7 @@
         }
       ],
       "hybrid": null,
-      "retrievalClass": "LIST",
+      "answerMode": "LIST",
       "classifyMs": 721,
       "promptClass": "LIST"
     },
@@ -4745,7 +4745,7 @@
         }
       ],
       "hybrid": null,
-      "retrievalClass": "LIST",
+      "answerMode": "LIST",
       "classifyMs": 787,
       "promptClass": "LIST"
     },
@@ -4812,7 +4812,7 @@
         }
       ],
       "hybrid": null,
-      "retrievalClass": "LIST",
+      "answerMode": "LIST",
       "classifyMs": 815,
       "promptClass": "LIST"
     },
@@ -4883,7 +4883,7 @@
         "bm25Count": 20,
         "bm25Errored": false
       },
-      "retrievalClass": "LIST",
+      "answerMode": "LIST",
       "classifyMs": 1051,
       "promptClass": "LIST"
     },
@@ -4954,7 +4954,7 @@
         "bm25Count": 20,
         "bm25Errored": false
       },
-      "retrievalClass": "LIST",
+      "answerMode": "LIST",
       "classifyMs": 882,
       "promptClass": "LIST"
     },
@@ -5057,7 +5057,7 @@
         }
       ],
       "hybrid": null,
-      "retrievalClass": "LIST",
+      "answerMode": "LIST",
       "classifyMs": 772,
       "promptClass": "LIST"
     },
@@ -5091,7 +5091,7 @@
         }
       ],
       "hybrid": null,
-      "retrievalClass": "LIST",
+      "answerMode": "LIST",
       "classifyMs": 1095,
       "promptClass": "LIST"
     },
@@ -5158,7 +5158,7 @@
         }
       ],
       "hybrid": null,
-      "retrievalClass": "LIST",
+      "answerMode": "LIST",
       "classifyMs": 814,
       "promptClass": "LIST"
     },
@@ -5225,7 +5225,7 @@
         }
       ],
       "hybrid": null,
-      "retrievalClass": "LIST",
+      "answerMode": "LIST",
       "classifyMs": 800,
       "promptClass": "LIST"
     },
@@ -5296,7 +5296,7 @@
         "bm25Count": 20,
         "bm25Errored": false
       },
-      "retrievalClass": "LIST",
+      "answerMode": "LIST",
       "classifyMs": 874,
       "promptClass": "LIST"
     },
@@ -5367,7 +5367,7 @@
         "bm25Count": 20,
         "bm25Errored": false
       },
-      "retrievalClass": "LIST",
+      "answerMode": "LIST",
       "classifyMs": 850,
       "promptClass": "LIST"
     },
@@ -5470,7 +5470,7 @@
         }
       ],
       "hybrid": null,
-      "retrievalClass": "LIST",
+      "answerMode": "LIST",
       "classifyMs": 801,
       "promptClass": "LIST"
     },
@@ -5504,7 +5504,7 @@
         }
       ],
       "hybrid": null,
-      "retrievalClass": "LIST",
+      "answerMode": "LIST",
       "classifyMs": 800,
       "promptClass": "LIST"
     },
@@ -5571,7 +5571,7 @@
         }
       ],
       "hybrid": null,
-      "retrievalClass": "FACT",
+      "answerMode": "FACT",
       "classifyMs": 753,
       "promptClass": "FACT"
     },
@@ -5638,7 +5638,7 @@
         }
       ],
       "hybrid": null,
-      "retrievalClass": "FACT",
+      "answerMode": "FACT",
       "classifyMs": 821,
       "promptClass": "FACT"
     },
@@ -5709,7 +5709,7 @@
         "bm25Count": 20,
         "bm25Errored": false
       },
-      "retrievalClass": "LIST",
+      "answerMode": "LIST",
       "classifyMs": 905,
       "promptClass": "LIST"
     },
@@ -5780,7 +5780,7 @@
         "bm25Count": 20,
         "bm25Errored": false
       },
-      "retrievalClass": "FACT",
+      "answerMode": "FACT",
       "classifyMs": 946,
       "promptClass": "FACT"
     },
@@ -5883,7 +5883,7 @@
         }
       ],
       "hybrid": null,
-      "retrievalClass": "LIST",
+      "answerMode": "LIST",
       "classifyMs": 955,
       "promptClass": "LIST"
     },
@@ -5917,7 +5917,7 @@
         }
       ],
       "hybrid": null,
-      "retrievalClass": "LIST",
+      "answerMode": "LIST",
       "classifyMs": 890,
       "promptClass": "LIST"
     },
@@ -5984,7 +5984,7 @@
         }
       ],
       "hybrid": null,
-      "retrievalClass": "LIST",
+      "answerMode": "LIST",
       "classifyMs": 861,
       "promptClass": "LIST"
     },
@@ -6051,7 +6051,7 @@
         }
       ],
       "hybrid": null,
-      "retrievalClass": "LIST",
+      "answerMode": "LIST",
       "classifyMs": 735,
       "promptClass": "LIST"
     },
@@ -6122,7 +6122,7 @@
         "bm25Count": 20,
         "bm25Errored": false
       },
-      "retrievalClass": "LIST",
+      "answerMode": "LIST",
       "classifyMs": 820,
       "promptClass": "LIST"
     },
@@ -6193,7 +6193,7 @@
         "bm25Count": 20,
         "bm25Errored": false
       },
-      "retrievalClass": "LIST",
+      "answerMode": "LIST",
       "classifyMs": 1046,
       "promptClass": "LIST"
     },
@@ -6296,7 +6296,7 @@
         }
       ],
       "hybrid": null,
-      "retrievalClass": "LIST",
+      "answerMode": "LIST",
       "classifyMs": 709,
       "promptClass": "LIST"
     },
@@ -6330,7 +6330,7 @@
         }
       ],
       "hybrid": null,
-      "retrievalClass": "LIST",
+      "answerMode": "LIST",
       "classifyMs": 699,
       "promptClass": "LIST"
     },
@@ -6397,7 +6397,7 @@
         }
       ],
       "hybrid": null,
-      "retrievalClass": "LIST",
+      "answerMode": "LIST",
       "classifyMs": 845,
       "promptClass": "LIST"
     },
@@ -6464,7 +6464,7 @@
         }
       ],
       "hybrid": null,
-      "retrievalClass": "LIST",
+      "answerMode": "LIST",
       "classifyMs": 1038,
       "promptClass": "LIST"
     },
@@ -6535,7 +6535,7 @@
         "bm25Count": 20,
         "bm25Errored": false
       },
-      "retrievalClass": "LIST",
+      "answerMode": "LIST",
       "classifyMs": 766,
       "promptClass": "LIST"
     },
@@ -6606,7 +6606,7 @@
         "bm25Count": 20,
         "bm25Errored": false
       },
-      "retrievalClass": "LIST",
+      "answerMode": "LIST",
       "classifyMs": 971,
       "promptClass": "LIST"
     },
@@ -6709,7 +6709,7 @@
         }
       ],
       "hybrid": null,
-      "retrievalClass": "FACT",
+      "answerMode": "FACT",
       "classifyMs": 794,
       "promptClass": "FACT"
     },
@@ -6743,7 +6743,7 @@
         }
       ],
       "hybrid": null,
-      "retrievalClass": "FACT",
+      "answerMode": "FACT",
       "classifyMs": 812,
       "promptClass": "FACT"
     },
@@ -6810,7 +6810,7 @@
         }
       ],
       "hybrid": null,
-      "retrievalClass": "FACT",
+      "answerMode": "FACT",
       "classifyMs": 997,
       "promptClass": "FACT"
     },
@@ -6877,7 +6877,7 @@
         }
       ],
       "hybrid": null,
-      "retrievalClass": "FACT",
+      "answerMode": "FACT",
       "classifyMs": 871,
       "promptClass": "FACT"
     },
@@ -6948,7 +6948,7 @@
         "bm25Count": 20,
         "bm25Errored": false
       },
-      "retrievalClass": "FACT",
+      "answerMode": "FACT",
       "classifyMs": 941,
       "promptClass": "FACT"
     },
@@ -7019,7 +7019,7 @@
         "bm25Count": 20,
         "bm25Errored": false
       },
-      "retrievalClass": "FACT",
+      "answerMode": "FACT",
       "classifyMs": 928,
       "promptClass": "FACT"
     },
@@ -7122,7 +7122,7 @@
         }
       ],
       "hybrid": null,
-      "retrievalClass": "OPEN",
+      "answerMode": "OPEN",
       "classifyMs": 824,
       "promptClass": "OPEN"
     },
@@ -7156,7 +7156,7 @@
         }
       ],
       "hybrid": null,
-      "retrievalClass": "OPEN",
+      "answerMode": "OPEN",
       "classifyMs": 758,
       "promptClass": "OPEN"
     },
@@ -7223,7 +7223,7 @@
         }
       ],
       "hybrid": null,
-      "retrievalClass": "OPEN",
+      "answerMode": "OPEN",
       "classifyMs": 1052,
       "promptClass": "OPEN"
     },
@@ -7290,7 +7290,7 @@
         }
       ],
       "hybrid": null,
-      "retrievalClass": "OPEN",
+      "answerMode": "OPEN",
       "classifyMs": 816,
       "promptClass": "OPEN"
     },
@@ -7361,7 +7361,7 @@
         "bm25Count": 20,
         "bm25Errored": false
       },
-      "retrievalClass": "OPEN",
+      "answerMode": "OPEN",
       "classifyMs": 937,
       "promptClass": "OPEN"
     },
@@ -7432,7 +7432,7 @@
         "bm25Count": 20,
         "bm25Errored": false
       },
-      "retrievalClass": "OPEN",
+      "answerMode": "OPEN",
       "classifyMs": 960,
       "promptClass": "OPEN"
     },
@@ -7535,7 +7535,7 @@
         }
       ],
       "hybrid": null,
-      "retrievalClass": "FACT",
+      "answerMode": "FACT",
       "classifyMs": 944,
       "promptClass": "FACT"
     },
@@ -7569,7 +7569,7 @@
         }
       ],
       "hybrid": null,
-      "retrievalClass": "FACT",
+      "answerMode": "FACT",
       "classifyMs": 678,
       "promptClass": "FACT"
     },
@@ -7636,7 +7636,7 @@
         }
       ],
       "hybrid": null,
-      "retrievalClass": "FACT",
+      "answerMode": "FACT",
       "classifyMs": 936,
       "promptClass": "FACT"
     },
@@ -7703,7 +7703,7 @@
         }
       ],
       "hybrid": null,
-      "retrievalClass": "FACT",
+      "answerMode": "FACT",
       "classifyMs": 995,
       "promptClass": "FACT"
     },
@@ -7774,7 +7774,7 @@
         "bm25Count": 20,
         "bm25Errored": false
       },
-      "retrievalClass": "FACT",
+      "answerMode": "FACT",
       "classifyMs": 979,
       "promptClass": "FACT"
     },
@@ -7845,7 +7845,7 @@
         "bm25Count": 20,
         "bm25Errored": false
       },
-      "retrievalClass": "FACT",
+      "answerMode": "FACT",
       "classifyMs": 864,
       "promptClass": "FACT"
     },
@@ -7948,7 +7948,7 @@
         }
       ],
       "hybrid": null,
-      "retrievalClass": "LIST",
+      "answerMode": "LIST",
       "classifyMs": 1207,
       "promptClass": "LIST"
     },
@@ -7982,7 +7982,7 @@
         }
       ],
       "hybrid": null,
-      "retrievalClass": "LIST",
+      "answerMode": "LIST",
       "classifyMs": 704,
       "promptClass": "LIST"
     },
@@ -8049,7 +8049,7 @@
         }
       ],
       "hybrid": null,
-      "retrievalClass": "LIST",
+      "answerMode": "LIST",
       "classifyMs": 965,
       "promptClass": "LIST"
     },
@@ -8116,7 +8116,7 @@
         }
       ],
       "hybrid": null,
-      "retrievalClass": "LIST",
+      "answerMode": "LIST",
       "classifyMs": 1142,
       "promptClass": "LIST"
     },
@@ -8187,7 +8187,7 @@
         "bm25Count": 20,
         "bm25Errored": false
       },
-      "retrievalClass": "LIST",
+      "answerMode": "LIST",
       "classifyMs": 1002,
       "promptClass": "LIST"
     },
@@ -8258,7 +8258,7 @@
         "bm25Count": 20,
         "bm25Errored": false
       },
-      "retrievalClass": "LIST",
+      "answerMode": "LIST",
       "classifyMs": 885,
       "promptClass": "LIST"
     },
@@ -8361,7 +8361,7 @@
         }
       ],
       "hybrid": null,
-      "retrievalClass": "LIST",
+      "answerMode": "LIST",
       "classifyMs": 959,
       "promptClass": "LIST"
     },
@@ -8395,7 +8395,7 @@
         }
       ],
       "hybrid": null,
-      "retrievalClass": "LIST",
+      "answerMode": "LIST",
       "classifyMs": 972,
       "promptClass": "LIST"
     },
@@ -8462,7 +8462,7 @@
         }
       ],
       "hybrid": null,
-      "retrievalClass": "LIST",
+      "answerMode": "LIST",
       "classifyMs": 891,
       "promptClass": "LIST"
     },
@@ -8529,7 +8529,7 @@
         }
       ],
       "hybrid": null,
-      "retrievalClass": "LIST",
+      "answerMode": "LIST",
       "classifyMs": 782,
       "promptClass": "LIST"
     },
@@ -8600,7 +8600,7 @@
         "bm25Count": 20,
         "bm25Errored": false
       },
-      "retrievalClass": "LIST",
+      "answerMode": "LIST",
       "classifyMs": 845,
       "promptClass": "LIST"
     },
@@ -8671,7 +8671,7 @@
         "bm25Count": 20,
         "bm25Errored": false
       },
-      "retrievalClass": "LIST",
+      "answerMode": "LIST",
       "classifyMs": 950,
       "promptClass": "LIST"
     },
@@ -8774,7 +8774,7 @@
         }
       ],
       "hybrid": null,
-      "retrievalClass": "FACT",
+      "answerMode": "FACT",
       "classifyMs": 943,
       "promptClass": "FACT"
     },
@@ -8808,7 +8808,7 @@
         }
       ],
       "hybrid": null,
-      "retrievalClass": "FACT",
+      "answerMode": "FACT",
       "classifyMs": 960,
       "promptClass": "FACT"
     },
@@ -8875,7 +8875,7 @@
         }
       ],
       "hybrid": null,
-      "retrievalClass": "FACT",
+      "answerMode": "FACT",
       "classifyMs": 976,
       "promptClass": "FACT"
     },
@@ -8942,7 +8942,7 @@
         }
       ],
       "hybrid": null,
-      "retrievalClass": "FACT",
+      "answerMode": "FACT",
       "classifyMs": 976,
       "promptClass": "FACT"
     },
@@ -9013,7 +9013,7 @@
         "bm25Count": 20,
         "bm25Errored": false
       },
-      "retrievalClass": "FACT",
+      "answerMode": "FACT",
       "classifyMs": 880,
       "promptClass": "FACT"
     },
@@ -9084,7 +9084,7 @@
         "bm25Count": 20,
         "bm25Errored": false
       },
-      "retrievalClass": "FACT",
+      "answerMode": "FACT",
       "classifyMs": 791,
       "promptClass": "FACT"
     },
@@ -9187,7 +9187,7 @@
         }
       ],
       "hybrid": null,
-      "retrievalClass": "FACT",
+      "answerMode": "FACT",
       "classifyMs": 928,
       "promptClass": "FACT"
     },
@@ -9221,7 +9221,7 @@
         }
       ],
       "hybrid": null,
-      "retrievalClass": "FACT",
+      "answerMode": "FACT",
       "classifyMs": 770,
       "promptClass": "FACT"
     },
@@ -9288,7 +9288,7 @@
         }
       ],
       "hybrid": null,
-      "retrievalClass": "FACT",
+      "answerMode": "FACT",
       "classifyMs": 839,
       "promptClass": "FACT"
     },
@@ -9355,7 +9355,7 @@
         }
       ],
       "hybrid": null,
-      "retrievalClass": "FACT",
+      "answerMode": "FACT",
       "classifyMs": 638,
       "promptClass": "FACT"
     },
@@ -9426,7 +9426,7 @@
         "bm25Count": 20,
         "bm25Errored": false
       },
-      "retrievalClass": "FACT",
+      "answerMode": "FACT",
       "classifyMs": 737,
       "promptClass": "FACT"
     },
@@ -9497,7 +9497,7 @@
         "bm25Count": 20,
         "bm25Errored": false
       },
-      "retrievalClass": "FACT",
+      "answerMode": "FACT",
       "classifyMs": 689,
       "promptClass": "FACT"
     },
@@ -9600,7 +9600,7 @@
         }
       ],
       "hybrid": null,
-      "retrievalClass": "FACT",
+      "answerMode": "FACT",
       "classifyMs": 842,
       "promptClass": "FACT"
     },
@@ -9634,7 +9634,7 @@
         }
       ],
       "hybrid": null,
-      "retrievalClass": "FACT",
+      "answerMode": "FACT",
       "classifyMs": 808,
       "promptClass": "FACT"
     },
@@ -9701,7 +9701,7 @@
         }
       ],
       "hybrid": null,
-      "retrievalClass": "FACT",
+      "answerMode": "FACT",
       "classifyMs": 830,
       "promptClass": "FACT"
     },
@@ -9768,7 +9768,7 @@
         }
       ],
       "hybrid": null,
-      "retrievalClass": "FACT",
+      "answerMode": "FACT",
       "classifyMs": 997,
       "promptClass": "FACT"
     },
@@ -9839,7 +9839,7 @@
         "bm25Count": 20,
         "bm25Errored": false
       },
-      "retrievalClass": "FACT",
+      "answerMode": "FACT",
       "classifyMs": 1015,
       "promptClass": "FACT"
     },
@@ -9910,7 +9910,7 @@
         "bm25Count": 20,
         "bm25Errored": false
       },
-      "retrievalClass": "FACT",
+      "answerMode": "FACT",
       "classifyMs": 795,
       "promptClass": "FACT"
     },
@@ -10013,7 +10013,7 @@
         }
       ],
       "hybrid": null,
-      "retrievalClass": "LIST",
+      "answerMode": "LIST",
       "classifyMs": 846,
       "promptClass": "LIST"
     },
@@ -10047,7 +10047,7 @@
         }
       ],
       "hybrid": null,
-      "retrievalClass": "LIST",
+      "answerMode": "LIST",
       "classifyMs": 881,
       "promptClass": "LIST"
     },
@@ -10114,7 +10114,7 @@
         }
       ],
       "hybrid": null,
-      "retrievalClass": "LIST",
+      "answerMode": "LIST",
       "classifyMs": 1313,
       "promptClass": "LIST"
     },
@@ -10181,7 +10181,7 @@
         }
       ],
       "hybrid": null,
-      "retrievalClass": "LIST",
+      "answerMode": "LIST",
       "classifyMs": 693,
       "promptClass": "LIST"
     },
@@ -10252,7 +10252,7 @@
         "bm25Count": 20,
         "bm25Errored": false
       },
-      "retrievalClass": "LIST",
+      "answerMode": "LIST",
       "classifyMs": 1016,
       "promptClass": "LIST"
     },
@@ -10323,7 +10323,7 @@
         "bm25Count": 20,
         "bm25Errored": false
       },
-      "retrievalClass": "LIST",
+      "answerMode": "LIST",
       "classifyMs": 916,
       "promptClass": "LIST"
     },
@@ -10426,7 +10426,7 @@
         }
       ],
       "hybrid": null,
-      "retrievalClass": "FACT",
+      "answerMode": "FACT",
       "classifyMs": 1047,
       "promptClass": "FACT"
     },
@@ -10460,7 +10460,7 @@
         }
       ],
       "hybrid": null,
-      "retrievalClass": "FACT",
+      "answerMode": "FACT",
       "classifyMs": 851,
       "promptClass": "FACT"
     },
@@ -10527,7 +10527,7 @@
         }
       ],
       "hybrid": null,
-      "retrievalClass": "FACT",
+      "answerMode": "FACT",
       "classifyMs": 800,
       "promptClass": "FACT"
     },
@@ -10594,7 +10594,7 @@
         }
       ],
       "hybrid": null,
-      "retrievalClass": "FACT",
+      "answerMode": "FACT",
       "classifyMs": 785,
       "promptClass": "FACT"
     },
@@ -10665,7 +10665,7 @@
         "bm25Count": 20,
         "bm25Errored": false
       },
-      "retrievalClass": "FACT",
+      "answerMode": "FACT",
       "classifyMs": 961,
       "promptClass": "FACT"
     },
@@ -10736,7 +10736,7 @@
         "bm25Count": 20,
         "bm25Errored": false
       },
-      "retrievalClass": "FACT",
+      "answerMode": "FACT",
       "classifyMs": 1087,
       "promptClass": "FACT"
     }

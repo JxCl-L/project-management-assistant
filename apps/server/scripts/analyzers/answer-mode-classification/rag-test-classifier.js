@@ -1,15 +1,15 @@
 /**
- * Standalone test for the retrieval-mode classifier.
+ * Standalone test for the answer-mode classifier.
  *
- * Loads ../rag-eval-cases.json, runs classifyRetrievalClass on each query,
+ * Loads ../rag-eval-cases.json, runs classifyAnswerMode on each query,
  * and compares the predicted class against the hand-labeled
- * expectedRetrievalClass.
+ * expectedAnswerMode.
  *
  * Hits the AI API directly (no server needed). Cost ~$0.001 for all 26 cases.
  *
  * Usage:
- *   node scripts/retrieval-classification/test-classifier.js
- *   NODE_ENV=development node scripts/retrieval-classification/test-classifier.js
+ *   node scripts/analyzers/answer-mode-classification/rag-test-classifier.js
+ *   NODE_ENV=development node scripts/analyzers/answer-mode-classification/rag-test-classifier.js
  *
  * Pass bar: >= 22/26 (~85%) agreement with hand labels.
  * Results are written to ./classifier-test-results.json next to this script.
@@ -22,10 +22,10 @@ const dotenv = require("dotenv");
 const envFile = process.env.NODE_ENV ? `.env.${process.env.NODE_ENV}` : ".env.development";
 dotenv.config({ path: path.resolve(__dirname, `../../../${envFile}`) });
 
-const { classifyRetrievalClass } = require("../../../src/ai/classifyRetrieval.js");
+const { classifyAnswerMode } = require("../../../src/ai/chat/classifyAnswerMode.js");
 
 const CASES_PATH = path.join(__dirname, "..", "rag-eval-cases.json");
-const RESULTS_PATH = path.join(__dirname, "..", "..", "results", "retrieval-classification", "classifier-test-results.json");
+const RESULTS_PATH = path.join(__dirname, "..", "..", "results", "answer-mode-classification", "classifier-test-results.json");
 
 const CLASSES = ["FACT", "LIST", "OPEN"];
 
@@ -40,12 +40,12 @@ async function main() {
     let predicted = null;
     let error = null;
     try {
-      predicted = await classifyRetrievalClass(c.query);
+      predicted = await classifyAnswerMode(c.query);
     } catch (e) {
       error = e.message;
     }
     const elapsed = Date.now() - start;
-    const expected = c.expectedRetrievalClass;
+    const expected = c.expectedAnswerMode;
     const correct = predicted === expected;
     results.push({
       id: c.id,

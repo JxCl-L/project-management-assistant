@@ -172,7 +172,7 @@ async function runChat(token, projectId, query, variant, promptMode = "baseline"
     const ms = Date.now() - started;
     if (status !== 200) {
       const msg = json?.error?.message || json?.message || JSON.stringify(json);
-      return { ms, error: `HTTP ${status}: ${msg}`, answer: "", retrieved: [], hybrid: null, retrievalClass: null, classifyMs: null, promptClass: null };
+      return { ms, error: `HTTP ${status}: ${msg}`, answer: "", retrieved: [], hybrid: null, answerMode: null, classifyMs: null, promptClass: null };
     }
     const payload = json?.data || {};
     return {
@@ -181,12 +181,12 @@ async function runChat(token, projectId, query, variant, promptMode = "baseline"
       answer: payload.message || "",
       retrieved: payload._debug?.retrieved || [],
       hybrid: payload._debug?.hybrid || null,
-      retrievalClass: payload._debug?.retrievalClass ?? null,
+      answerMode: payload._debug?.answerMode ?? null,
       classifyMs:     payload._debug?.classifyMs ?? null,
       promptClass:    payload._debug?.promptClass ?? null,
     };
   } catch (err) {
-    return { ms: Date.now() - started, error: err.message, answer: "", retrieved: [], hybrid: null, retrievalClass: null, classifyMs: null, promptClass: null };
+    return { ms: Date.now() - started, error: err.message, answer: "", retrieved: [], hybrid: null, answerMode: null, classifyMs: null, promptClass: null };
   }
 }
 
@@ -567,7 +567,7 @@ async function main() {
       hybrid:      r.hybrid,
       // Class-routing telemetry (only meaningful when promptMode === "routed"
       // but always recorded so downstream tooling has a uniform schema):
-      retrievalClass: r.retrievalClass,
+      answerMode: r.answerMode,
       classifyMs:     r.classifyMs,
       promptClass:    r.promptClass,
     };

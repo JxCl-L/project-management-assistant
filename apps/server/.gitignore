@@ -224,13 +224,9 @@ $RECYCLE.BIN/
 src/ai/chat/chat-rag-test-result.http
 src/ai/chat/rag-performance-report.md
 
-# RAG eval directories are tracked on this branch (eval-archive) — this
-# branch is the archive snapshot for reports, viewers, analyzers, and
-# results. On main these live outside version control; here they don't.
-# scripts/results/
-# scripts/reports/
-# scripts/viewers/
-# scripts/analyzers/
+# RAG eval scripts, results, reports and viewers under scripts/ are tracked
+# (merged from the former eval-archive branch) so the eval history stays
+# next to the code it measured.
 
 # End of custom rules
 src/ai/chat/http-client.private.env.json

@@ -32,7 +32,7 @@ const taskDefs = eval(`(() => { ${taskDefsCode}; return taskDefs; })()`);
 
 const tasksByTitle = new Map(taskDefs.map((t) => [t.title, t]));
 
-// ─── Chunking (mirrors src/ai/chunker.js, but tracks char offsets) ───────────
+// ─── Chunking (mirrors src/ai/embeddings/chunker.js, but tracks char offsets) ───────────
 // Chunker is word-based: words = text.split(/\s+/), windows of `size` words
 // with step = size - overlap. We mirror that, but also record the source-text
 // char span each chunk covers so we can compare against fact char offsets.
