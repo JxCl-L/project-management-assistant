@@ -12,25 +12,16 @@ packages/
   schemas/   Shared zod schemas consumed by both apps (@pm/schemas)
 ```
 
-## Branches
+## RAG evaluation
 
-- `main` — active development of both apps.
-- `eval-archive` — full RAG evaluation state for `apps/server`: analyzer scripts (`scripts/analyzers/`), eval results (`scripts/results/`), curated reports (`scripts/reports/`), and HTML viewers (`scripts/viewers/`). Kept off `main` to avoid bloating the working tree. Check out this branch when restoring or iterating on the analyzers.
+The RAG evaluation pipeline and its history live on `main` under `apps/server/scripts/`:
 
-### Restoring the eval-archive dirs into your `main` working tree
+- `analyzers/` — eval runner, gold-fact builder, root-cause analysis and HTML viewer generators
+- `results/` — raw eval outputs (JSON), classifier results and targeted reruns
+- `reports/` — hand-graded review reports for each run (start here)
+- `viewers/` — generated HTML viewers for browsing results
 
-If you want the analyzer scripts and eval results visible locally on `main` (still gitignored, so they can't be accidentally committed), run from the repo root:
-
-```bash
-git checkout eval-archive -- \
-  apps/server/scripts/analyzers \
-  apps/server/scripts/results \
-  apps/server/scripts/reports \
-  apps/server/scripts/viewers
-git reset HEAD apps/server/scripts/{analyzers,results,reports,viewers}
-```
-
-`apps/server/.gitignore` already lists those four paths, so after the `git reset` they live on disk but are invisible to git.
+These used to live on a separate `eval-archive` branch; that snapshot is preserved as the tag `archive/eval-2026-06`. See `apps/server/README.md` for how to run the pipeline.
 
 ## Getting started
 
