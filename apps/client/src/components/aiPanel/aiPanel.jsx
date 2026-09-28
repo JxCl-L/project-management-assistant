@@ -103,7 +103,27 @@ const WELCOME_MESSAGE = {
   content: "Hi! I'm your project AI assistant. Ask me anything about this project, or use the quick action below to get started.",
 };
 
+// Panel width (px). The user can drag the left edge to widen the panel for
+// long answers; the chosen width is remembered across sessions.
+const PANEL_DEFAULT_WIDTH = 380;
+const PANEL_MIN_WIDTH = 340;
+const PANEL_MAX_WIDTH = 900;
+const PANEL_WIDTH_KEY = "aiPanelWidth";
+
+// Never let the panel cover the whole page: keep at least 80px visible.
+function clampPanelWidth(width) {
+  const max = Math.min(PANEL_MAX_WIDTH, window.innerWidth - 80);
+  return Math.round(Math.min(Math.max(width, PANEL_MIN_WIDTH), max));
+}
+
+function readSavedPanelWidth() {
+  const saved = Number(localStorage.getItem(PANEL_WIDTH_KEY));
+  return clampPanelWidth(saved || PANEL_DEFAULT_WIDTH);
+}
+
 export function AiPanel({ isOpen, onClose, projectId, projectName }) {
+  const [panelWidth, setPanelWidth] = useState(readSavedPanelWidth);
+  const [isResizing, setIsResizing] = useState(false);
   const [messages, setMessages] = useState([WELCOME_MESSAGE]);
   const [inputValue, setInputValue] = useState("");
   const [summarized, setSummarized] = useState(false);
@@ -133,6 +153,46 @@ export function AiPanel({ isOpen, onClose, projectId, projectName }) {
   useEffect(() => {
     if (isOpen) inputRef.current?.focus();
   }, [isOpen]);
+
+  // Re-clamp the width if the window shrinks below the saved width.
+  useEffect(() => {
+    const onResize = () => setPanelWidth((w) => clampPanelWidth(w));
+    window.addEventListener("resize", onResize);
+    return () => window.removeEventListener("resize", onResize);
+  }, []);
+
+  const savePanelWidth = (width) => {
+    setPanelWidth(width);
+    localStorage.setItem(PANEL_WIDTH_KEY, String(width));
+  };
+
+  // Dragging the left edge: the panel is anchored to the right, so its width
+  // is the distance from the pointer to the right edge of the window.
+  const handleResizeStart = (e) => {
+    e.preventDefault();
+    e.currentTarget.setPointerCapture(e.pointerId);
+    setIsResizing(true);
+  };
+
+  const handleResizeMove = (e) => {
+    if (!isResizing) return;
+    setPanelWidth(clampPanelWidth(window.innerWidth - e.clientX));
+  };
+
+  const handleResizeEnd = (e) => {
+    if (!isResizing) return;
+    e.currentTarget.releasePointerCapture(e.pointerId);
+    setIsResizing(false);
+    savePanelWidth(panelWidth);
+  };
+
+  const handleResizeKeyDown = (e) => {
+    const step = e.shiftKey ? 60 : 20;
+    if (e.key === "ArrowLeft") savePanelWidth(clampPanelWidth(panelWidth + step));
+    else if (e.key === "ArrowRight") savePanelWidth(clampPanelWidth(panelWidth - step));
+    else return;
+    e.preventDefault();
+  };
 
   const handleSend = () => {
     if (isPending) return;
@@ -282,10 +342,36 @@ export function AiPanel({ isOpen, onClose, projectId, projectName }) {
 
       {/* Panel */}
       <div
-        className={`fixed top-0 right-0 z-50 h-full w-[380px] flex flex-col bg-background border-l border-border shadow-2xl transition-transform duration-300 ease-in-out ${
+        style={{ width: panelWidth }}
+        className={`fixed top-0 right-0 z-50 h-full max-w-full flex flex-col bg-background border-l border-border shadow-2xl transition-transform duration-300 ease-in-out ${
           isOpen ? "translate-x-0" : "translate-x-full"
-        }`}
+        } ${isResizing ? "select-none" : ""}`}
       >
+        {/* Resize handle: drag, arrow keys, or double-click to reset */}
+        <div
+          role="separator"
+          aria-orientation="vertical"
+          aria-label="Resize AI panel"
+          aria-valuenow={panelWidth}
+          aria-valuemin={PANEL_MIN_WIDTH}
+          aria-valuemax={PANEL_MAX_WIDTH}
+          tabIndex={0}
+          title="Drag to resize · double-click to reset"
+          onPointerDown={handleResizeStart}
+          onPointerMove={handleResizeMove}
+          onPointerUp={handleResizeEnd}
+          onPointerCancel={handleResizeEnd}
+          onDoubleClick={() => savePanelWidth(clampPanelWidth(PANEL_DEFAULT_WIDTH))}
+          onKeyDown={handleResizeKeyDown}
+          className="group absolute inset-y-0 -left-1.5 z-10 hidden w-3 cursor-col-resize touch-none sm:block focus-visible:outline-none"
+        >
+          <div
+            className={`mx-auto h-full w-0.5 transition-colors ${
+              isResizing ? "bg-[hsl(var(--ai-accent))]" : "bg-transparent group-hover:bg-border group-focus-visible:bg-[hsl(var(--ai-accent))]"
+            }`}
+          />
+        </div>
+
         {/* Header */}
         <div className="flex items-center justify-between px-4 py-3.5 border-b border-border shrink-0">
           <div className="flex items-center gap-2">
