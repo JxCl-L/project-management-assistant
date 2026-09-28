@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { X, Sparkles, Send, Bot, AlertCircle } from "lucide-react";
 import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 import { useProjectSummary } from "@/hooks/useProjectSummary.hook.js";
 import { useSendChatMessage } from "@/hooks/useSendChatMessage.hook.js";
 import { ChatMessageSchema } from "@pm/schemas";
@@ -22,6 +23,19 @@ const markdownComponents = {
     <code className={`bg-foreground/10 rounded px-1 py-0.5 text-xs font-mono ${className ?? ""}`}>{children}</code>
   ),
   hr: () => <hr className="border-border my-2" />,
+  del: ({ children }) => <del className="opacity-70">{children}</del>,
+  // GFM tables (via remark-gfm). The wrapper scrolls sideways when a table is
+  // wider than the bubble instead of squashing the columns.
+  table: ({ children }) => (
+    <div className="my-2 overflow-x-auto rounded-lg border border-border">
+      <table className="w-full border-collapse text-xs">{children}</table>
+    </div>
+  ),
+  thead: ({ children }) => <thead className="bg-foreground/5">{children}</thead>,
+  th: ({ children }) => (
+    <th className="border-b border-border px-2.5 py-1.5 text-left font-semibold whitespace-nowrap">{children}</th>
+  ),
+  td: ({ children }) => <td className="border-b border-border/60 px-2.5 py-1.5 align-top">{children}</td>,
 };
 
 // Maps the server's stage event names to the user-facing label the bubble
@@ -65,7 +79,7 @@ function AiMessage({ content, isError, isStreaming, stage }) {
             </span>
           </div>
         ) : (
-          <ReactMarkdown components={markdownComponents}>{content}</ReactMarkdown>
+          <ReactMarkdown remarkPlugins={[remarkGfm]} components={markdownComponents}>{content}</ReactMarkdown>
         )}
       </div>
     </div>
