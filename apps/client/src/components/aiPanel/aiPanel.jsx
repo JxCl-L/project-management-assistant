@@ -140,7 +140,6 @@ export function AiPanel({ isOpen, onClose, projectId, projectName }) {
   const [isResizing, setIsResizing] = useState(false);
   const [messages, setMessages] = useState([WELCOME_MESSAGE]);
   const [inputValue, setInputValue] = useState("");
-  const [summarized, setSummarized] = useState(false);
   const [strategy, setStrategy] = useState("chunked"); // "chunked" | "single"
   // conversation history sent to the API — excludes the welcome message
   const [apiHistory, setApiHistory] = useState([]);
@@ -149,6 +148,7 @@ export function AiPanel({ isOpen, onClose, projectId, projectName }) {
   const { mutate: summarize, isPending: isSummarizing } = useProjectSummary();
   const { mutate: sendMessage, isPending: isChatPending } = useSendChatMessage();
   const isPending = isSummarizing || isChatPending;
+  const hasConversationStarted = messages.some((m) => m.role === "user");
 
   useEffect(() => {
     if (messagesEndRef.current) {
@@ -160,7 +160,6 @@ export function AiPanel({ isOpen, onClose, projectId, projectName }) {
   useEffect(() => {
     setMessages([WELCOME_MESSAGE]);
     setApiHistory([]);
-    setSummarized(false);
   }, [projectId]);
 
   // Focus input when panel opens
@@ -314,7 +313,6 @@ export function AiPanel({ isOpen, onClose, projectId, projectName }) {
       content: "Summarize this project for me.",
     };
     setMessages((prev) => [...prev, userMsg]);
-    setSummarized(true);
 
     summarize(projectId, {
       onSuccess: (data) => {
@@ -339,7 +337,6 @@ export function AiPanel({ isOpen, onClose, projectId, projectName }) {
           ...prev,
           { id: Date.now().toString(), role: "ai", content: msg, isError: true },
         ]);
-        setSummarized(false);
       },
     });
   };
@@ -427,8 +424,9 @@ export function AiPanel({ isOpen, onClose, projectId, projectName }) {
               renders its own per-message stage/typing indicator inline. */}
           {isSummarizing && <TypingIndicator />}
 
-          {/* Quick action chip */}
-          {!summarized && !isPending && (
+          {/* Quick action chip: only offered before the conversation starts,
+              right under the welcome message, not after every reply. */}
+          {!hasConversationStarted && !isPending && (
             <div className="flex justify-center pt-2">
               <button
                 onClick={handleSummarize}
